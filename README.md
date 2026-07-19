@@ -89,7 +89,7 @@ committed anywhere.
 | `/introspection:new-agent <prompt>` | `/introspection-new-agent` | Interview → scaffold recipe repo → validate → commit → publish → wire up → first run |
 | `/introspection:deploy` | `/introspection-deploy` | Publish the current recipe repo and wire it up as a managed runtime |
 | `/introspection:run <prompt>` | `/introspection-run` | Run a prompt on a runtime via `task_run` and show the result |
-| `/introspection:routine <schedule>` | `/introspection-routine` | Attach a schedule (an Introspection automation). Guided today; API-automated in phase 2 |
+| `/introspection:routine <schedule>` | `/introspection-routine` | Attach a schedule (an Introspection automation) via the public `/v1/automations` API, guided UI fallback |
 
 ## What you end up with
 
