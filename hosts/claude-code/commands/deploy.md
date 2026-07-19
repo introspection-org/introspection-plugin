@@ -24,10 +24,10 @@ directory) as a managed Introspection runtime, following the
    `gh` is authenticated, otherwise the org integrations page (admin/owner).
 5. **Bootstrap.** Confirm a clean checkout of pushed `main`
    (`git status --short` empty, `HEAD` == `origin/main`), then bootstrap per
-   the `platform-onboarding` skill: prefer `mcp__introspection__runtime_create`
-   (name, repository, pushed HEAD sha; 409 = already bootstrapped, find it via
-   `list_runtimes`), falling back to
-   `introspection runtimes create --manifest .introspection/<name>.yaml`.
+   the `platform-onboarding` skill:
+   `introspection runtimes create --manifest .introspection/<name>.yaml`
+   (runtime bootstrap is a control-plane mutation and goes through the
+   public API via the CLI's member session).
    Connect any declared bindings for `staging` and check
    `introspection bindings mcp list` for required-but-missing entries.
 6. **Verify.** Smoke-test with `mcp__introspection__task_run`

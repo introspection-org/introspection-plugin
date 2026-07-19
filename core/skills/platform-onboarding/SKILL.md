@@ -89,7 +89,7 @@ Getting the published recipe repo under the integration:
      "Connect GitHub, and when GitHub asks which repositories, select
      `<owner/name>`." That single click-through covers both the App install
      and the repo grant.
-  2. Poll by retrying the bootstrap (`runtime_create` / `runtimes create`)
+  2. Poll by retrying the bootstrap (`introspection runtimes create`)
      every ~15s and resume the flow unattended the moment it succeeds — do
      not make the user report back manually.
 - **If the installation exists**, grant it access to the new repo either
@@ -109,19 +109,10 @@ would reference a commit the integration can't see.
 
 ## Bootstrap the runtime (docs: /workflows/connecting-an-agent)
 
-Two equivalent paths. Prefer the in-host MCP tool when it is available;
-the CLI is the fallback and the reference semantics.
-
-**In-host MCP:** after confirming the clean pushed-`main` checkout, call the
-`runtime_create` tool with `name` (the manifest name), `repository`
-(`owner/name`), and `git_commit_sha` (the pushed HEAD sha; `git_ref`
-defaults to `main`, `sub_path`/`description` optional). It pins the commit
-as a recipe and creates the first runtime version in one call, returning the
-runtime identity. A 409 means the runtime was already bootstrapped — use
-`list_runtimes` to find it; that is normal, not a failure. Requires a
-member-identity token (OAuth sign-in); plain API keys are rejected.
-
-**CLI:**
+Bootstrap goes through the **public API** with the member session — the
+CLI drives `POST /v1/recipes` (pin) then `POST /v1/runtimes` (bootstrap).
+Do not use internal endpoints for this; a 409 means the runtime was
+already bootstrapped (find it via `list_runtimes`), which is normal.
 
 ```bash
 introspection runtimes create --manifest .introspection/<name>.yaml
