@@ -1,6 +1,6 @@
 # Introspection MCP server registration for Codex CLI.
 # Merge into ~/.codex/config.toml, then set the environment variables
-# INTROSPECTION_MCP_URL and INTROSPECTION_API_TOKEN in your shell profile
+# INTROSPECTION_MCP_URL and INTROSPECTION_TOKEN in your shell profile
 # (see the repo README's Auth section). Requires a Codex CLI version with
 # remote (streamable HTTP) MCP support — for older versions, front the URL
 # with a stdio HTTP-bridge proxy of your choice.
@@ -9,4 +9,4 @@
 url = "${INTROSPECTION_MCP_URL}"
 
 [mcp_servers.introspection.http_headers]
-Authorization = "Bearer ${INTROSPECTION_API_TOKEN}"
+Authorization = "Bearer ${INTROSPECTION_TOKEN}"

@@ -16,10 +16,12 @@ agent; hosts without them run the same steps inline.
 ## The flow
 
 1. **Preflight.** Check `recipes --version` works (if not: tell the user to
-   run `npm install -g @introspection-ai/pi-recipes` and stop). Check whether
-   the Introspection MCP `task_run` tool is available — if not, say up front
-   that the managed steps (6–7) will be guided-only; the user still gets a
-   working local recipe.
+   run `npm install -g @introspection-ai/pi-recipes` and stop). For the
+   managed steps, also check the `introspection` CLI
+   (`npm install -g @introspection-ai/cli`, then `introspection login` +
+   `introspection whoami`) and whether the Introspection MCP `task_run` tool
+   is available. If neither is set up, say up front that steps 6–7 will be
+   guided-only; the user still gets a working local recipe.
 
 2. **Interview.** At most 2–4 questions, and only where the prompt
    underdetermines the recipe: voice/audience, integrations, cadence
@@ -49,13 +51,18 @@ agent; hosts without them run the same steps inline.
 6. **Publish + wire up.** `recipes publish ./<name> --github <owner>/<name>
    --visibility private` (ask for the owner; public only on explicit
    request), then follow the `platform-onboarding` skill: write the
-   `.introspection/<name>.yaml` manifest, grant the platform's GitHub App
-   access to the repo (the `gh`-driven path when available, product UI
-   otherwise), and wait for the runtime to reach ready.
+   `.introspection/<name>.yaml` manifest (filename stem must equal `name`),
+   get the repo under the organization's GitHub integration (the `gh`-driven
+   grant when available, the org integrations page otherwise), confirm a
+   clean checkout of pushed `main`, validate with
+   `introspection recipes validate --profile publish`, and bootstrap with
+   `introspection runtimes create --manifest .introspection/<name>.yaml`.
+   Connect any declared bindings for `staging`.
 
-7. **First run.** `task_run` with a representative prompt and
-   `runtime: <name>`; poll to a terminal state and show the result — the
-   hello-world moment.
+7. **First run.** Target `staging`: `task_run` with a representative prompt
+   and `runtime: <name>` (or `introspection tasks create`); poll to a
+   terminal state and show the result — the hello-world moment. Success is
+   `idle` or `completed`.
 
 8. **Wrap up.** Summarize what now exists (repo URL, runtime name, how to run
    it) and offer to set up a routine if the interview surfaced a schedule.

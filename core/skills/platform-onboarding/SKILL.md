@@ -1,6 +1,6 @@
 ---
 name: platform-onboarding
-description: How to connect a published recipe to Introspection as a managed runtime and run it — auth setup, the .introspection manifest, UI repo-connect walkthrough, and task_run usage. Use for the deploy/connect/run steps.
+description: How to take a committed recipe repo to a running managed runtime on Introspection and run it — docs discovery, auth, the .introspection manifest, GitHub integration, runtime bootstrap via the introspection CLI, bindings, and task execution. Use for the deploy/connect/run steps.
 ---
 
 # Onboarding a recipe onto the Introspection platform
@@ -9,101 +9,159 @@ description: How to connect a published recipe to Introspection as a managed run
 
 The platform documentation lives at **https://docs.introspection.dev/** and
 serves a machine-readable index at **https://docs.introspection.dev/llms.txt**.
-Fetch the index first and follow its links whenever you need to know what the
-platform offers — available integrations, getting-started steps, platform
-concepts, workflows, and the API (OpenAPI spec) — rather than guessing from
-memory. In particular, the integrations section is the authority on which
-apps a recipe can connect to; check it before promising any integration in
-an interview.
+Fetch the index and follow its links whenever you need platform specifics —
+this skill cites the pages it is grounded in, and when this skill and the
+docs disagree, **the docs win**. The integrations section is the authority on
+which apps a recipe can connect to; check it before promising any integration
+in an interview.
 
-The managed path takes a published recipe repo and turns it into a runtime:
-sandboxed execution, telemetry, observations, and evals with no infrastructure
-on the user's side. In the current phase, publishing and running are
-automated; the connect step is guided through the product UI.
+Key pages for this flow: `/concepts/deploying`, `/workflows/connecting-an-agent`,
+`/integrations/github`, `/concepts/bindings`, `/sdk/authentication`, `/sdk/cli`.
 
-## Auth preflight
+## Tooling and auth preflight
 
-The plugin's MCP server needs two environment variables (see the plugin
-README): `INTROSPECTION_MCP_URL` (the project's data-plane `/v1/mcp` endpoint)
-and `INTROSPECTION_API_TOKEN` (a project-scoped token, created in the product
-UI). If `mcp__introspection__task_run` is not among the available tools, auth
-isn't set up — send the user to the README's Auth section rather than
-improvising. Never ask the user to paste a token into the chat; it belongs in
-their environment.
+Two CLIs are involved, with different jobs:
 
-## The manifest
+- **`recipes`** (`@introspection-ai/pi-recipes`) — authoring: create, check,
+  install, publish recipe packages.
+- **`introspection`** (`@introspection-ai/cli`) — the platform operator CLI:
+  runtime bootstrap, staging, bindings, tasks. Runtime bootstrap is
+  **CLI-only** (docs: /workflows/connecting-an-agent).
 
-The repo-connect flow reads a manifest at `.introspection/<recipe-name>.yaml`
-in the recipe repo, following the platform's `pi-agent` template contract
-(recipe name + optional description; the runtime takes the recipe's name).
-Create it before connecting:
+Preflight:
 
-```yaml
-# .introspection/<recipe-name>.yaml
-name: <recipe-name>
-description: <one line, optional>
+```bash
+npm install -g @introspection-ai/pi-recipes @introspection-ai/cli
+introspection login     # OAuth device flow, browser-approved member session
+introspection whoami    # must identify the intended project + runtime/task scopes
 ```
 
-If the platform rejects the manifest on connect, prefer regenerating from the
-current `pi-agent` template over guessing fields — the template is the source
-of truth, not this skill.
+Separately, the plugin's bundled MCP server (for in-host `task_run`) reads
+`INTROSPECTION_MCP_URL` and `INTROSPECTION_TOKEN` (an environment-scoped API
+key, `ik_...`, sent as a Bearer token — docs: /sdk/authentication). API keys
+are shown once at creation and scoped to one environment; never ask the user
+to paste one into the chat — it belongs in their environment.
 
-## Connect (staged: `gh` first, UI fallback)
+## The manifest (docs: /concepts/deploying)
 
-The platform's GitHub App must be granted access to the published recipe repo
-before the connect flow can create the runtime.
+`.introspection/<name>.yaml` connects the recipe package to its runtime
+defaults. **The filename stem and `name` must match** — the filename is the
+stable runtime-group slug, and a mismatch fails validation with
+`filename-mismatch`.
 
-**Path A — `gh`-driven app approval (preferred when available).**
-If `gh auth status` succeeds:
+```yaml
+# .introspection/support-agent.yaml
+name: support-agent
+description: One line on what the agent does.
+path: .                 # sub-path to the recipe package; default repo root
+runtime:
+  llm_mode: managed     # platform-supplied model creds (default); byok = your own via bindings
+```
 
-1. Find the Introspection app installation:
-   `gh api /user/installations --jq '.installations[] | {id, app_slug, account: .account.login}'`
-   and pick the Introspection app's entry (confirm with the user if the slug
-   is ambiguous or several accounts match). If no Introspection installation
-   exists at all, the org hasn't installed the app yet — that first install
-   is GitHub's own consent screen and must happen in the browser; fall back
-   to Path B.
-2. Get the repo id: `gh api repos/<owner>/<name> --jq .id`.
-3. Grant access:
-   `gh api -X PUT /user/installations/<installation_id>/repositories/<repo_id>`.
-4. Tell the user the repo is now visible to the platform, and have them
-   finish the connect on the project's **Settings → Repositories** page (the
-   platform picks up the manifest and creates the runtime).
+Other supported keys: `slug` (defaults to `name`), `runtime_name`,
+`includes` (extra file globs), `runtime.resources` (advisory sandbox sizing),
+`strict`. Validate offline before deploying:
 
-**Path B — product UI (always works).**
+```bash
+introspection recipes validate --profile publish
+```
 
-1. Open the Introspection project → **Settings → Repositories → Connect**.
-2. Select the GitHub repo the recipe was published to (install/approve the
-   GitHub App for the org if prompted).
-3. The platform picks up the manifest and creates the runtime.
+## GitHub integration (docs: /integrations/github, /concepts/deploying)
 
-**Both paths:** wait for the runtime deployment to reach **ready** (visible
-on the Runtimes page). Report-back checkpoint: ask the user to confirm the
-runtime shows ready before moving on. Do not claim the runtime exists until
-they confirm or a `task_run` proves it. (A push-triggered OIDC
-self-registration Action is planned platform work; do not simulate it —
-until it ships, wiring up is these two paths.)
+Deployment is Git-native: the platform pins commits from repositories it can
+read through the **organization's GitHub integration** — the Introspection
+GitHub App, installed **once per organization** by an admin/owner from the
+**organization integrations page** in the app, selecting which repositories
+it can access. A repo the integration can't see cannot be pinned:
+`runtimes create` fails with `Active GitHub integration not found` or
+`Recipe repository has no GitHub integration`.
+
+Getting the published recipe repo under the integration:
+
+- **If the org has no Introspection App installation yet**: an admin/owner
+  must install it from the organization integrations page — that first
+  install is GitHub's own consent screen and happens in the browser.
+- **If the installation exists**, grant it access to the new repo either
+  from the integration's repository selection (GitHub App settings /
+  organization integrations page), or hands-free via an authenticated `gh`:
+
+  ```bash
+  gh api /user/installations --jq '.installations[] | {id, app_slug, account: .account.login}'
+  # pick the Introspection app's installation (confirm with the user if ambiguous)
+  gh api repos/<owner>/<name> --jq .id
+  gh api -X PUT /user/installations/<installation_id>/repositories/<repo_id>
+  ```
+
+Bootstrap also requires a clean checkout of pushed `main`: `HEAD` must equal
+`origin/main` and `git status --short` must be empty — otherwise the pin
+would reference a commit the integration can't see.
+
+## Bootstrap the runtime (docs: /workflows/connecting-an-agent)
+
+```bash
+introspection runtimes create --manifest .introspection/<name>.yaml
+```
+
+This creates the immutable recipe pin and the first runtime version; note
+the returned `id`, `recipe_id`, and `runtime_group_id`. The image builds
+asynchronously (`introspection runtimes get <runtime-id>` shows
+`image_status`), but a `pending` version can already serve — the sandbox
+builds on demand. Environments: `staging` tracks new versions automatically;
+**production moves by merge to `main`** (there is no CLI promote);
+`development` is the `introspection dev` lane.
+
+## Bindings (docs: /concepts/bindings, /workflows/connecting-an-agent)
+
+Bindings supply environment-specific config without putting secrets in the
+recipe. Skip when the recipe uses the managed model and declares nothing
+external. For a declared MCP server, connect credential + endpoint per
+environment, scoped to the runtime group slug:
+
+```bash
+introspection bindings credentials create \
+  --name LINEAR_TOKEN --from-env LINEAR_TOKEN \
+  --runtime-group <slug> --environment staging
+
+introspection bindings mcp connect \
+  --recipe <recipe-id> --mcp-server-id linear --name Linear \
+  --endpoint-url https://mcp.example.com/mcp \
+  --header 'Authorization=Bearer ${LINEAR_TOKEN}' \
+  --runtime-group <slug> --environment staging
+```
+
+Required MCP servers are **not** validated at `runtimes create` — the gap
+surfaces as a missing-binding error on the first task. Run
+`introspection bindings mcp list --recipe <recipe-id> --runtime-group <slug>
+--environment staging` and connect anything reported required-but-missing
+before sending work.
 
 ## Run
 
-`mcp__introspection__task_run` is the single action the platform MCP exposes:
+Two equivalent paths for the first run (target `staging`):
 
-- Arguments: `prompt` (what to do) and `runtime` (the runtime name/slug — the
-  server resolves it to the latest ready deployment; there is no way to pin a
-  specific deployment id, and the run always uses the recipe's default
-  `agents/agent.yaml`).
-- It returns a **task handle**, not a result. Poll `tasks/get` until the task
-  reaches a terminal state (`completed`/`failed`/`cancelled`), then fetch
-  `tasks/result`. A "result not ready" retryable error right after completion
-  is normal — poll again briefly.
-- `input_required` status means the agent is waiting for a follow-up turn.
+- **In-host MCP** (the plugin's bundled server): the `task_run` tool takes
+  `prompt` and `runtime` (the runtime-group slug; the server resolves the
+  latest ready deployment). It returns a task handle — poll `tasks/get` to a
+  terminal state (`completed`/`failed`/`cancelled`), then fetch
+  `tasks/result`; a retryable not-ready right after completion is normal.
+  `input_required` means the agent awaits a follow-up turn.
+- **CLI**:
 
-Smoke test after connect: `prompt: "Reply with the single word: ready"`,
-`runtime: <name>`.
+  ```bash
+  introspection tasks create --runtime-id <runtime-id> --environment staging \
+    --subject onboarding-smoke-1 --prompt "Reply with the word ready."
+  introspection tasks follow <task-id> --run <run-id> --since 0
+  introspection tasks get <task-id>   # idle or completed = success
+  ```
 
-## What is deliberately NOT possible yet
+Smoke prompt after bootstrap: `"Reply with the single word: ready"`. Do not
+claim the runtime works until a task ends `idle`/`completed`.
 
-Creating runtimes, automations (routines), or credentials via MCP/API from
-here — those are phase-2 platform work. When a flow needs them, guide the
-user through the product UI and say plainly that this step is manual today.
-Never invent an endpoint or tool name.
+## What is deliberately NOT possible from here
+
+Creating projects or GitHub integrations from the CLI (docs list these as
+outside CLI scope), programmatic automation ("routine") creation, and any
+MCP tools beyond `task_run` — guide the user through the product UI for
+those and say plainly that the step is manual today. Never invent an
+endpoint, page path, or tool name; when unsure, fetch the docs index and
+check.

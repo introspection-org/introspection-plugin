@@ -56,7 +56,9 @@ claude --plugin-dir /path/to/agent-builder-plugin/hosts/claude-code
 # prompts install as /introspection-new-agent, /introspection-deploy, ...
 ```
 
-**Both need** the recipe CLI: `npm install -g @introspection-ai/pi-recipes`.
+**Both need** the recipe CLI and the platform operator CLI:
+`npm install -g @introspection-ai/pi-recipes @introspection-ai/cli`, then
+`introspection login`.
 The `gh` CLI (authenticated) is optional but makes the GitHub wire-up
 hands-free.
 
@@ -67,7 +69,7 @@ Both hosts read the same two environment variables:
 | Variable | Meaning |
 | --- | --- |
 | `INTROSPECTION_MCP_URL` | Your data-plane MCP endpoint, e.g. `https://<dp-host>/v1/mcp` |
-| `INTROSPECTION_API_TOKEN` | A project-scoped API token (Bearer) |
+| `INTROSPECTION_TOKEN` | An environment-scoped API key (`ik_...`, Bearer) — create it in the product UI; shown once (docs: /sdk/authentication) |
 
 Set them in your shell profile. Tokens are never written into recipes or
 committed anywhere. (OAuth sign-in replaces the pasted token when the

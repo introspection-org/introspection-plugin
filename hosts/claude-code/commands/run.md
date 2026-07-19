@@ -9,7 +9,7 @@ Run a prompt on a managed Introspection runtime:
 
 1. If the `mcp__introspection__task_run` tool is unavailable, stop and point
    the user at the Auth section of the plugin README (`INTROSPECTION_MCP_URL`
-   and `INTROSPECTION_API_TOKEN` must be set).
+   and `INTROSPECTION_TOKEN` must be set).
 2. Determine the runtime: if the arguments start with `<runtime-name>:`, use
    that. Otherwise, if the current directory is a recipe repo, default to its
    recipe name. Otherwise ask the user which runtime to use.

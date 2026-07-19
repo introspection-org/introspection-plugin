@@ -104,6 +104,43 @@ the same open format as Claude Code skills, so existing skills can be copied
 in unchanged (keep attribution/license headers). Put reusable how-to knowledge
 in skills; keep agent instructions about *this agent's* behavior.
 
+## MCP tool access (docs: /integrations/mcp)
+
+When the agent needs an external MCP server (email, calendar, an internal
+API), access is declared twice and enforced as the intersection:
+
+1. The **recipe package** declares the allowed servers and tools in
+   `package.json` under `pi.mcp`:
+
+   ```json
+   {
+     "pi": {
+       "mcp": {
+         "manifest": "mcp.json",
+         "servers": [
+           { "id": "contacts", "tools": { "include": ["*"], "exclude": ["delete_contact"] } }
+         ]
+       }
+     }
+   }
+   ```
+
+2. **Each agent** selects its subset in an `mcp:` block keyed by server id:
+
+   ```yaml
+   mcp:
+     contacts:
+       include: ["*"]
+       exclude: [delete_contact]
+   ```
+
+`include` is required per selected server; `"*"` is a whole-toolset sentinel,
+**not a glob** (`search_*` is invalid). Omitting a server from the agent's
+`mcp:` block means no access; omitting the block means no MCP tools at all.
+Invalid policy fails closed — the task won't launch. The concrete endpoint
+and credentials are connected platform-side as bindings, never in the recipe
+(see `platform-onboarding`).
+
 ## Credentials — the one hard rule
 
 **Never write a secret into any recipe file.** Integrations reference

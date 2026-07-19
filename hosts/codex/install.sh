@@ -22,4 +22,4 @@ echo "  prompts     -> $CODEX_HOME/prompts/introspection-{new-agent,deploy,run,r
 echo
 echo "Next steps (manual):"
 echo "  1. Merge $SCRIPT_DIR/config.toml.example into $CODEX_HOME/config.toml"
-echo "  2. Set INTROSPECTION_MCP_URL and INTROSPECTION_API_TOKEN in your shell profile"
+echo "  2. Set INTROSPECTION_MCP_URL and INTROSPECTION_TOKEN in your shell profile"
