@@ -16,11 +16,17 @@ project's channel (e.g. Slack) and visible in the product UI.
    the recipe repo if not), and the schedule. Translate the user's phrasing
    into a cron expression and confirm it back in plain words ("weekdays at
    7:00 in your timezone").
-2. **Create the automation.** In the current phase this is guided: send the
-   user to the Automations page of their Introspection project with the exact
-   values to enter (runtime, agent name, cron expression, prompt). Do not
-   invent an API path for this — programmatic creation is a tracked phase-2
-   item, and this command will be upgraded to do it directly when that lands.
+2. **Create the automation.** Routines are created through the **public
+   `POST /v1/automations`** API (a control-plane resource) with a credential
+   carrying `automations:write` — a member session. When the user has such a
+   credential available, create it directly: body `{"name", "trigger_type":
+   "cron", "cron_schedule", "prompt"}` with `?project=<slug>` and
+   `metadata.runtime_group_id` set to the runtime group (find it via
+   `mcp__introspection__list_runtimes`). Confirm the returned
+   `next_trigger_at` back in plain words. Otherwise, guide the user through
+   the Automations page of their Introspection project with the exact values
+   to enter. Do not route this through internal endpoints — CP resources are
+   public-API-or-UI only.
 3. **Delivery.** If the user wants results in Slack, point them at connecting
    the Slack integration for the project; the scheduled agent's updates then
    flow through the existing channel path.
