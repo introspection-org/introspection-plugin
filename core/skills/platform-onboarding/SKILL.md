@@ -78,9 +78,20 @@ it can access. A repo the integration can't see cannot be pinned:
 
 Getting the published recipe repo under the integration:
 
-- **If the org has no Introspection App installation yet**: an admin/owner
-  must install it from the organization integrations page — that first
-  install is GitHub's own consent screen and happens in the browser.
+- **If the org has no Introspection App installation yet** (bootstrap fails
+  with `Active GitHub integration not found`): this is the one genuinely
+  human step — GitHub requires an admin/owner on its consent screen — and
+  the agent's job is to orchestrate around it, not to stop:
+  1. Hand the user one link and one instruction: the org integrations page
+     (a repo-targeted connect deep link,
+     `{app}/integrations/github/connect?repo=<owner/name>`, on deployments
+     that support it; the plain integrations page otherwise), with:
+     "Connect GitHub, and when GitHub asks which repositories, select
+     `<owner/name>`." That single click-through covers both the App install
+     and the repo grant.
+  2. Poll by retrying the bootstrap (`runtime_create` / `runtimes create`)
+     every ~15s and resume the flow unattended the moment it succeeds — do
+     not make the user report back manually.
 - **If the installation exists**, grant it access to the new repo either
   from the integration's repository selection (GitHub App settings /
   organization integrations page), or hands-free via an authenticated `gh`:
