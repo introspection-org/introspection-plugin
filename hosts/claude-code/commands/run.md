@@ -12,7 +12,8 @@ Run a prompt on a managed Introspection runtime:
    and `INTROSPECTION_TOKEN` must be set).
 2. Determine the runtime: if the arguments start with `<runtime-name>:`, use
    that. Otherwise, if the current directory is a recipe repo, default to its
-   recipe name. Otherwise ask the user which runtime to use.
+   recipe name. Otherwise call `mcp__introspection__list_runtimes` and let the
+   user pick from the returned runtimes.
 3. Call `mcp__introspection__task_run` with the prompt and `runtime`. The
    server resolves the runtime name to its latest ready deployment.
 4. Poll the returned task handle (`tasks/get`) until it reaches a terminal

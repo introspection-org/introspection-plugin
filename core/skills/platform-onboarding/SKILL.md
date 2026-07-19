@@ -139,7 +139,10 @@ before sending work.
 
 Two equivalent paths for the first run (target `staging`):
 
-- **In-host MCP** (the plugin's bundled server): the `task_run` tool takes
+- **In-host MCP** (the plugin's bundled server): when unsure which runtimes
+  exist, call the `list_runtimes` tool first (optional `runtime` filter) — it
+  returns each runtime's name, id, and `image_status`, and its output feeds
+  `task_run`'s selector directly. The `task_run` tool takes
   `prompt` and `runtime` (the runtime-group slug; the server resolves the
   latest ready deployment). It returns a task handle — poll `tasks/get` to a
   terminal state (`completed`/`failed`/`cancelled`), then fetch
