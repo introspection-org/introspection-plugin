@@ -5,6 +5,17 @@ description: How to connect a published recipe to Introspection as a managed run
 
 # Onboarding a recipe onto the Introspection platform
 
+## Docs are the source of truth
+
+The platform documentation lives at **https://docs.introspection.dev/** and
+serves a machine-readable index at **https://docs.introspection.dev/llms.txt**.
+Fetch the index first and follow its links whenever you need to know what the
+platform offers — available integrations, getting-started steps, platform
+concepts, workflows, and the API (OpenAPI spec) — rather than guessing from
+memory. In particular, the integrations section is the authority on which
+apps a recipe can connect to; check it before promising any integration in
+an interview.
+
 The managed path takes a published recipe repo and turns it into a runtime:
 sandboxed execution, telemetry, observations, and evals with no infrastructure
 on the user's side. In the current phase, publishing and running are
@@ -37,19 +48,41 @@ If the platform rejects the manifest on connect, prefer regenerating from the
 current `pi-agent` template over guessing fields — the template is the source
 of truth, not this skill.
 
-## Connect (guided, UI)
+## Connect (staged: `gh` first, UI fallback)
 
-Walk the user through, concretely:
+The platform's GitHub App must be granted access to the published recipe repo
+before the connect flow can create the runtime.
+
+**Path A — `gh`-driven app approval (preferred when available).**
+If `gh auth status` succeeds:
+
+1. Find the Introspection app installation:
+   `gh api /user/installations --jq '.installations[] | {id, app_slug, account: .account.login}'`
+   and pick the Introspection app's entry (confirm with the user if the slug
+   is ambiguous or several accounts match). If no Introspection installation
+   exists at all, the org hasn't installed the app yet — that first install
+   is GitHub's own consent screen and must happen in the browser; fall back
+   to Path B.
+2. Get the repo id: `gh api repos/<owner>/<name> --jq .id`.
+3. Grant access:
+   `gh api -X PUT /user/installations/<installation_id>/repositories/<repo_id>`.
+4. Tell the user the repo is now visible to the platform, and have them
+   finish the connect on the project's **Settings → Repositories** page (the
+   platform picks up the manifest and creates the runtime).
+
+**Path B — product UI (always works).**
 
 1. Open the Introspection project → **Settings → Repositories → Connect**.
-2. Select the GitHub repo the recipe was published to (install the GitHub app
-   for the org if prompted).
-3. The platform picks up the manifest and creates the runtime; wait for the
-   runtime deployment to reach **ready** (visible on the Runtimes page).
+2. Select the GitHub repo the recipe was published to (install/approve the
+   GitHub App for the org if prompted).
+3. The platform picks up the manifest and creates the runtime.
 
-Report-back checkpoint: ask the user to confirm the runtime shows ready
-before moving on. Do not claim the runtime exists until they confirm or a
-`task_run` proves it.
+**Both paths:** wait for the runtime deployment to reach **ready** (visible
+on the Runtimes page). Report-back checkpoint: ask the user to confirm the
+runtime shows ready before moving on. Do not claim the runtime exists until
+they confirm or a `task_run` proves it. (A push-triggered OIDC
+self-registration Action is planned platform work; do not simulate it —
+until it ships, wiring up is these two paths.)
 
 ## Run
 

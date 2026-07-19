@@ -16,9 +16,9 @@ directory) as a managed Introspection runtime.
    and get user confirmation before pushing.
 3. **Manifest.** Ensure the `.introspection/<name>.yaml` manifest exists per
    the `platform-onboarding` skill; create it if missing.
-4. **Connect.** Walk the user through connecting the repo as a runtime in the
-   Introspection UI (see the `platform-onboarding` skill for the exact steps).
-   This part is guided, not automated, in the current phase.
+4. **Connect.** Wire the repo up via the staged GitHub path in the
+   `platform-onboarding` skill: `gh`-driven app approval when `gh` is
+   authenticated, product-UI walkthrough as the fallback.
 5. **Verify.** Once the user reports the runtime is connected, verify with a
    smoke `mcp__introspection__task_run` (`prompt: "Reply with the single word: ready"`,
    `runtime: <name>`) and report the outcome.
