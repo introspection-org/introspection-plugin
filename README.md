@@ -1,83 +1,106 @@
-# Introspection Agent Builder — Claude Code plugin
+# Introspection Agent Builder
 
 Build, publish, and run **fully managed custom agents** on the
-[Introspection](https://introspection.dev) platform from a single prompt,
-without leaving Claude Code.
+[Introspection](https://introspection.dev) platform from a single prompt —
+from **Claude Code or OpenAI Codex CLI**.
 
 ```text
 /introspection:new-agent an email agent that drafts replies in my voice and
 sends me a prioritized to-do summary every morning
 ```
 
-The plugin interviews you briefly, scaffolds a portable
-[Pi recipe](https://pi.recipes) (a git-backed agent package you own),
-validates it, publishes it, and connects it to the Introspection platform as a
-managed runtime — sandboxed execution, telemetry, observations, and evals
-included. Optionally it attaches a schedule ("routine") so your agent runs
-every morning without you.
+The kit interviews you briefly, scaffolds a portable
+[Pi recipe](https://pi.recipes) — **a git repository you own and commit** —
+validates it, publishes it, and wires it up to Introspection as a managed
+runtime: sandboxed execution, telemetry, observations, and evals included.
+Optionally it attaches a schedule ("routine") so your agent runs every
+morning without you.
 
-> **Status: beta.** Phase 1 of the
-> [design proposal](https://github.com/introspection-org/introspection-cloud/pull/1634):
-> the plugin composes the open-source `recipes` CLI and the platform's MCP
-> tasks server, with zero backend changes. Platform-side automation of
-> registration and routines is phase 2.
+> **Status: beta.** Phase 1 of the design proposal
+> (introspection-org/introspection-cloud#1634): composes the open-source
+> `recipes` CLI and the platform's MCP tasks server with zero backend
+> changes.
+
+## Layout: one core, thin host adapters
+
+```text
+core/
+  skills/
+    agent-builder-flow/     # the end-to-end flow + hard rules
+    recipe-authoring/       # how to write a good recipe
+    platform-onboarding/    # docs discovery, auth, GitHub wire-up, task_run
+hosts/
+  claude-code/              # Claude Code plugin (commands, builder agent, MCP config)
+  codex/                    # Codex CLI adapter (AGENTS.md, prompts, config, install.sh)
+```
+
+The flow and skills live once in `core/`; each host wraps them in its native
+format. Platform capabilities (which integrations exist, what the API offers)
+are discovered live from https://docs.introspection.dev/llms.txt — the skills
+treat the docs site as the source of truth rather than baking in a list.
 
 ## Install
 
+**Claude Code** — the plugin root is `hosts/claude-code/`:
+
 ```bash
-claude plugin install introspection@<marketplace>   # once listed
-# or, from a checkout:
-claude --plugin-dir /path/to/agent-builder-plugin
+claude --plugin-dir /path/to/agent-builder-plugin/hosts/claude-code
+# marketplace install lands with the beta listing
 ```
 
-Requirements:
+**Codex CLI**:
 
-- `recipes` CLI: `npm install -g @introspection-ai/pi-recipes`
-- An Introspection project + API token (see **Auth** below) for the managed
-  parts. Without one, everything through "working local recipe" still works.
+```bash
+./hosts/codex/install.sh
+# then merge hosts/codex/config.toml.example into ~/.codex/config.toml
+# prompts install as /introspection-new-agent, /introspection-deploy, ...
+```
+
+**Both need** the recipe CLI and the platform operator CLI:
+`npm install -g @introspection-ai/pi-recipes @introspection-ai/cli`, then
+`introspection login`.
+The `gh` CLI (authenticated) is optional but makes the GitHub wire-up
+hands-free.
 
 ## Auth
 
-The bundled MCP server config reads two environment variables:
+**Preferred — OAuth sign-in, no token.** The platform's MCP mount serves an
+OAuth discovery challenge: register the server without credentials
+(`claude mcp add --transport http introspection https://<dp-host>/v1/mcp`,
+or the equivalent Codex config without the header) and the host walks you
+through browser sign-in on first use. Requires the deployment to have the
+MCP server flag enabled.
+
+**Fallback — Bearer token via environment variables** (both hosts read the
+same two):
 
 | Variable | Meaning |
 | --- | --- |
 | `INTROSPECTION_MCP_URL` | Your data-plane MCP endpoint, e.g. `https://<dp-host>/v1/mcp` |
-| `INTROSPECTION_API_TOKEN` | A project-scoped API token (Bearer) |
+| `INTROSPECTION_TOKEN` | An environment-scoped API key (`ik_...`, Bearer) — create it in the product UI; shown once (docs: /sdk/authentication) |
 
-Set them in your shell profile or `.claude/settings.json` `env`. Tokens are
-never written into recipes or committed anywhere. (OAuth sign-in replaces the
-pasted token when the platform's MCP OAuth work lands.)
+Set them in your shell profile. Tokens are never written into recipes or
+committed anywhere.
 
-## Commands
+## Commands / prompts
 
-| Command | What it does |
-| --- | --- |
-| `/introspection:new-agent <prompt>` | Interview → scaffold a Pi recipe → validate → test-drive → publish → connect. The main flow. |
-| `/introspection:deploy` | Publish the current recipe repo and walk through connecting it as a managed runtime. |
-| `/introspection:run <prompt>` | Run a prompt on one of your managed runtimes via `task_run` and stream back the result. |
-| `/introspection:routine <schedule>` | Attach a schedule to your agent (an Introspection automation). Guided today; API-automated in phase 2. |
+| Claude Code | Codex CLI | What it does |
+| --- | --- | --- |
+| `/introspection:new-agent <prompt>` | `/introspection-new-agent` | Interview → scaffold recipe repo → validate → commit → publish → wire up → first run |
+| `/introspection:deploy` | `/introspection-deploy` | Publish the current recipe repo and wire it up as a managed runtime |
+| `/introspection:run <prompt>` | `/introspection-run` | Run a prompt on a runtime via `task_run` and show the result |
+| `/introspection:routine <schedule>` | `/introspection-routine` | Attach a schedule (an Introspection automation). Guided today; API-automated in phase 2 |
 
 ## What you end up with
 
 1. **A git repo you own** — a portable Pi recipe (`agents/*.yaml`,
-   `SYSTEM.md`, `skills/**/SKILL.md`), editable anywhere, forkable by anyone.
-   Your existing Claude Code skills can be lifted in as-is: recipe skills use
-   the same `SKILL.md` format.
-2. **A managed runtime** running that recipe on Introspection.
+   `SYSTEM.md`, `skills/**/SKILL.md`), committed by you, editable anywhere,
+   forkable by anyone. Your existing agent skills can be lifted in as-is:
+   recipe skills use the same `SKILL.md` format.
+2. **A managed runtime** running that recipe on Introspection, connected via
+   the platform's GitHub App (`gh`-approved or UI-approved).
 3. **Optionally a routine** — a scheduled run with results delivered to your
    channel.
-
-## Layout
-
-```text
-.claude-plugin/plugin.json   # plugin manifest
-.mcp.json                    # Introspection MCP server (env-var configured)
-commands/                    # /introspection:* slash commands
-agents/builder.md            # the interviewer/scaffolder subagent
-skills/recipe-authoring/     # how to write a good recipe
-skills/platform-onboarding/  # auth, registration, first run
-```
 
 ## License
 
