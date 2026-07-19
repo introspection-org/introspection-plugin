@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "introspection": {
+      "type": "http",
+      "url": "${INTROSPECTION_MCP_URL}",
+      "headers": {
+        "Authorization": "Bearer ${INTROSPECTION_API_TOKEN}"
+      }
+    }
+  }
+}
