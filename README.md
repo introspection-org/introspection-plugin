@@ -64,7 +64,15 @@ hands-free.
 
 ## Auth
 
-Both hosts read the same two environment variables:
+**Preferred — OAuth sign-in, no token.** The platform's MCP mount serves an
+OAuth discovery challenge: register the server without credentials
+(`claude mcp add --transport http introspection https://<dp-host>/v1/mcp`,
+or the equivalent Codex config without the header) and the host walks you
+through browser sign-in on first use. Requires the deployment to have the
+MCP server flag enabled.
+
+**Fallback — Bearer token via environment variables** (both hosts read the
+same two):
 
 | Variable | Meaning |
 | --- | --- |
@@ -72,8 +80,7 @@ Both hosts read the same two environment variables:
 | `INTROSPECTION_TOKEN` | An environment-scoped API key (`ik_...`, Bearer) — create it in the product UI; shown once (docs: /sdk/authentication) |
 
 Set them in your shell profile. Tokens are never written into recipes or
-committed anywhere. (OAuth sign-in replaces the pasted token when the
-platform's MCP OAuth work lands.)
+committed anywhere.
 
 ## Commands / prompts
 
