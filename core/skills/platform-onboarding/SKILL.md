@@ -98,6 +98,20 @@ would reference a commit the integration can't see.
 
 ## Bootstrap the runtime (docs: /workflows/connecting-an-agent)
 
+Two equivalent paths. Prefer the in-host MCP tool when it is available;
+the CLI is the fallback and the reference semantics.
+
+**In-host MCP:** after confirming the clean pushed-`main` checkout, call the
+`runtime_create` tool with `name` (the manifest name), `repository`
+(`owner/name`), and `git_commit_sha` (the pushed HEAD sha; `git_ref`
+defaults to `main`, `sub_path`/`description` optional). It pins the commit
+as a recipe and creates the first runtime version in one call, returning the
+runtime identity. A 409 means the runtime was already bootstrapped — use
+`list_runtimes` to find it; that is normal, not a failure. Requires a
+member-identity token (OAuth sign-in); plain API keys are rejected.
+
+**CLI:**
+
 ```bash
 introspection runtimes create --manifest .introspection/<name>.yaml
 ```
