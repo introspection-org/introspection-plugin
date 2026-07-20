@@ -7,7 +7,7 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 | Skill | Owns |
 | --- | --- |
 | `recipes` | Vertical agent boundaries, structure, and local proof |
-| `evals` | Failure discovery and evaluation-layer decisions |
+| `evals` | Error analysis, measurement design, and judge calibration |
 | `harbor` | Harbor create-task quickstart and evaluation integrity |
 | `introspection` | CLI deployment, production evidence, judges, and comparisons |
 | `autoresearch` | Advanced, explicitly requested Evo optimization loops |

@@ -1,4 +1,4 @@
 interface:
   display_name: "Evals"
-  short_description: "Design trustworthy agent evaluation suites"
-  default_prompt: "Use $evals to design a trustworthy evaluation suite for this agent."
+  short_description: "Turn agent traces into trustworthy measures"
+  default_prompt: "Use $evals to analyze these agent traces, discover failure modes, and build trustworthy measurements."
