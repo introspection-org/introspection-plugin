@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deploy"
+  short_description: "Publish and verify a proven agent recipe"
+  default_prompt: "Use $introspection:deploy to publish this proven recipe and verify its Introspection runtime in staging."

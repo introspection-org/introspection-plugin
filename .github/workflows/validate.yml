@@ -1,0 +1,25 @@
+name: Validate plugin
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [codex, claude-code]
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Validate skill composition and behavioral contracts
+        run: python3 scripts/validate_plugin.py
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+      - name: Validate ${{ matrix.target }} discovery
+        run: npx --yes plugins@1.3.4 discover . --target "${{ matrix.target }}"

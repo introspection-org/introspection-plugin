@@ -1,0 +1,20 @@
+{
+  "name": "introspection-org",
+  "interface": {
+    "displayName": "Introspection"
+  },
+  "plugins": [
+    {
+      "name": "introspection",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

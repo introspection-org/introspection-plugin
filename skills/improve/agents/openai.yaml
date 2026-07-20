@@ -1,0 +1,4 @@
+interface:
+  display_name: "Improve"
+  short_description: "Improve an agent from evidence or a chosen target"
+  default_prompt: "Use $introspection:improve to adapt the investigation to my optional focus, confirm the plan, and ship focused fixes and pull requests."

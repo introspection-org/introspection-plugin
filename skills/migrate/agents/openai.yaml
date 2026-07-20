@@ -1,0 +1,4 @@
+interface:
+  display_name: "Migrate"
+  short_description: "Convert and locally prove an existing agent"
+  default_prompt: "Use $introspection:migrate to convert this existing agent into a locally proven Introspection recipe."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Introspection"
+  short_description: "Operate and inspect agents with the CLI"
+  default_prompt: "Use $introspection:introspection for low-level CLI operations supporting an Introspection agent workflow."
