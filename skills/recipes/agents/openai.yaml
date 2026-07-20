@@ -1,0 +1,4 @@
+interface:
+  display_name: "Recipes"
+  short_description: "Build focused vertical agent recipes"
+  default_prompt: "Use $recipes to design and build this vertical agent recipe."

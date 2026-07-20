@@ -1,0 +1,4 @@
+interface:
+  display_name: "Evals"
+  short_description: "Design trustworthy agent evaluation suites"
+  default_prompt: "Use $evals to design a trustworthy evaluation suite for this agent."

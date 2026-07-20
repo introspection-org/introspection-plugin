@@ -1,106 +1,39 @@
-# Introspection Agent Builder
+# Introspection Plugin
 
-Build, publish, and run **fully managed custom agents** on the
-[Introspection](https://introspection.dev) platform from a single prompt —
-from **Claude Code or OpenAI Codex CLI**.
+A small set of progressively disclosed skills for building and improving vertical agents.
 
-```text
-/introspection:new-agent an email agent that drafts replies in my voice and
-sends me a prioritized to-do summary every morning
-```
+The plugin helps turn an important workflow into a narrowly scoped agent with an approved definition of quality, trustworthy evaluation coverage, proven deployment, and a disciplined production feedback loop.
 
-The kit interviews you briefly, scaffolds a portable
-[Pi recipe](https://pi.recipes) — **a git repository you own and commit** —
-validates it, publishes it, and wires it up to Introspection as a managed
-runtime: sandboxed execution, telemetry, observations, and evals included.
-Optionally it attaches a schedule ("routine") so your agent runs every
-morning without you.
-
-> **Status: beta.** Phase 1 of the design proposal
-> (introspection-org/introspection-cloud#1634): composes the open-source
-> `recipes` CLI and the platform's MCP tasks server with zero backend
-> changes.
-
-## Layout: one core, thin host adapters
-
-```text
-core/
-  skills/
-    agent-builder-flow/     # the end-to-end flow + hard rules
-    recipe-authoring/       # how to write a good recipe
-    platform-onboarding/    # docs discovery, auth, GitHub wire-up, task_run
-hosts/
-  claude-code/              # Claude Code plugin (commands, builder agent, MCP config)
-  codex/                    # Codex CLI adapter (AGENTS.md, prompts, config, install.sh)
-```
-
-The flow and skills live once in `core/`; each host wraps them in its native
-format. Platform capabilities (which integrations exist, what the API offers)
-are discovered live from https://docs.introspection.dev/llms.txt — the skills
-treat the docs site as the source of truth rather than baking in a list.
-
-## Install
-
-**Claude Code** — the plugin root is `hosts/claude-code/`:
-
-```bash
-claude --plugin-dir /path/to/agent-builder-plugin/hosts/claude-code
-# marketplace install lands with the beta listing
-```
-
-**Codex CLI**:
-
-```bash
-./hosts/codex/install.sh
-# then merge hosts/codex/config.toml.example into ~/.codex/config.toml
-# prompts install as /introspection-new-agent, /introspection-deploy, ...
-```
-
-**Both need** the recipe CLI and the platform operator CLI:
-`npm install -g @introspection-ai/pi-recipes @introspection-ai/cli`, then
-`introspection login`.
-The `gh` CLI (authenticated) is optional but makes the GitHub wire-up
-hands-free.
-
-## Auth
-
-**Preferred — OAuth sign-in, no token.** The platform's MCP mount serves an
-OAuth discovery challenge: register the server without credentials
-(`claude mcp add --transport http introspection https://<dp-host>/v1/mcp`,
-or the equivalent Codex config without the header) and the host walks you
-through browser sign-in on first use. Requires the deployment to have the
-MCP server flag enabled.
-
-**Fallback — Bearer token via environment variables** (both hosts read the
-same two):
-
-| Variable | Meaning |
+| Skill | Owns |
 | --- | --- |
-| `INTROSPECTION_MCP_URL` | Your data-plane MCP endpoint, e.g. `https://<dp-host>/v1/mcp` |
-| `INTROSPECTION_TOKEN` | An environment-scoped API key (`ik_...`, Bearer) — create it in the product UI; shown once (docs: /sdk/authentication) |
+| `recipes` | Vertical agent boundaries, structure, and local proof |
+| `evals` | Failure discovery and evaluation-layer decisions |
+| `harbor` | Reproducible environment-level agent tasks |
+| `introspection` | CLI deployment, production evidence, judges, and comparisons |
+| `autoresearch` | Advanced, explicitly requested Evo optimization loops |
 
-Set them in your shell profile. Tokens are never written into recipes or
-committed anywhere.
+Start with the skill matching the current problem. Skills route to one another at clear boundaries and load detailed references only when needed.
 
-## Commands / prompts
+Build in readiness stages:
 
-| Claude Code | Codex CLI | What it does |
-| --- | --- | --- |
-| `/introspection:new-agent <prompt>` | `/introspection-new-agent` | Interview → scaffold recipe repo → validate → commit → publish → wire up → first run |
-| `/introspection:deploy` | `/introspection-deploy` | Publish the current recipe repo and wire it up as a managed runtime |
-| `/introspection:run <prompt>` | `/introspection-run` | Run a prompt on a runtime via `task_run` and show the result |
-| `/introspection:routine <schedule>` | `/introspection-routine` | Attach a schedule (an Introspection automation) via the public `/v1/automations` API, guided UI fallback |
+- **Prototype:** vertical contract plus a small, varied, approved acceptance set.
+- **Deployment:** representative evaluation coverage, baseline, and staging proof.
+- **Optimization:** stable measurement, meaningful headroom, protected gates, and an explicit research budget.
 
-## What you end up with
+The default improvement path is production evidence → approved eval coverage → one focused change → validation → deployment. Use `autoresearch` only when trustworthy evals already exist and repeated candidate search is specifically justified.
 
-1. **A git repo you own** — a portable Pi recipe (`agents/*.yaml`,
-   `SYSTEM.md`, `skills/**/SKILL.md`), committed by you, editable anywhere,
-   forkable by anyone. Your existing agent skills can be lifted in as-is:
-   recipe skills use the same `SKILL.md` format.
-2. **A managed runtime** running that recipe on Introspection, connected via
-   the platform's GitHub App (`gh`-approved or UI-approved).
-3. **Optionally a routine** — a scheduled run with results delivered to your
-   channel.
+## Sources of truth
+
+For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. For Harbor and Evo work, load their current official skills and CLI help.
+
+The plugin carries cross-cutting agent judgment. It intentionally does not copy product schemas, command catalogs, or full documentation.
+
+## Requirements
+
+- `@introspection-ai/pi-recipes` for recipe authoring
+- `@introspection-ai/cli` for platform work
+- Harbor for environment-level tasks
+- Evo for structured autoresearch
 
 ## License
 

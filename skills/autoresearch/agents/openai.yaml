@@ -1,0 +1,6 @@
+interface:
+  display_name: "Autoresearch"
+  short_description: "Run advanced gated agent optimization"
+  default_prompt: "Use $autoresearch only after confirming the agent has trustworthy evals and repeated optimization is warranted."
+policy:
+  allow_implicit_invocation: false

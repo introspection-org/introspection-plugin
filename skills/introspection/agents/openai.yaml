@@ -1,0 +1,4 @@
+interface:
+  display_name: "Introspection"
+  short_description: "Deploy and improve agents with the CLI"
+  default_prompt: "Use $introspection to deploy, observe, or compare this agent with the CLI."

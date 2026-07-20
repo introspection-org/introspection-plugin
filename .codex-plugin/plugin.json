@@ -1,0 +1,28 @@
+{
+  "name": "agent-plugin",
+  "version": "0.5.0",
+  "description": "Build, evaluate, deploy, and improve vertical agents on Introspection.",
+  "author": {
+    "name": "Introspection",
+    "url": "https://github.com/introspection-org"
+  },
+  "homepage": "https://docs.introspection.dev",
+  "repository": "https://github.com/introspection-org/agent-plugin",
+  "license": "Apache-2.0",
+  "keywords": ["introspection", "agents", "recipes", "evals", "autoresearch"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Introspection Plugin",
+    "shortDescription": "Build and improve production agents",
+    "longDescription": "Define quality, build focused recipes, create trustworthy evals, deploy through the Introspection CLI, and improve from production evidence.",
+    "developerName": "Introspection",
+    "category": "Developer Tools",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://introspection.dev",
+    "defaultPrompt": [
+      "Build a vertical agent recipe for this workflow.",
+      "Turn these production failures into agent evals.",
+      "Deploy and validate this agent with the Introspection CLI."
+    ]
+  }
+}
