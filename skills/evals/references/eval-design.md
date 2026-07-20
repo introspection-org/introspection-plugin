@@ -8,8 +8,11 @@ Use this reference when performing error analysis, assembling datasets, validati
 - [Make behavior reviewable](#make-behavior-reviewable)
 - [Run error analysis](#run-error-analysis)
 - [Build and prioritize the taxonomy](#build-and-prioritize-the-taxonomy)
+- [Audit an existing suite](#audit-an-existing-suite)
 - [Choose the evaluation layer](#choose-the-evaluation-layer)
 - [Design the dataset](#design-the-dataset)
+- [Generate synthetic coverage](#generate-synthetic-coverage)
+- [Write semantic judges](#write-semantic-judges)
 - [Validate semantic judges](#validate-semantic-judges)
 - [Define ownership](#define-ownership)
 - [Operationalize the signal](#operationalize-the-signal)
@@ -95,6 +98,20 @@ Separate:
 
 Fix obvious, localized defects directly and verify them. Invest in a persistent evaluator when the behavior is recurring, hard to fix confidently, high-risk, likely to regress, or important to compare across versions.
 
+## Audit an existing suite
+
+Audit from evidence rather than evaluator names or test counts:
+
+1. Map each evaluator to an observed failure mode, user promise, or hard invariant.
+2. Inspect the underlying cases, expected outcomes, rationales, provenance, and cohort tags.
+3. Run the unchanged baseline and classify invalid trials before interpreting scores.
+4. Sample passing and failing traces from every important evaluator; verify that a pass means useful behavior and a failure identifies the intended defect.
+5. Check for duplicated evaluators, uncovered high-severity modes, stale labels, data leakage, unstable environments, and judges without held-out validation.
+6. Compare evaluation movements with human feedback and downstream outcomes.
+7. Record keep, repair, replace, or retire decisions with an owner and next proof.
+
+Do not preserve an evaluator merely because it already exists. Do not remove one merely because the current agent scores well; first establish whether it guards a meaningful regression.
+
 ## Choose the evaluation layer
 
 Choose the lowest layer that faithfully represents the failure:
@@ -126,6 +143,36 @@ Separate data used to invent or revise the rubric and judge prompt from validati
 Use real traces to discover taste and failure modes. Use synthetic examples to fill deliberate coverage gaps, stress boundaries, or create controlled variants, then require domain review before treating them as truth.
 
 Version data and labels. Criteria drift is expected: reviewers discover new requirements and reinterpret old examples as they see more behavior. Revisit earlier labels when definitions change.
+
+## Generate synthetic coverage
+
+Generate synthetic cases only from an explicit coverage plan. Define the missing failure mode, cohort, boundary, or environmental condition first; otherwise collect more real traces.
+
+For each generation batch:
+
+1. Supply the behavior contract, accepted examples, counterexamples, and the exact coverage gap without exposing held-out answers.
+2. Generate varied inputs and contexts, not paraphrases of one seed.
+3. Preserve the intended difficulty while removing accidental shortcuts and impossible requirements.
+4. Deduplicate semantically, inspect distribution and cohort balance, and reject cases that do not resemble plausible use.
+5. Require domain-owner review of the expected outcome and rationale.
+6. Tag provenance as synthetic and keep generated cases out of held-out evaluation until independently approved.
+
+Use controlled variants to test one factor at a time. Never let a generator label its own cases without human or deterministic verification.
+
+## Write semantic judges
+
+Write a judge only after the failure definition and labeled examples are stable enough for another reviewer to apply. Give it:
+
+- one narrow decision to make
+- only the trace fields required for that decision
+- an operational definition of pass and fail
+- positive, negative, and boundary examples with rationales
+- explicit rules for missing evidence and invalid input
+- a constrained output contract containing the decision and concise evidence
+
+Require the judge to cite observable evidence from the supplied trace. Prevent it from rewarding style, verbosity, or proxy features unless those are part of the product contract. Keep agent identity, candidate name, and expected answer hidden when they are unnecessary and could bias the decision.
+
+Use deterministic parsing for judge output. Treat missing fields, malformed output, execution errors, and insufficient context as invalid measurements. Keep the prompt, examples, output schema, model, and decoding configuration versioned together.
 
 ## Validate semantic judges
 

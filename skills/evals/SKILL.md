@@ -11,6 +11,12 @@ Treat evals as the systematic practice of understanding, measuring, and improvin
 
 The aim is actionable product improvement. A large suite, polished dashboard, or rising score is not success by itself.
 
+## Own the complete agent-eval loop
+
+Use this skill without requiring another evaluation package for ordinary agent work. It owns trace review, open-ended error analysis, failure taxonomies, eval-suite audits, deterministic checks, Harbor task selection, synthetic coverage, semantic judge design and validation, human review, regression analysis, and the Introspection production-feedback loop.
+
+Read [eval-design.md](references/eval-design.md) for the operational procedures. Consult external evaluation skills only for an adjacent specialty explicitly outside this scope, such as building a bespoke annotation application or evaluating a retrieval system as a system in its own right.
+
 ## Start with evidence, not evaluators
 
 Instrument the complete behavior before choosing metrics. Gather representative traces with inputs, context, capability calls, outputs, errors, latency, user feedback, and downstream outcomes. Use `$introspection` for deployed evidence.
@@ -48,7 +54,7 @@ Make one judge answer one specific question. Prefer an operational pass/fail dec
 
 Build balanced development examples with positives, negatives, hard boundaries, and written rationales. Keep prompt-development, validation, and held-out test data separate. Diagnose true-positive and true-negative behavior, false positives, and false negatives separately; aggregate agreement can hide a judge that always predicts the majority class.
 
-Read [eval-design.md](references/eval-design.md) for the complete error-analysis protocol, dataset design, judge calibration, collaboration model, and operationalization checks.
+Read [eval-design.md](references/eval-design.md) for the complete error-analysis protocol, suite audit, dataset and synthetic-case design, judge construction and calibration, collaboration model, and operationalization checks.
 
 ## Improve and close the loop
 
@@ -78,5 +84,10 @@ Do not block a prototype on optimization-grade coverage. Do not call an agent de
 - Load `$harbor` for environment-level tasks. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
 - Load `$introspection` to inspect production evidence, deploy calibrated judges, sample live behavior, or compare releases.
 - Load `$autoresearch` only when the user explicitly requests repeated optimization and the suite is already representative, reproducible, frozen, and worth optimizing.
+
+For work outside the agent-evaluation loop, consult the relevant upstream Hamel skill instead of expanding this plugin:
+
+- [`build-review-interface`](https://github.com/hamelsmu/evals-skills/tree/main/skills/build-review-interface) when the deliverable is a custom annotation or review application rather than an Introspection review workflow.
+- [`evaluate-rag`](https://github.com/hamelsmu/evals-skills/tree/main/skills/evaluate-rag) when retrieval quality, chunking, ranking, or answer-grounding requires a dedicated retrieval evaluation program.
 
 Never improve a score by weakening the task, labels, evaluator, judge, or acceptance policy. Treat evaluator failures as invalid measurement, never as agent failures.
