@@ -76,7 +76,8 @@ New complaints, product changes, cohorts, and recurring patterns restart error a
 State the current level and what evidence is missing:
 
 - **Prototype-ready:** stable vertical contract, observable success, explicit boundaries, and a small varied acceptance set approved by the domain owner.
-- **Deployment-ready:** representative coverage, deterministic hard checks, environment tasks where needed, calibrated subjective grading, an unchanged baseline, and staging proof.
+- **Candidate-ready for staging:** representative coverage, deterministic hard checks, environment tasks where needed, calibrated subjective grading, and an unchanged baseline.
+- **Deployment-ready:** candidate-ready evidence plus successful staging resolution, task execution, complete conversation inspection, and proof of the intended recipe commit.
 - **Optimization-ready:** stable and reproducible measurement with known noise, meaningful headroom, immutable gates, held-out promotion coverage, and a justified research budget.
 
 Do not block a prototype on optimization-grade coverage. Do not call an agent deployment-ready because a few happy-path examples pass.

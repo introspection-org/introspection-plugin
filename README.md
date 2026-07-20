@@ -9,7 +9,7 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 | `recipes` | Vertical agent boundaries, structure, and local proof |
 | `evals` | Error analysis, measurement design, and judge calibration |
 | `harbor` | Harbor create-task quickstart and evaluation integrity |
-| `introspection` | CLI deployment, production evidence, judges, and comparisons |
+| `introspection` | CLI staging deployment, production evidence, judges, comparisons, and Git-release verification |
 | `autoresearch` | Advanced, explicitly requested Evo optimization loops |
 
 Start with the skill matching the current problem. Skills route to one another at clear boundaries and load detailed references only when needed.
@@ -17,7 +17,9 @@ Start with the skill matching the current problem. Skills route to one another a
 ## Commands
 
 - `/introspection:create-agent` defines quality, builds a recipe, and proves it locally with Pi.
-- `/introspection:deploy` deploys a proven recipe and verifies it in staging.
+- `/introspection:deploy` takes a staging candidate through Git-backed deployment and verifies the resolved version and conversation.
+
+Use those names in hosts that expose plugin slash commands. In Codex, choose the matching plugin starter prompt or ask to create or deploy an agent; the same skills and boundaries apply.
 
 `create-agent` stops at local prototype readiness. Deployment is always a separate explicit action.
 
@@ -37,10 +39,9 @@ The plugin carries cross-cutting agent judgment. It intentionally does not copy 
 
 ## Requirements
 
-- `@introspection-ai/pi-recipes` for recipe authoring
-- `@introspection-ai/cli` for platform work
-- Harbor and its official skills for environment-level tasks
-- Evo for structured autoresearch
+- Core: Pi, `@introspection-ai/pi-recipes`, and `@introspection-ai/cli`.
+- Conditional: Harbor when an environment-level agent eval is the lowest faithful layer. Its official skills are assumed to be installed.
+- Advanced and opt-in: Evo only when `$autoresearch` passes its readiness gate.
 
 ## License
 

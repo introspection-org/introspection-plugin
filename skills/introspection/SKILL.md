@@ -1,6 +1,6 @@
 ---
 name: introspection
-description: Deploy, run, observe, judge, compare, and promote agent recipes through the Introspection CLI. Use for platform onboarding, production evidence, recurring patterns, semantic judges, release comparisons, or live experiments.
+description: Deploy, run, observe, judge, and compare agent recipes through the Introspection CLI, then verify releases made through the Git integration. Use for platform onboarding, production evidence, recurring patterns, semantic judges, release comparisons, or live experiments.
 ---
 
 # Introspection
@@ -16,17 +16,23 @@ Use the CLI as the only platform interface. Keep recipe design in `$recipes`, ev
 
 Current docs and installed CLI output are authoritative. Do not repeat schemas or command catalogs in this skill. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
 
+If current docs and installed help disagree, inspect the installed version and documented upgrade path. Do not guess at flags from a newer or older source checkout.
+
 If a required platform operation is not available in the current CLI, report the gap and stop at the last supported step. Do not substitute another interface.
 
 ## Connect and deploy
 
 - Validate the recipe locally first.
-- Confirm the intended Git state is committed and pushed.
-- Create or update the runtime and required bindings through the CLI.
-- Start a representative task and follow it to completion.
-- Inspect the resulting conversation and evidence, not only the task status.
+- Confirm the intended Git state and whether this is a first bootstrap or a later candidate version.
+- Bootstrap the first runtime only through the documented manifest flow. For later versions, use the immutable version created from the pull-request head; do not create another runtime group.
+- Configure required bindings and select the candidate for staging through the CLI.
+- Start a representative task through staging runtime-group resolution, follow it to completion, and confirm which exact version answered.
+- Retrieve the conversation associated with that task and inspect its complete evidence bundle, not only task status.
+- Join the resolved runtime to its recipe pin and verify the intended Git commit.
 
 A successful deployment is a proven user workflow, not merely a created runtime.
+
+Judge definition calibration and judgement reads are supported by the CLI. Live judge enablement and production sampling may not be; report that boundary when encountered and do not silently switch interfaces.
 
 ## Learn from production
 

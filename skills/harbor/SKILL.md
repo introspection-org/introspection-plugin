@@ -9,6 +9,8 @@ Use Harbor as the recommended framework for new reproducible environment-level a
 
 Do not force a project with a working evaluation framework to migrate. Keep its existing cases, graders, runner, history, and CI integration when they faithfully exercise the behavior. Use `$evals` with that framework, and introduce Harbor only for a missing environment, isolation, execution, portability, or verification capability.
 
+Before authoring or running a task, confirm the Harbor CLI and selected official skill are available. They are normally pre-installed; if either is missing, stop and route to the current official Harbor installation source instead of reconstructing its workflow locally.
+
 ## Load only the official skill needed
 
 Assume the current skills from [`harbor-framework/harbor/skills`](https://github.com/harbor-framework/harbor/tree/main/skills) are installed. Load only the matching upstream skill:
@@ -31,3 +33,5 @@ Read [create-task.md](references/create-task.md), then follow the installed `cre
 Freeze the instruction, fixtures, environment, verifier, reference solution, and scoring contract while comparing candidates. If the task is wrong, repair it, version it, and establish a new baseline before resuming comparison.
 
 Classify incomplete runs before scoring them: infrastructure failure, task-definition failure, agent failure, or inconclusive noise. Return valid results to `$evals` with the task version, run configuration, raw trial evidence, reward details, and observed variance. Use `$autoresearch` only after the frozen suite is representative, repeatable, and worth optimizing.
+
+When an accepted task becomes durable recipe coverage, read the current Pi Recipe Evals documentation, pin the exact Harbor dataset version or Git revision in the recipe, and establish a new unchanged baseline through Pi recipe tooling. Keep the dataset outside the recipe and change an eval pin separately from agent behavior.

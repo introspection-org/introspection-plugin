@@ -12,7 +12,7 @@ Build the smallest agent that can reliably own one vertical job. Keep platform m
 1. Fetch `https://docs.introspection.dev/llms.txt`.
 2. Open only the linked recipe and connection pages needed for the task.
 3. Inspect the target repository and nearby recipes before proposing structure.
-4. Confirm exact authoring and validation commands with the installed recipe CLI help.
+4. Confirm exact authoring and validation commands with the installed recipe CLI help. If command-specific help is unavailable, use the current Pi recipe documentation rather than inferring side effects.
 
 Current docs, CLI help, and repository schemas override this skill. Describe capabilities, integrations, and bindings in user-facing guidance. Do not reproduce schemas or command catalogs here.
 
@@ -55,11 +55,11 @@ Read [vertical-agents.md](references/vertical-agents.md) when choosing boundarie
 
 ## Build and prove
 
-1. Scaffold with the current recipe tooling when starting fresh.
+1. Preflight Pi and the Pi recipe tooling, then scaffold with the current recipe tooling when starting fresh.
 2. Author the root contract, then add only the skills and scripts needed by the representative cases.
 3. Make progress, uncertainty, access limits, and final evidence visible to the user.
-4. Validate the recipe with the current CLI.
-5. Run representative cases locally and inspect the actual outputs and traces.
+4. Check the portable package with Pi recipe tooling. Use Introspection's recipe validation only after a `.introspection` manifest exists or deployment preparation begins.
+5. Run representative cases locally and inspect the actual outputs and traces. Prefer repeatable noninteractive runs for a multi-case acceptance set, and retain prompts, configuration, and outputs for comparison.
 6. Compare results with the approved acceptance set.
 7. Hand new failures to `$evals`; do not encode every example into the root prompt.
 
