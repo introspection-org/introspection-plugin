@@ -14,6 +14,13 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 
 Start with the skill matching the current problem. Skills route to one another at clear boundaries and load detailed references only when needed.
 
+## Commands
+
+- `/introspection:create-agent` defines quality, builds a recipe, and proves it locally with Pi.
+- `/introspection:deploy` deploys a proven recipe and verifies it in staging.
+
+`create-agent` stops at local prototype readiness. Deployment is always a separate explicit action.
+
 Build in readiness stages:
 
 - **Prototype:** vertical contract plus a small, varied, approved acceptance set.
