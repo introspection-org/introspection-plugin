@@ -1,6 +1,6 @@
 {
   "name": "introspection",
-  "version": "0.5.0",
+  "version": "0.1.0",
   "description": "Build, evaluate, deploy, and improve vertical agents on Introspection.",
   "author": {
     "name": "Introspection",

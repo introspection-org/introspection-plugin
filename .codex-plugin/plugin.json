@@ -1,6 +1,6 @@
 {
-  "name": "agent-plugin",
-  "version": "0.5.0",
+  "name": "introspection",
+  "version": "0.1.0",
   "description": "Build, evaluate, deploy, and improve vertical agents on Introspection.",
   "author": {
     "name": "Introspection",
@@ -12,7 +12,7 @@
   "keywords": ["introspection", "agents", "recipes", "evals", "autoresearch"],
   "skills": "./skills/",
   "interface": {
-    "displayName": "Introspection Plugin",
+    "displayName": "Introspection",
     "shortDescription": "Build and improve production agents",
     "longDescription": "Define quality, build focused recipes, create trustworthy evals, deploy through the Introspection CLI, and improve from production evidence.",
     "developerName": "Introspection",

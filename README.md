@@ -1,4 +1,4 @@
-# Introspection Plugin
+# Introspection
 
 A small set of progressively disclosed skills for building and improving vertical agents.
 
