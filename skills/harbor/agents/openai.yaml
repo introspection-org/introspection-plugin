@@ -1,4 +1,4 @@
 interface:
   display_name: "Harbor"
-  short_description: "Build environment-level agent eval tasks"
-  default_prompt: "Use $harbor to build and validate this environment-level agent evaluation task."
+  short_description: "Create trustworthy environment-level evals"
+  default_prompt: "Use $harbor to create and validate this Harbor evaluation task with the official Harbor skills."

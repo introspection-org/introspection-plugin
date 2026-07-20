@@ -34,7 +34,7 @@ Use current Evo documentation and CLI help for exact commands and files. Read [r
 
 ## 1. Ground the question
 
-Use `$introspection` to gather production patterns, observations, conversations, and random controls. Use `$evals` to identify the earliest failures and select the evaluation layer. Use `$harbor` where end-to-end environment behavior matters.
+Use `$introspection` to gather production patterns, observations, conversations, and random controls. Use `$evals` to identify the earliest failures and select the evaluation layer. Use `$harbor` to create and qualify tasks where end-to-end environment behavior matters.
 
 Write one bounded research question. Freeze:
 
@@ -57,7 +57,9 @@ Keep candidate authors blind to hidden answers and identifiable test details. Gi
 
 ## 3. Optimize
 
-Run isolated candidates with resource-bound concurrency. Give every candidate the same benchmark contract and prohibit changes to tasks, tests, fixtures, verifiers, judges, and gates. Preserve failed results and inspect history before repeating ideas.
+Run isolated candidates with resource-bound concurrency. Give every candidate the same benchmark contract and prohibit changes to Harbor tasks, tests, fixtures, environments, verifiers, reference solutions, judges, and gates. Preserve failed results and inspect history before repeating ideas.
+
+Use the runner selected by the active Evo workflow. Do not substitute Harbor `exec` merely because the benchmark contains Harbor tasks; the upstream `harbor-exec` skill is for compiling loose inputs into map or map-reduce jobs, not the default autoresearch loop.
 
 When progress stalls, generate new hypotheses from trace differences and failure clusters rather than widening random search. Re-run finalists to estimate noise.
 

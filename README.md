@@ -8,7 +8,7 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 | --- | --- |
 | `recipes` | Vertical agent boundaries, structure, and local proof |
 | `evals` | Failure discovery and evaluation-layer decisions |
-| `harbor` | Reproducible environment-level agent tasks |
+| `harbor` | Harbor create-task quickstart and evaluation integrity |
 | `introspection` | CLI deployment, production evidence, judges, and comparisons |
 | `autoresearch` | Advanced, explicitly requested Evo optimization loops |
 
@@ -31,7 +31,7 @@ The default improvement path is production evidence â†’ approved eval coverage â
 
 ## Sources of truth
 
-For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. For Harbor and Evo work, load their current official skills and CLI help.
+For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. For Harbor work, load the matching skill from the installed [official Harbor collection](https://github.com/harbor-framework/harbor/tree/main/skills) and confirm exact operations with CLI help. For Evo work, load its current official skills and CLI help.
 
 The plugin carries cross-cutting agent judgment. It intentionally does not copy product schemas, command catalogs, or full documentation.
 
@@ -39,7 +39,7 @@ The plugin carries cross-cutting agent judgment. It intentionally does not copy 
 
 - `@introspection-ai/pi-recipes` for recipe authoring
 - `@introspection-ai/cli` for platform work
-- Harbor for environment-level tasks
+- Harbor and its official skills for environment-level tasks
 - Evo for structured autoresearch
 
 ## License

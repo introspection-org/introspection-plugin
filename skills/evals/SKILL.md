@@ -5,7 +5,7 @@ description: Discover agent failure modes and design trustworthy evaluation suit
 
 # Evals
 
-Turn observed failures into the cheapest trustworthy signal. This skill chooses the evaluation layer; use `$harbor` to author Harbor tasks and `$introspection` for deployed traces, patterns, and judges.
+Turn observed failures into the cheapest trustworthy signal. This skill chooses the evaluation layer; use `$harbor` to create and run environment-level tasks with Harbor's official skills, and `$introspection` for deployed traces, patterns, and judges.
 
 ## Establish readiness
 
@@ -33,7 +33,7 @@ Separate environment and access failures from deterministic code defects, agent 
 Use this order:
 
 1. deterministic unit or integration check for exact logic, schemas, parsing, or invariants
-2. Harbor task only when no deterministic lower seam is faithful and environment-level agent behavior is itself the capability under test
+2. Harbor task only when no deterministic lower seam is faithful and environment-level agent behavior is itself the capability under test; `$harbor` contains the create-task quickstart
 3. semantic judge when correctness is meaning-dependent across varied traces
 4. human review when the policy is disputed, rare, or not yet calibratable
 
@@ -57,7 +57,7 @@ Leave an evaluation brief even when implementation is deferred. Read [eval-desig
 
 ## Route the next step
 
-- Load `$harbor` for environment-level tasks.
+- Load `$harbor` for environment-level tasks. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
 - Load `$introspection` to export production evidence, deploy judges, or compare releases.
 - Load `$autoresearch` only when the user explicitly requests repeated optimization and the readiness checks in [eval-design.md](references/eval-design.md) pass.
 

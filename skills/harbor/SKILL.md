@@ -1,46 +1,31 @@
 ---
 name: harbor
-description: Author and validate Harbor tasks for environment-level agent evaluation. Use when an agent must operate on files, code, services, or tools in an isolated environment and success needs hidden outcome verification.
+description: Create, grade, run, and maintain Harbor tasks for environment-level agent evaluation. Use when an agent must operate on files, code, services, or tools in an isolated environment; when success needs hidden outcome verification; or when the user explicitly requests Harbor task, Reward Kit, exec, adapter, or publishing work.
 ---
 
 # Harbor
 
-Build fair, reproducible tasks that test outcomes rather than one preferred trajectory. Use `$evals` first when the correct evaluation layer is still unclear.
+Use Harbor for reproducible environment-level behavior, after `$evals` establishes that a lower deterministic seam would not faithfully test the capability. This skill is the Introspection quickstart and quality layer. Harbor's installed skills and CLI own Harbor mechanics.
 
-## Load Harbor's current contract
+## Load only the official skill needed
 
-Before authoring or changing a task:
+Assume the current skills from [`harbor-framework/harbor/skills`](https://github.com/harbor-framework/harbor/tree/main/skills) are installed. Load only the matching upstream skill:
 
-1. Read the current official Harbor task-creation and CLI skills from `harbor-framework/skills`.
-2. Confirm exact scaffolding, validation, and run commands with installed Harbor help.
-3. Inspect neighboring tasks in the target repository.
+- `create-task` for ordinary task scaffolding, environment design, verifier selection, reference solutions, Oracle validation, and real-agent runs.
+- `rewardkit` when grading needs multiple criteria, partial credit, reusable programmatic checks, or a semantic or agent judge.
+- `harbor-exec` only for `harbor exec`: compiling loose files, directories, or globs into tasks and running map or map-reduce jobs. Do not use it as the ordinary task runner.
+- `create-adapter` only when adapting an external benchmark into Harbor.
+- `publish` only when the user explicitly asks to publish a task or dataset to the Harbor registry.
+- `upload-parity-experiments` only while contributing adapter parity artifacts to Harbor's shared dataset.
 
-Those sources own current structure and commands. This skill supplies the design review, not a duplicate specification.
+Do not copy their schemas, commands, examples, or troubleshooting tables into this plugin. Confirm current behavior with the installed `harbor` CLI help.
 
-## Author the task
+## Create a task
 
-1. State the user-visible objective and acceptance criteria in a self-contained instruction.
-2. Put only legitimate starting inputs in the environment.
-3. Keep the reference solution and hidden verification outside the agent-visible image.
-4. Verify observable end state, not tool sequence or wording.
-5. Make every verifier path emit a valid reward, including setup and test failures.
-6. Pin dependencies and remove incidental network, clock, and ordering sensitivity.
-7. Implement a real reference solution; do not hardcode the answer into verification.
+Read [create-task.md](references/create-task.md), then follow the installed `create-task` skill. The local reference supplies the Introspection-to-Harbor handoff, integrity checks, and result interpretation that the upstream task mechanics do not own.
 
-Read [task-quality.md](references/task-quality.md) when designing the verifier or diagnosing unreliable results.
+## Preserve and interpret the benchmark
 
-## Validate in layers
+Freeze the instruction, fixtures, environment, verifier, reference solution, and scoring contract while comparing candidates. If the task is wrong, repair it, version it, and establish a new baseline before resuming comparison.
 
-Run, in order:
-
-1. static task-quality checks
-2. the reference solution in a clean environment
-3. the verifier against the untouched starting state to prove a meaningful failure
-4. at least one real agent attempt
-5. repeated runs when the task or environment may be noisy
-
-Treat image pulls, service startup, timeouts, and dependency failures as infrastructure until shown otherwise. Treat instruction-verifier disagreement as a broken task, not an agent failure.
-
-## Preserve the benchmark
-
-Version task changes deliberately. Never modify instructions, fixtures, environment, or verifier while comparing candidate agents. If the task itself is wrong, repair it and establish a new baseline before resuming comparison.
+Classify incomplete runs before scoring them: infrastructure failure, task-definition failure, agent failure, or inconclusive noise. Return valid results to `$evals` with the task version, run configuration, raw trial evidence, reward details, and observed variance. Use `$autoresearch` only after the frozen suite is representative, repeatable, and worth optimizing.
