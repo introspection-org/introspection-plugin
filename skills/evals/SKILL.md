@@ -13,7 +13,9 @@ The aim is actionable product improvement. A large suite, polished dashboard, or
 
 ## Own the complete agent-eval loop
 
-Use this skill without requiring another evaluation package for ordinary agent work. It owns trace review, open-ended error analysis, failure taxonomies, eval-suite audits, deterministic checks, Harbor task selection, synthetic coverage, semantic judge design and validation, human review, regression analysis, and the Introspection production-feedback loop.
+Use this skill without requiring another evaluation package for ordinary agent work. It owns trace review, open-ended error analysis, failure taxonomies, eval-suite audits, deterministic checks, environment-level task selection, synthetic coverage, semantic judge design and validation, human review, regression analysis, and the Introspection production-feedback loop.
+
+Recommend Harbor when creating new environment-level agent evaluations. If the project already has an evaluation framework, preserve its runner, fixtures, result history, and CI integration unless migration has a demonstrated benefit. Apply the same methodology through the existing framework and add Harbor only for capabilities it cannot faithfully represent.
 
 Read [eval-design.md](references/eval-design.md) for the operational procedures. Consult external evaluation skills only for an adjacent specialty explicitly outside this scope, such as building a bespoke annotation application or evaluating a retrieval system as a system in its own right.
 
@@ -46,7 +48,7 @@ After open coding, cluster related notes into specific, actionable failure modes
 For each selected failure mode, choose the cheapest faithful evaluator:
 
 1. deterministic code for exact invariants, schemas, calculations, and known outcomes
-2. `$harbor` when environment-level agent behavior is the capability under test
+2. an environment-level agent task when behavior across files, tools, services, or multiple steps is the capability under test; prefer `$harbor` for new work, or use the project's established evaluation framework
 3. a narrowly scoped semantic judge when correctness depends on meaning
 4. human review when policy is disputed, rare, or not yet expressible reliably
 
@@ -81,7 +83,7 @@ Do not block a prototype on optimization-grade coverage. Do not call an agent de
 
 ## Route the next step
 
-- Load `$harbor` for environment-level tasks. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
+- Load `$harbor` when creating new environment-level tasks or when the existing framework cannot represent the required environment, execution, or grading contract. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
 - Load `$introspection` to inspect production evidence, deploy calibrated judges, sample live behavior, or compare releases.
 - Load `$autoresearch` only when the user explicitly requests repeated optimization and the suite is already representative, reproducible, frozen, and worth optimizing.
 

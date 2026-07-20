@@ -5,7 +5,9 @@ description: Create, grade, run, and maintain Harbor tasks for environment-level
 
 # Harbor
 
-Use Harbor for reproducible environment-level behavior, after `$evals` establishes that a lower deterministic seam would not faithfully test the capability. This skill is the Introspection quickstart and quality layer. Harbor's installed skills and CLI own Harbor mechanics.
+Use Harbor as the recommended framework for new reproducible environment-level agent evaluations, after `$evals` establishes that a lower deterministic seam would not faithfully test the capability. This skill is the Introspection quickstart and quality layer. Harbor's installed skills and CLI own Harbor mechanics.
+
+Do not force a project with a working evaluation framework to migrate. Keep its existing cases, graders, runner, history, and CI integration when they faithfully exercise the behavior. Use `$evals` with that framework, and introduce Harbor only for a missing environment, isolation, execution, portability, or verification capability.
 
 ## Load only the official skill needed
 

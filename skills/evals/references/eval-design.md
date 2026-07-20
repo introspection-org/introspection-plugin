@@ -24,7 +24,7 @@ Use this reference when performing error analysis, assembling datasets, validati
 
 Define the user, job, promised outcome, failure cost, permitted behavior, and downstream business outcome. Set the rigor in proportion to exposure and harm: an internal low-stakes assistant does not need the same evidence as a customer-facing or safety-critical agent.
 
-Treat evaluation as a family of activities:
+Treat evaluation as a family of activities independent of the runner used:
 
 - qualitative review and error analysis
 - deterministic regression and integration checks
@@ -117,11 +117,13 @@ Do not preserve an evaluator merely because it already exists. Do not remove one
 Choose the lowest layer that faithfully represents the failure:
 
 1. deterministic assertions for exact, inspectable outcomes
-2. Harbor tasks for end-to-end work inside an environment
+2. environment-level agent tasks for end-to-end work across files, tools, services, or multiple steps
 3. semantic judges for narrow meaning-dependent decisions
 4. human review for unresolved judgment
 
 Keep regression and capability measurement distinct. A remembered failure proves that one case stays fixed; a varied capability set estimates how the system generalizes.
+
+Prefer Harbor when building a new environment-level agent evaluation because it packages the instruction, environment, execution, and verifier into a reproducible task. When a project already has an evaluation framework, first map the observed failure modes into its native cases, graders, runner, and reporting. Preserve comparable history and CI wiring. Introduce Harbor only for missing fidelity, isolation, reproducibility, or grading—not merely to standardize names or commands.
 
 Avoid generic off-the-shelf metrics unless they match an observed product-specific failure. A handful of important evaluators is often more useful than broad rubric coverage. Do not optimize for an evaluator count.
 
