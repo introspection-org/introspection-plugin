@@ -37,9 +37,9 @@ Open-code the evidence before imposing a taxonomy. Separate prevalence from seve
 
 ## Align with the user
 
-Explain what you inspected, the strongest evidence, the likely owning layer, the change you recommend, and how you will know it worked. Include confidence, meaningful risks, the proposed pull-request boundary, and toolchain upgrades already completed. Mention eval or experiment work only when the evidence justifies it. Use the clearest natural format for this case, not a fixed report shape.
+Explain what you inspected, the strongest evidence, the likely owning layer, the change you recommend, and how you will know it worked. Include confidence, meaningful risks, and the proposed pull-request boundary. Mention eval or experiment work only when the evidence justifies it. Use the clearest natural format for this case, not a fixed report shape.
 
-Ask for confirmation before editing project files, changing configuration, or opening pull requests. Recognized Pi, Pi Recipes, and Introspection CLI freshness checks are the only allowed pre-confirmation mutations. Approval covers the proposed local changes and focused pull requests, not runtime changes, judge enablement, experiments, or deployment. Pause if the target, side effects, product decision, or pull-request scope changes materially.
+Ask for confirmation before editing project files, changing configuration, or opening pull requests. Approval covers the proposed local changes and focused pull requests, not runtime changes, judge enablement, experiments, or deployment. Pause if the target, side effects, product decision, or pull-request scope changes materially.
 
 ## Improve and prove
 
@@ -55,7 +55,8 @@ Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks,
 
 ## Firm boundaries
 
-- Do not edit project files or configuration before confirmation, apart from recognized-toolchain refreshes.
+- Do not edit project files or configuration before confirmation.
+- Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command.
 - Do not fabricate or simulate production evidence, trace findings, counts, baselines, or test results when access is unavailable. State what remains unverified and what evidence you would gather.
 - Do not treat a user hypothesis, aggregate score, or pattern label as root-cause proof.
 - Do not create evals or experiments by default; make them earn their permanent cost.

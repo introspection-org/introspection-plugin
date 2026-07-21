@@ -7,7 +7,7 @@ description: Deploy a locally proven Introspection recipe and verify it in stagi
 
 Deploy the locally proven recipe identified by the request. Resolve the actual package and platform identity instead of assuming the current directory or a passing check points to the right thing.
 
-Load and follow `$introspection:recipes`, `$introspection:evals`, and `$introspection:introspection` so the current Pi, Pi Recipes, and Introspection CLI preflights run before platform work.
+Load and follow `$introspection:recipes`, `$introspection:evals`, and `$introspection:introspection`. Resolve each CLI only when the approved deployment step first needs it.
 
 ## Think in provenance and lifecycle
 
@@ -33,9 +33,9 @@ Never create a GitHub repository for the user. If the repository, remote, or Git
 
 ## Align with the user
 
-Explain the resolved target and provenance, local readiness, recipe-check result, proposed Git or configuration work, runtime lifecycle, environment effects, and verification plan. Mention toolchain upgrades already completed. Make material side effects and uncertainty unmistakable, but choose the clearest natural presentation rather than a fixed deployment brief.
+Explain the resolved target and provenance, local readiness, recipe-check result, proposed Git or configuration work, runtime lifecycle, environment effects, and verification plan. Make material side effects and uncertainty unmistakable, but choose the clearest natural presentation rather than a fixed deployment brief.
 
-Ask for explicit confirmation covering the complete proposed mutation: configuration edits, commit, push, runtime registration or candidate selection, bindings, and staging changes. Recognized-toolchain freshness checks are the only allowed pre-confirmation mutations. Continue through the approved deployment without routine stops, but pause if the target, side effects, or scope changes materially.
+Ask for explicit confirmation covering the complete proposed mutation: configuration edits, commit, push, runtime registration or candidate selection, bindings, and staging changes. Continue through the approved deployment without routine stops, but pause if the target, side effects, or scope changes materially.
 
 ## Deploy and verify
 
@@ -47,7 +47,8 @@ Report the deployed identity, active commit, runtime and task evidence, material
 
 ## Firm boundaries
 
-- Do not change project files, Git state, bindings, or platform state before confirmation, apart from recognized-toolchain refreshes.
+- Do not change project files, Git state, bindings, or platform state before confirmation.
+- Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command.
 - Do not deploy an ambiguous recipe, repository, commit, project, or runtime identity.
 - Do not create a duplicate runtime group or invent an unsupported update path.
 - Do not create a GitHub repository for the user.

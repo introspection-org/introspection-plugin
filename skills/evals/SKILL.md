@@ -86,7 +86,7 @@ Do not block a prototype on optimization-grade coverage. Do not call an agent de
 ## Route the next step
 
 - Load `$introspection:harbor` when creating new environment-level tasks or when the existing framework cannot represent the required environment, execution, or grading contract. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
-- Load `$introspection:recipes` before invoking Pi or Pi Recipes for local agent runs, recipe checks, or recipe eval suites so its current-docs and latest-toolchain preflight runs first.
+- Load `$introspection:recipes` before invoking Pi or Pi Recipes for local agent runs, recipe checks, or recipe eval suites so its current-docs and just-in-time tool resolution runs first.
 - Load `$introspection:introspection` to inspect production evidence, deploy calibrated judges, sample live behavior, or compare releases.
 - When trustworthy offline evidence cannot decide among credible candidates, return a bounded experiment proposal to the calling workflow. Do not launch an experiment or start autonomous candidate search.
 

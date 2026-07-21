@@ -6,21 +6,19 @@ license: Apache-2.0
 
 # Introspection
 
-Use the CLI as the only platform interface. Keep recipe design in `$introspection:recipes`, evaluation reasoning in `$introspection:evals`, and production diagnosis and fixes in `$introspection:improve`.
+Use the CLI as the only platform interface. Never use the dashboard, a browser, or browser automation to operate Introspection. Keep recipe design in `$introspection:recipes`, evaluation reasoning in `$introspection:evals`, and production diagnosis and fixes in `$introspection:improve`.
 
 ## Route through current documentation
 
-1. Fetch `https://docs.introspection.dev/llms.txt`.
-2. Read the current CLI overview linked there before using platform commands.
-3. Resolve the installed version with `introspection --version` and the latest stable release from the official installation source named by the current CLI documentation.
-4. If the installed CLI is missing or behind, proactively install or upgrade it with the documented command for its detected installation method, then verify the resulting version in a fresh process. This toolchain refresh is part of preflight and does not need a separate approval stop. Do not silently switch installation methods. If the upgrade requires elevated privileges, would replace an unrecognized development build, changes authentication or user configuration, or fails, report the exact blocker and stop rather than continuing against stale tooling.
-5. Select only the workflow matching the request: connect, deploy, run, observe, judge, experiment, or ship.
-6. Read the linked workflow and relevant concept pages before acting.
-7. Confirm exact flags and payloads with focused `introspection <group> --help` and deeper command help where applicable.
+1. Select only the workflow matching the request: connect, deploy, run, observe, judge, experiment, or ship.
+2. Fetch `https://docs.introspection.dev/llms.txt` and read only the linked CLI workflow and concepts required for that operation.
+3. Inspect repository and task context and prepare the execution brief before installing, upgrading, authenticating, or configuring the CLI.
+4. Immediately before the first platform command the workflow needs, confirm `introspection` exists and inspect focused help for the exact operation.
+5. Use the installed CLI when it supports the required command and flags. Install it only when missing; upgrade a recognized installation only when an actual incompatibility blocks the operation. Use the documented command for its detected installation method, verify in a fresh process, and retry the blocked operation.
 
-Current docs, the latest stable CLI release, and installed CLI output are authoritative. Do not repeat schemas or command catalogs in this skill. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
+Current docs and compatible installed CLI output are authoritative. Do not repeat schemas or command catalogs in this skill. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
 
-If current docs and installed help still disagree after the freshness check, verify command resolution and the documented upgrade path. Do not guess at flags from another source checkout.
+If current docs and installed help disagree, verify command resolution and whether the required operation is incompatible before upgrading. Do not guess at flags from another source checkout.
 
 If a required platform operation is not available in the current CLI, report the gap and stop at the last supported step. Do not substitute another interface.
 

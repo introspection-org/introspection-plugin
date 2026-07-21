@@ -156,10 +156,19 @@ def validate_trigger_cases(errors: list[str]) -> None:
 def validate_hitl_contract(errors: list[str]) -> None:
     for name in PUBLIC_WORKFLOWS:
         body = (ROOT / "skills" / name / "SKILL.md").read_text()
-        if "toolchain upgrades already completed" not in body.lower():
-            fail(errors, f"{name}: execution brief does not disclose toolchain changes")
         if "confirm" not in body.lower():
             fail(errors, f"{name}: execution brief does not request confirmation")
+
+    combined = "\n".join(
+        (ROOT / "skills" / name / "SKILL.md").read_text().lower()
+        for name in (*PUBLIC_WORKFLOWS, "recipes", "introspection")
+    )
+    if "before the workflow needs the corresponding command" not in combined:
+        fail(errors, "Skills do not enforce just-in-time tool setup")
+
+    introspection = (ROOT / "skills" / "introspection" / "SKILL.md").read_text().lower()
+    if "never use the dashboard, a browser, or browser automation" not in introspection:
+        fail(errors, "Introspection skill does not enforce CLI-only operation")
 
 
 def validate_onboarding_contract(errors: list[str]) -> None:

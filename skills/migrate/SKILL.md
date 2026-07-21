@@ -19,13 +19,13 @@ Prefer the smallest faithful translation. Recipes are not valuable merely becaus
 
 Locate the real instructions, tools, skills, model configuration, runtime assumptions, authentication, side effects, tests, traces, and representative inputs. Use safe existing evidence and run the source during discovery only when doing so is read-only and cannot trigger an external side effect.
 
-Determine the migration boundary: behavior that must remain equivalent, bugs that should not survive, intentional improvements, unsupported dependencies, and evidence that would demonstrate acceptable parity. Let `$introspection:recipes` perform the current-toolchain, extension, provider, and capability preflight and follow its credential and configuration safety rules.
+Determine the migration boundary: behavior that must remain equivalent, bugs that should not survive, intentional improvements, unsupported dependencies, and evidence that would demonstrate acceptable parity. Resolve any provider or model choice that is not preserved by the source. Let `$introspection:recipes` defer tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
 
 ## Align with the user
 
-Share your understanding of the source behavior, the proposed recipe, the important preservation and change decisions, and how parity will be judged. Mention toolchain upgrades already completed and make uncertainty or unsupported dependencies visible. Choose the clearest natural presentation for this migration rather than forcing a standard brief.
+Share your understanding of the source behavior, the proposed recipe, the important preservation and change decisions, and how parity will be judged. Make uncertainty or unsupported dependencies visible. Choose the clearest natural presentation for this migration rather than forcing a standard brief.
 
-Ask the user to confirm before changing project files or configuration. The recognized Pi and Pi Recipes freshness check is the only allowed pre-confirmation mutation. Treat approval as permission to complete the agreed migration and local proof without routine stops. Pause only if a newly discovered dependency, side effect, provider choice, or behavior difference requires a material decision.
+Ask the user to confirm before changing project files or configuration. Treat approval as permission to complete the agreed migration and local proof without routine stops. Pause only if a newly discovered dependency, side effect, provider choice, or behavior difference requires a material decision.
 
 ## Translate and prove
 
@@ -49,7 +49,8 @@ Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex.
 
 ## Firm boundaries
 
-- Do not edit project files or configuration before confirmation, apart from the recognized-toolchain refresh.
+- Do not edit project files or configuration before confirmation.
+- Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command.
 - Do not silently switch providers, models, package managers, installation methods, or authentication.
 - Do not read or expose credentials.
 - Do not preserve known defects merely to claim parity.

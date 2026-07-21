@@ -1,6 +1,6 @@
 # Introspection
 
-A small set of progressively disclosed skills for building and improving vertical agents.
+A small set of progressively disclosed skills that makes a coding agent an effective forward-deployed engineer for Pi, Pi Recipes, and Introspection.
 
 The plugin helps turn an important workflow into a narrowly scoped agent with an approved definition of quality, trustworthy evaluation coverage, proven deployment, and a disciplined production feedback loop.
 
@@ -16,7 +16,7 @@ npx --yes plugins@latest add introspection-org/introspection-plugin --target cod
 npx --yes plugins@latest add introspection-org/introspection-plugin --target claude-code --scope user --yes
 ```
 
-Restart the coding agent after installation so it can load the plugin. The guided workflows check their own prerequisites and keep recognized installations of Pi, recipe tooling, and the Introspection CLI current before normal workflow approval. They never switch installation methods, replace an unrecognized development build, request elevated privileges, or change authentication or user configuration without stopping for the user.
+Restart the coding agent after installation so it can load the plugin. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
 | Skill | Owns |
 | --- | --- |
@@ -46,7 +46,7 @@ The onboarding entry points stay deliberately small:
 - A supplied or requested recipe template routes to `create` in template mode.
 - An existing agent whose behavior should be preserved routes to `migrate`.
 
-Every public workflow begins with context collection, completes the narrowly scoped toolchain-freshness preflight described above, presents one concrete execution brief, and asks for confirmation before changing the recipe, repository, configuration, runtime, or product behavior. After approval it proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change. Any preflight upgrade is reported in the execution brief.
+Every public workflow begins with context collection, produces a useful execution brief, and asks for confirmation before changing the recipe, repository, configuration, runtime, or product behavior. After approval it proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change. Tooling is resolved just in time, and any required installation or upgrade is reported when it occurs.
 
 `create` and `migrate` stop at a locally proven candidate and show the exact Pi and `deploy` commands. `migrate` is designed to complete in one pass after approval. `improve` accepts optional steering and otherwise defaults to production evidence; it adapts investigation and measurement to the resolved target, fixes and tests locally reproducible defects, and opens focused pull requests. It adds or proposes evals only when durable behavioral measurement is justified, and proposes experiments only when calibrated offline evidence cannot decide. Deployment remains a separate explicit action.
 
@@ -60,13 +60,13 @@ The default improvement path is production evidence → adaptive parallel invest
 
 ## Sources of truth
 
-For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. For Harbor work, load the matching skill from the installed [official Harbor collection](https://github.com/harbor-framework/harbor/tree/main/skills) and confirm exact operations with CLI help.
+For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. Operate the product entirely through the CLI; never substitute the dashboard, a browser, or browser automation. For Harbor work, load the matching skill from the installed [official Harbor collection](https://github.com/harbor-framework/harbor/tree/main/skills) and confirm exact operations with CLI help.
 
 The plugin carries cross-cutting agent judgment. It intentionally does not copy product schemas, command catalogs, or full documentation.
 
 ## Requirements
 
-- Core: current compatible releases of `@earendil-works/pi-coding-agent`, `@introspection-ai/pi-recipes`, and `@introspection-ai/cli`.
+- Core when execution requires them: compatible releases of `@earendil-works/pi-coding-agent`, `@introspection-ai/pi-recipes`, and `@introspection-ai/cli`.
 - Conditional: Harbor when an environment-level agent eval is the lowest faithful layer. Its official skills are assumed to be installed.
 
 ## Validate a contribution
