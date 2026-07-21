@@ -12,6 +12,8 @@ Do not force a project with a working evaluation framework to migrate. Keep its 
 
 Before authoring or running a task, confirm the Harbor CLI and selected official skill are available. They are normally pre-installed; if either is missing, stop and route to the current official Harbor installation source instead of reconstructing its workflow locally.
 
+Before spending any approved real-agent attempt, resolve and print the complete run configuration with current CLI help: agent, explicit model, authentication source, environment, task or dataset selector, attempt count, and output directory. Run a non-mutating setup or config check when the agent supports one. For Codex, `--model` is required; when using an existing ChatGPT login, pass `CODEX_AUTH_JSON_PATH` or `CODEX_FORCE_AUTH_JSON` through `--agent-env` instead of assuming the host login will appear inside the Harbor environment. Never print credential contents.
+
 ## Load only the official skill needed
 
 Assume the current skills from [`harbor-framework/harbor/skills`](https://github.com/harbor-framework/harbor/tree/main/skills) are installed. Load only the matching upstream skill:
@@ -33,6 +35,6 @@ Read [create-task.md](references/create-task.md), then follow the installed `cre
 
 Freeze the instruction, fixtures, environment, verifier, reference solution, and scoring contract while comparing candidates. If the task is wrong, repair it, version it, and establish a new baseline before resuming comparison.
 
-Classify incomplete runs before scoring them: infrastructure failure, task-definition failure, agent failure, or inconclusive noise. Return valid results to `$introspection:evals` with the task version, run configuration, raw trial evidence, reward details, and observed variance. When a representative, repeatable suite cannot distinguish credible candidates, return the evidence needed for a bounded experiment proposal; do not launch an experiment or autonomous candidate search.
+Classify incomplete runs before scoring them: infrastructure failure, task-definition failure, agent failure, or inconclusive noise. A pre-execution configuration failure is not a completed real-agent attempt: correct it and rerun within the user's approved real-agent budget. Do not rerun a trial that reached agent execution or verification unless the user approved another attempt. Return valid results to `$introspection:evals` with the task version, run configuration, raw trial evidence, reward details, and observed variance. When a representative, repeatable suite cannot distinguish credible candidates, return the evidence needed for a bounded experiment proposal; do not launch an experiment or autonomous candidate search.
 
 When an accepted task becomes durable recipe coverage, load `$introspection:recipes` first so its current-docs and just-in-time tool resolution runs. Then read the current Pi Recipe Evals documentation, pin the exact Harbor dataset version or Git revision in the recipe, and establish a new unchanged baseline through Pi recipe tooling. Keep the dataset outside the recipe and change an eval pin separately from agent behavior.

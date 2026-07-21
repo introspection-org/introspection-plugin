@@ -57,6 +57,8 @@ Make one judge answer one specific question. Prefer an operational pass/fail dec
 
 Build balanced development examples with positives, negatives, hard boundaries, and written rationales. Keep prompt-development, validation, and held-out test data separate. Diagnose true-positive and true-negative behavior, false positives, and false negatives separately; aggregate agreement can hide a judge that always predicts the majority class.
 
+For `introspection judges eval`, use only schema-v1 judge fixtures exported by the current CLI from complete Introspection conversations. Preserve the exported `conversation`, `engine`, and `snapshot_hash` exactly; add only the owner-approved top-level `expected` and optional `split` fields. Never hand-author a `judge_fixture`, adapt arbitrary JSONL into one, guess its hash or engine contract, or call the private judge-engine binary. If evidence starts as local or third-party traces, evaluate it in the project's faithful local harness, or replay it through a real Introspection conversation and export that conversation before CLI judge calibration. Treat unavailable provenance as a calibration blocker, not an invitation to forge a fixture.
+
 Read [eval-design.md](references/eval-design.md) for the complete error-analysis protocol, suite audit, dataset and synthetic-case design, judge construction and calibration, collaboration model, and operationalization checks.
 
 ## Improve and close the loop

@@ -32,6 +32,8 @@ Inspect relevant repository context and nearby recipes without changing anything
 
 Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let `$introspection:recipes` resolve provider and model choices that affect the design, while deferring tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
 
+Treat any model written by a scaffold or template as inherited input, not an approved provider decision. Resolve it explicitly before editing the recipe. If the request and repository do not establish a safe choice, pause for that decision instead of silently retaining the placeholder.
+
 ## Align with the user
 
 Share what you learned, whether you recommend scratch or a named template, the agent you intend to build, how its representative cases will prove the promise, and any consequential choices or unresolved assumptions. For a template, include its source, license, provider and capability requirements, retained behavior, expected customization, and owned destination. Present this in the clearest natural form for the situation; do not force a standard brief or checklist onto the user.
@@ -46,6 +48,8 @@ Resolve the real package root and use current recipe tooling to build the smalle
 - In template mode, start from the approved repository-local package path prepared by `$introspection:recipes`. Preserve required attribution and license files. Treat the template as a starting point, not proof that the customized agent is correct. Creating a new GitHub repository is outside this local workflow.
 
 Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. Do not register a scratch recipe globally unless the user explicitly asks. Treat any recipe-store registration performed by template tooling as an implementation detail; the owned package path is the source of truth.
+
+When the agent uses declared skills, preserve Pi's discovered-skill inventory. Prefer concise appended agent instructions and omit `SYSTEM.md`; use a full replacement prompt only when it explicitly retains the required resource-discovery guidance and fresh runtime proof confirms the skills remain visible.
 
 Run representative cases in fresh Pi sessions. Keep the evidence needed to explain what worked, what failed, and why. Fix the owning layer rather than accumulating prompt instructions. Once repeatable checks are credible, offer the user the Pi TUI so they can try the agent and continue iterating with them until the local version is accepted or a concrete blocker remains.
 

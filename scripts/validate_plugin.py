@@ -167,8 +167,26 @@ def validate_hitl_contract(errors: list[str]) -> None:
         fail(errors, "Skills do not enforce just-in-time tool setup")
 
     introspection = (ROOT / "skills" / "introspection" / "SKILL.md").read_text().lower()
-    if "never use the dashboard, a browser, or browser automation" not in introspection:
+    if "use the cli as the only platform interface" not in introspection:
         fail(errors, "Introspection skill does not enforce CLI-only operation")
+    if "a direct api, an sdk, or database access" not in introspection:
+        fail(errors, "Introspection skill does not forbid non-CLI platform operation")
+    if "official cli package named by current introspection documentation" not in introspection:
+        fail(errors, "Introspection skill can misclassify version incompatibility as a platform gap")
+    if "do not probe similarly named packages" not in introspection or "repository release apis" not in introspection:
+        fail(errors, "Introspection skill permits ambiguous or API-based CLI version discovery")
+
+    harbor = (ROOT / "skills" / "harbor" / "SKILL.md").read_text().lower()
+    if "before spending any approved real-agent attempt" not in harbor:
+        fail(errors, "Harbor skill does not require real-agent run preflight")
+    if "a pre-execution configuration failure is not a completed real-agent attempt" not in harbor:
+        fail(errors, "Harbor skill can misclassify configuration diagnostics as agent attempts")
+
+    evals = (ROOT / "skills" / "evals" / "SKILL.md").read_text().lower()
+    if "never hand-author a `judge_fixture`" not in evals:
+        fail(errors, "evals skill does not preserve Introspection fixture provenance")
+    if "private judge-engine binary" not in evals:
+        fail(errors, "evals skill permits unsupported judge-engine protocol use")
 
 
 def validate_onboarding_contract(errors: list[str]) -> None:
@@ -193,6 +211,19 @@ def validate_onboarding_contract(errors: list[str]) -> None:
     }
     if len(versions) != 1 or None in versions:
         fail(errors, f"Plugin manifest versions disagree: {sorted(map(str, versions))}")
+
+    default_prompts = codex.get("interface", {}).get("defaultPrompt", [])
+    for index, prompt in enumerate(default_prompts):
+        if not isinstance(prompt, str) or len(prompt) > 128:
+            fail(errors, f"Codex defaultPrompt[{index}] must be a string of at most 128 characters")
+
+    recipes = (ROOT / "skills" / "recipes" / "SKILL.md").read_text()
+    if "scaffold's default model is a placeholder" not in recipes:
+        fail(errors, "recipes skill does not reject unresolved scaffold model defaults")
+    if "SYSTEM.md` replaces Pi's base prompt" not in recipes:
+        fail(errors, "recipes skill does not protect Pi's discovered-skill inventory")
+    if "never edit their source repositories" not in recipes:
+        fail(errors, "recipes skill does not protect platform-core repositories")
 
 
 def main() -> int:

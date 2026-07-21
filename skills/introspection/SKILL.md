@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # Introspection
 
-Use the CLI as the only platform interface. Never use the dashboard, a browser, or browser automation to operate Introspection. Keep recipe design in `$introspection:recipes`, evaluation reasoning in `$introspection:evals`, and production diagnosis and fixes in `$introspection:improve`.
+Use the CLI as the only platform interface. Never use the dashboard, a browser, browser automation, a direct API, an SDK, or database access to operate Introspection. Keep recipe design in `$introspection:recipes`, evaluation reasoning in `$introspection:evals`, and production diagnosis and fixes in `$introspection:improve`.
 
 ## Route through current documentation
 
@@ -18,7 +18,7 @@ Use the CLI as the only platform interface. Never use the dashboard, a browser, 
 
 Current docs and compatible installed CLI output are authoritative. Do not repeat schemas or command catalogs in this skill. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
 
-If current docs and installed help disagree, verify command resolution and whether the required operation is incompatible before upgrading. Do not guess at flags from another source checkout.
+If a requested documented operation is absent from installed help, verify command resolution and compare the installed version with the official CLI package named by current Introspection documentation before declaring the operation unsupported. Resolve that package through its documented installation source; do not probe similarly named packages, unrelated package managers, repository release APIs, or source checkouts. That missing operation is an actual incompatibility, not a reason to stop at the older surface. Upgrade through the detected installation method, or use an isolated transient invocation of the exact official version when the approved workflow explicitly forbids changing the global installation. Recheck focused help in the resulting fresh process. Do not guess at flags from another source checkout.
 
 If a required platform operation is not available in the current CLI, report the gap and stop at the last supported step. Do not substitute another interface.
 

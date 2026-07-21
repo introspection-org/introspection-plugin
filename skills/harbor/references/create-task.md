@@ -19,6 +19,8 @@ Keep one task focused on one coherent capability. Split independent behaviors wh
 
 Follow `create-task` to scaffold the task, write the instruction, construct the environment, choose the verifier, implement the reference solution, configure the task, validate with the Oracle agent, and run a real agent.
 
+Before the real-agent run, resolve the agent's required model and authentication inputs from current `harbor run --help` and the installed adapter. Record the full run configuration without secret values. A missing model, missing credential path, invalid provider setup, or other failure before agent execution is a configuration diagnostic, not the approved real-agent attempt; fix the configuration and rerun. Once the agent has started, preserve the user's attempt limit.
+
 Select the simplest faithful verifier:
 
 1. deterministic assertions for exact outcomes

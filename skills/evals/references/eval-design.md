@@ -146,6 +146,8 @@ Use real traces to discover taste and failure modes. Use synthetic examples to f
 
 Version data and labels. Criteria drift is expected: reviewers discover new requirements and reinterpret old examples as they see more behavior. Revisit earlier labels when definitions change.
 
+Introspection judge calibration has a stricter provenance contract than a generic local dataset. Create its fixture rows with the current CLI's bounded conversation export, then add only `expected` and optional `split` at the top level. Do not rewrite the exported conversation or engine metadata, synthesize snapshot hashes, convert arbitrary trace JSON into `judge_fixture` rows, or invoke internal judge-engine protocols. For non-Introspection evidence, keep the original local evaluator or first replay the case into a real Introspection conversation that the CLI can export.
+
 ## Generate synthetic coverage
 
 Generate synthetic cases only from an explicit coverage plan. Define the missing failure mode, cohort, boundary, or environmental condition first; otherwise collect more real traces.

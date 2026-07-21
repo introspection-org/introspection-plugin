@@ -65,12 +65,17 @@ Use `$introspection:evals` to choose the cheapest trustworthy proof. A small app
 
 Resolve any provider or model choice that changes the recipe before writing it. Defer authentication and capability setup until the first approved behavior run actually needs them. At that point, prefer a supported redacted status check; if none exists, use the first minimal model call as the authentication proof before running the full acceptance set. Never read, print, copy, or parse raw credential files or secret values. An environment-variable name, configured provider, or model-catalog entry is not proof of authentication. Treat sandbox permission and settings-lock failures as inconclusive rather than evidence that an extension is absent.
 
+A scaffold's default model is a placeholder, not a resolved choice. Do not silently retain it when the user, source agent, or approved execution brief has not selected that provider and model.
+
+`SYSTEM.md` replaces Pi's base prompt, including its discovered-skill inventory. For agents that use recipe skills, prefer appended `system_instructions` without `SYSTEM.md`. If a full replacement is genuinely required, preserve the relevant resource-discovery guidance explicitly and prove skill visibility in a fresh trace.
+
 Resolve the actual recipe package root and run it directly by path. Do not require global registration for local proof. Use fresh Pi sessions so previous context cannot hide loading or state problems. Retain the cases, configuration, outputs, tool evidence, and meaningful failures. Iterate on the owning layer until the contract is proven or a concrete blocker remains.
 
 Offer an interactive Pi TUI run once repeatable checks are credible. Confirm commands from current help and use a path valid from the user's current directory. Include `--agent <agent>` when the package does not have one unambiguous default.
 
 ## Firm boundaries
 
+- Build through recipe-owned agents, extensions, skills, prompts, scripts, tests, and eval references using supported interfaces. Treat Pi, Pi Recipes, Harbor, and Introspection as external platform dependencies; never edit their source repositories unless the user explicitly requests platform contribution work.
 - Do not silently change provider, model, package manager, installation method, or authentication.
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command.
 - Do not expose credentials or treat configuration as successful authentication.
