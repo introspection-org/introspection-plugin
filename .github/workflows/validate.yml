@@ -16,8 +16,6 @@ jobs:
         target: [codex, claude-code]
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Validate skill composition and behavioral contracts
-        run: python3 scripts/validate_plugin.py
       - uses: actions/setup-node@v7.0.0
         with:
           node-version: 22

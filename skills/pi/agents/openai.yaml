@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pi"
+  short_description: "Extend and operate the Pi coding-agent harness"
+  default_prompt: "Use $introspection:pi to extend and operate this agent through supported Pi packages, extensions, skills, and local CLI workflows."

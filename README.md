@@ -1,6 +1,6 @@
 # Introspection
 
-A small set of progressively disclosed skills for building and improving vertical agents.
+A small set of progressively disclosed skills that makes a coding agent an effective forward-deployed engineer for Pi, Pi Recipes, and Introspection.
 
 The plugin helps turn an important workflow into a narrowly scoped agent with an approved definition of quality, trustworthy evaluation coverage, proven deployment, and a disciplined production feedback loop.
 
@@ -16,7 +16,7 @@ npx --yes plugins@latest add introspection-org/introspection-plugin --target cod
 npx --yes plugins@latest add introspection-org/introspection-plugin --target claude-code --scope user --yes
 ```
 
-Restart the coding agent after installation so it can load the plugin. The guided workflows check their own prerequisites and keep recognized installations of Pi, recipe tooling, and the Introspection CLI current before normal workflow approval. They never switch installation methods, replace an unrecognized development build, request elevated privileges, or change authentication or user configuration without stopping for the user.
+Restart the coding agent after installation so it can load the plugin. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
 | Skill | Owns |
 | --- | --- |
@@ -24,12 +24,15 @@ Restart the coding agent after installation so it can load the plugin. The guide
 | `migrate` | Convert an existing agent into a locally proven Pi recipe |
 | `improve` | Improve an agent from production evidence by default or an optional user-directed target |
 | `deploy` | Publish a proven recipe and verify its Introspection runtime |
-| `recipes` | Vertical agent boundaries, structure, and local proof |
+| `pi` | Pi harness operation, packages, extensions, skills, settings, and local execution |
+| `recipes` | Portable recipe composition, capabilities, validation, and distribution |
 | `evals` | Error analysis, measurement design, and judge calibration |
 | `harbor` | Harbor create-task quickstart and evaluation integrity |
 | `introspection` | CLI staging deployment, production evidence, judges, comparisons, and Git-release verification |
 
 Start with the skill matching the current problem. Skills route to one another at clear boundaries and load detailed references only when needed.
+
+All workflow and supporting skills ship in this plugin. Pi Recipes remains the lightweight, open implementation and canonical specification for portable recipe behavior; the plugin adds the forward-deployed engineering workflow across Pi, recipes, Introspection, evals, and Harbor.
 
 ## Commands
 
@@ -46,7 +49,7 @@ The onboarding entry points stay deliberately small:
 - A supplied or requested recipe template routes to `create` in template mode.
 - An existing agent whose behavior should be preserved routes to `migrate`.
 
-Every public workflow begins with context collection, completes the narrowly scoped toolchain-freshness preflight described above, presents one concrete execution brief, and asks for confirmation before changing the recipe, repository, configuration, runtime, or product behavior. After approval it proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change. Any preflight upgrade is reported in the execution brief.
+Every public workflow begins with context collection, produces a useful execution brief, and asks for confirmation before changing the recipe, repository, configuration, runtime, or product behavior. After approval it proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change. Tooling is resolved just in time, and any required installation or upgrade is reported when it occurs.
 
 `create` and `migrate` stop at a locally proven candidate and show the exact Pi and `deploy` commands. `migrate` is designed to complete in one pass after approval. `improve` accepts optional steering and otherwise defaults to production evidence; it adapts investigation and measurement to the resolved target, fixes and tests locally reproducible defects, and opens focused pull requests. It adds or proposes evals only when durable behavioral measurement is justified, and proposes experiments only when calibrated offline evidence cannot decide. Deployment remains a separate explicit action.
 
@@ -60,26 +63,23 @@ The default improvement path is production evidence → adaptive parallel invest
 
 ## Sources of truth
 
-For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. For Harbor work, load the matching skill from the installed [official Harbor collection](https://github.com/harbor-framework/harbor/tree/main/skills) and confirm exact operations with CLI help.
+For Pi harness work, read only the relevant current [Pi documentation](https://pi.dev/docs/latest). For portable recipe work, use the installed Pi Recipes documentation or the canonical [`pi-recipes` docs](https://github.com/introspection-org/pi-recipes/tree/main/docs). For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. Operate the product entirely through the CLI; never substitute the dashboard, a browser, or browser automation. For Harbor work, load the matching skill from the [official Harbor collection](https://github.com/harbor-framework/harbor/tree/main/skills) and confirm exact operations with CLI help.
 
 The plugin carries cross-cutting agent judgment. It intentionally does not copy product schemas, command catalogs, or full documentation.
 
 ## Requirements
 
-- Core: current compatible releases of `@earendil-works/pi-coding-agent`, `@introspection-ai/pi-recipes`, and `@introspection-ai/cli`.
-- Conditional: Harbor when an environment-level agent eval is the lowest faithful layer. Its official skills are assumed to be installed.
+- Required only when a workflow executes that layer: compatible `@earendil-works/pi-coding-agent`, `@introspection-ai/pi-recipes`, or `@introspection-ai/cli` tooling.
+- Conditional: Harbor and its matching official skill when an environment-level agent eval is the lowest faithful layer.
 
 ## Validate a contribution
 
-Run the repository contract checks and both discovery targets before exercising the workflows in a clean host session:
+Run both discovery targets before exercising the workflows in a clean host session:
 
 ```bash
-python3 scripts/validate_plugin.py
 npx --yes plugins@latest discover . --target codex
 npx --yes plugins@latest discover . --target claude-code
 ```
-
-The local validator rejects duplicate command and skill surfaces, unqualified cross-skill references, broken local references, incomplete confirmation contracts, and missing trigger coverage. Extend [`tests/trigger-cases.json`](tests/trigger-cases.json) whenever a description or routing boundary changes, then run representative positive, paraphrased, and near-miss cases repeatedly in both hosts before release.
 
 ## License
 

@@ -1,71 +1,88 @@
 ---
 name: recipes
-description: Provide Pi and Pi Recipes expertise for focused vertical-agent work, including recipe contracts, structure, capabilities, package layout, toolchain readiness, and local Pi proof. Use inside Introspection create, migrate, improve, and deploy workflows, or for a narrowly scoped recipe question.
+description: Provide focused Pi Recipes expertise for creating, customizing, migrating, composing, validating, running, and distributing portable agent recipes. Use inside Introspection create, migrate, improve, and deploy workflows, or for narrowly scoped questions about recipe packages, agents, SYSTEM.md, from inheritance, resources, capabilities, checks, and local proof. Keep Pi harness mechanics in the pi skill.
 ---
 
 # Recipes
 
-Build the smallest agent that can reliably own one vertical job. Keep Introspection platform mechanics in `$introspection:introspection` and evaluation design in `$introspection:evals`.
+Treat a recipe as portable agent IP: the versioned package that carries instructions, agents, skills, extensions, and declared capabilities. Keep Pi harness mechanics in `$introspection:pi`, outcome design in the calling workflow, evaluation reasoning in `$introspection:evals`, and hosted operation in `$introspection:introspection`.
 
-## Exercise agent-building judgment
+## Use the canonical recipe contract
 
-Treat correctness as the floor. A useful agent must also be understandable, appropriately scoped, and trustworthy in the conditions where people will rely on it.
+Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to [`introspection-org/pi-recipes/docs`](https://github.com/introspection-org/pi-recipes/tree/main/docs):
 
-- Understand the job before choosing the architecture. Name the accountable user, trigger, promised outcome, evidence, permitted side effects, and escalation boundary.
-- Prefer representative examples over abstract requirements when the two disagree. Examples reveal what “good” means, where judgment is required, and which shortcuts are unacceptable.
-- Start with one agent. Add tools, skills, scripts, subagents, or model specialization only when a concrete requirement earns their complexity.
-- Put durable judgment in instructions or skills. Put deterministic guarantees in code and tests. Do not ask a model to improvise what software can enforce exactly.
-- Withhold capabilities for absolute prohibitions. Prose is guidance, not a security boundary.
-- Treat failures as evidence about the system, not automatic invitations to make the prompt longer. Find the earliest meaningful divergence and fix the owning layer.
-- Preserve uncertainty. Escalate when the promised outcome cannot be proven instead of manufacturing confidence.
-- Never invent evidence, access, counts, traces, test results, or validation. Keep proposed cases clearly hypothetical until they have actually been run.
-- Prefer local proof before platform machinery. Keep the recipe small enough that another engineer can understand why it works and where it may fail.
-- Ask as little as possible. Discover what the repository and evidence can answer, make reversible assumptions when the path is obvious, and ask a focused question only when the answer materially changes the contract or side effects. Do not turn discovery into an intake form.
+- `recipe-flow.md` for scratch, template, local ownership, and publication flow.
+- `recipe-cli.md` for current CLI operations, package resources, and package-level MCP declarations.
+- `agent-composition.md` for `SYSTEM.md`, agent YAML, `system_instructions`, `from:`, inheritance, and root/subagent behavior.
+- `pi-extension.md` for recipe extension loading, tools, subagents, agent-level MCP selection, and session materialization.
+- `interactions.md` only for portable questions, approvals, or interrupts.
+- `mcp-auth.md` only for local or hosted authentication.
+- `recipe-evals.md` only when a Harbor suite has earned durable recipe coverage.
+- `recipe-judges.md` only when authoring or validating portable judge definitions.
+- `deployment-configuration.md` only when a host manifest is in scope.
 
-Read [vertical-agents.md](references/vertical-agents.md) when choosing boundaries or reviewing agent quality.
+Confirm changing mechanics with focused `recipes --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this skill. Do not duplicate their schemas, flags, or examples here.
 
-## Use current Pi and Recipes behavior
+## Resolve tooling only when execution needs it
 
-Before recipe work, resolve the installed Pi version with `pi --version` and the installed `@introspection-ai/pi-recipes` version through the package manager that owns the `recipes` executable; the Recipes CLI has no version flag. Resolve the latest stable releases from the current official documentation and registry or installation source named by those docs.
+Inspect the repository, compare templates, and prepare the execution brief before installing, upgrading, or configuring Pi Recipes. Do not check the registry merely to make an existing installation match the latest release.
 
-If either is behind, proactively upgrade it with the canonical command for its detected installation method, then repeat version resolution and run a safe recipe-aware smoke in a fresh Pi process. This recognized-toolchain refresh is preflight and does not require a separate approval stop. Do not silently switch package managers or installation methods. Stop if the upgrade requires elevated privileges, would replace an unrecognized development build, changes authentication or user configuration, or fails. Do not reinstall a current toolchain.
+Immediately before the first approved step that requires `recipes`:
 
-Read only the documentation relevant to the work:
+1. Confirm the command exists and inspect focused help for the operation about to run.
+2. Use the existing installation when it supports the required command, recipe contract, and flags.
+3. Install the missing tool, or upgrade an incompatible recognized installation, only when execution cannot proceed correctly without it. Use the canonical command for the detected installation method, then retry the blocked operation in a fresh process.
 
-- Start at [`pi.dev/docs`](https://pi.dev/docs/latest). Use Quickstart for installation and first authentication, Using Pi for TUI and CLI behavior, Providers for model authentication, Settings for configuration scope, and Extensions, Skills, Prompt Templates, or Pi Packages for customization. Use the corresponding source in [`earendil-works/pi/packages/coding-agent/docs`](https://github.com/earendil-works/pi/tree/main/packages/coding-agent/docs) when rendered docs are unavailable or an exact current detail matters.
-- Read the installed Pi Recipes docs or [`introspection-org/pi-recipes/docs`](https://github.com/introspection-org/pi-recipes/tree/main/docs). Use `recipe-flow.md`, `recipe-cli.md`, and `pi-extension.md` for the core lifecycle. Load `interactions.md`, `mcp-auth.md`, `recipe-evals.md`, or `deployment-configuration.md` only when that concern is in scope.
-- Use [`docs.introspection.dev/llms.txt`](https://docs.introspection.dev/llms.txt) only for Introspection platform work such as connecting or deploying a proven recipe.
+Do not silently switch package managers or installation methods. Stop if the required change needs elevated privileges, would replace an unrecognized development build, changes authentication or user configuration, or fails. Report the exact blocker instead of performing speculative setup.
 
-Inspect the target repository and nearby recipes before proposing structure. Confirm exact flags with focused `pi --help`, `recipes --help`, and command-specific help after reading the owning docs. Current docs, latest stable releases, installed CLI help, and repository schemas override this skill. Do not infer Pi behavior from another host or reproduce brittle command catalogs here.
+## Choose the entry path
 
-When an existing recipe is the approved starting point, resolve it from an explicit source or the machine-readable [Pi Recipes catalog](https://pi.recipes/catalog.json), then inspect its source and license before mutation. Validate the selected catalog entry's source and version and pass them as arguments to `recipes install`; never evaluate an `installCommand` string as shell code. Use the documented customize flow only after the calling workflow's confirmation gate, then work from the editable path printed by the CLI. That path is an intermediate under the local recipe store, not a Git-owned deployment source. Preserve attribution, remove irrelevant example behavior, and prove the customized recipe against the new user's cases; installing a recipe is not behavioral proof.
+- **Scratch:** create an owned recipe at the approved repository-local path.
+- **Template:** customize the approved source into an owned output path, preserving its license and attribution while removing example behavior the user does not want.
+- **Migration:** translate approved behavior from an existing agent into recipe primitives; preserve the contract rather than copying accidental source architecture.
+- **Improvement:** resolve the existing package and change only the recipe layer supported by the diagnosis.
 
-## Establish the contract
+All paths converge on an inspectable package that can be checked and run directly by path. Do not require global registration for local work.
 
-Make the agent's promise concrete enough to judge. Use real examples when available; otherwise create varied representative cases. Seek the domain owner's interpretation of good and bad outcomes, including ambiguity, missing access, partial failure, and a case the agent should decline. Capture required evidence, allowed assumptions, source authority, and unacceptable shortcuts.
+When an existing recipe is the approved starting point, resolve it from an explicit source or the machine-readable [Pi Recipes catalog](https://pi.recipes/catalog.json). Inspect its source, license text, providers, and required capabilities before mutation. Validate the selected entry's source and version and pass them as arguments to the documented commands; never evaluate an `installCommand` string as shell code. After the calling workflow's confirmation gate, customize into the approved repository-local output path. Preserve attribution, remove irrelevant example behavior and local capability configuration, and prove the result against the new user's cases. Installing or copying a recipe is not behavioral proof.
 
-Use `$introspection:evals` to choose the cheapest trustworthy proof. A small approved acceptance set is enough to begin; do not turn an early prototype into a benchmark program without evidence that it needs one.
+## Compose the portable package
 
-## Choose only structure that earns its cost
+Use the smallest structure required by the calling workflow's approved cases. Read [vertical-agents.md](references/vertical-agents.md) when deciding whether behavior belongs in shared instructions, a recipe skill, deterministic code, an external capability, or a child agent.
 
-- Keep the root instruction short and route deeper judgment through progressively loaded skills.
-- Use scripts for repeatable deterministic operations.
-- Add a subagent only for an independent context boundary with a clear input and output.
-- Expose only the capabilities required by the contract.
-- Prefer repository-local, portable configuration over hidden global state.
+- Declare package resources and portable metadata in the recipe package manifest.
+- Use `SYSTEM.md` for mission, terminology, policies, and workflow rules shared across the recipe's root and delegated agents.
+- Use agent YAML for specialized instructions, model configuration, tools, skills, subagents, and capability narrowing.
+- Use `system_instructions.append` to specialize the shared recipe prompt and `replace` only when the agent intentionally replaces it.
+- Use `from:` to derive a complete agent definition and then apply documented field-specific overrides. Omission inherits, capability arrays replace, explicit `[]` clears, and model, extension, and MCP objects merge by their documented keys. Do not treat inheritance as text concatenation.
+- Put reusable domain judgment in recipe skills and deterministic operations in scripts or extensions.
+- Add a child agent only for an independent context boundary with a clear input, output, and completion path.
+- Declare only the external capabilities the agent needs. Keep endpoint details, credentials, local bindings, and generated runtime state outside the portable package.
+- Treat host-specific connectors, policies, deployment manifests, eval pins, and judges as conditional resources rather than default scaffolding.
 
-## Prove the recipe locally
+Use `$introspection:pi` when the work requires exact Pi extension, skill-discovery, package, provider, settings, setup, or invocation behavior. Never modify Pi core to make a recipe work.
 
-Preflight Pi, recipe-extension loading, the selected provider, and required capabilities. Never read, print, copy, or parse raw credential files or secret values. An environment-variable name, configured provider, or model-catalog entry is not proof of authentication. Prefer a supported redacted status check; if none exists before approval, mark authentication unverified and use the first approved minimal model call as proof. Treat sandbox permission and settings-lock failures as inconclusive rather than evidence that an extension is absent.
+## Check structure and prove behavior
 
-Resolve the actual recipe package root and run it directly by path. Do not require global registration for local proof. Use fresh Pi sessions so previous context cannot hide loading or state problems. Retain the cases, configuration, outputs, tool evidence, and meaningful failures. Iterate on the owning layer until the contract is proven or a concrete blocker remains.
+Resolve any provider or model choice that changes the recipe before writing it. A scaffold's default model is inherited input, not an approved choice. Do not silently retain it when the user, source agent, or approved execution brief has not selected that provider and model.
 
-Offer an interactive Pi TUI run once repeatable checks are credible. Confirm commands from current help and use a path valid from the user's current directory. Include `--agent <agent>` when the package does not have one unambiguous default.
+Resolve the actual recipe root and run the current recipe check against that path using the profile appropriate to the workflow. Fix structural diagnostics at their owning layer. A successful check proves the authored package contract, not useful behavior.
+
+Run the selected agent directly from its recipe path in a fresh Pi process. Load `$introspection:pi` for setup, invocation, and host preflight. Defer authentication and capability setup until the first approved behavior run needs them. Prefer a supported redacted status check; if none exists, use the first minimal model call as authentication proof. Never read, print, copy, or parse raw credential files or secret values.
+
+Exercise the calling workflow's representative cases, retain meaningful output and tool evidence, and distinguish configuration, authentication, deterministic implementation, and agent-judgment failures. Use Harbor suites or portable judges only when `$introspection:evals` establishes that the risk merits durable behavioral measurement. Keep Harbor datasets outside the recipe and pin accepted suites exactly.
+
+## Keep distribution portable
+
+Before publication, use the current publish check and inspect the resulting package contents. Preserve required license and attribution, keep package and lock identity consistent, exclude local capability configuration and secrets, and retain redacted examples when they help another user configure the recipe safely.
+
+Publish or register a recipe only when the calling workflow and user explicitly request it. Local proof does not authorize Git, catalog, runtime, or deployment changes.
 
 ## Firm boundaries
 
+- Build through recipe-owned agents, extensions, skills, prompts, scripts, tests, and eval references using supported interfaces. Treat Pi, Pi Recipes, Harbor, and Introspection as external platform dependencies; never edit their source repositories unless the user explicitly requests platform contribution work.
+- Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command.
 - Do not silently change provider, model, package manager, installation method, or authentication.
-- Do not expose credentials or treat configuration as successful authentication.
-- Do not add architecture that no approved case requires.
-- Do not claim readiness from a recipe check alone; prove representative behavior in a fresh session.
-- Let the calling workflow own confirmation, Git, pull-request, and deployment boundaries.
+- Do not encode host secrets in a recipe or infer undocumented `from:` merges, resource grammar, or CLI flags.
+- Do not claim readiness from a recipe check alone; prove representative behavior in a fresh Pi process.
+- Let the calling workflow own outcome definition, confirmation, Git, pull requests, and deployment.

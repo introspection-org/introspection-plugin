@@ -1,4 +1,4 @@
 interface:
   display_name: "Recipes"
-  short_description: "Build focused vertical agent recipes"
-  default_prompt: "Use $introspection:recipes to support the recipe-design portion of this agent workflow."
+  short_description: "Compose and prove portable Pi agent recipes"
+  default_prompt: "Use $introspection:recipes to create, customize, migrate, validate, or distribute a portable Pi recipe."
