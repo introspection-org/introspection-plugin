@@ -1,4 +1,4 @@
 interface:
   display_name: "Create"
   short_description: "Build and locally prove a new agent"
-  default_prompt: "Use $introspection:create to define, build, and locally prove a new agent recipe with Pi."
+  default_prompt: "Use $introspection:create to build and locally prove a new agent recipe from scratch or a selected recipe template."
