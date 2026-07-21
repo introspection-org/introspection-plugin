@@ -7,7 +7,7 @@ description: Deploy a locally proven Introspection recipe and verify it in stagi
 
 Deploy the locally proven recipe identified by the request. Resolve the actual package and platform identity instead of assuming the current directory or a passing check points to the right thing.
 
-Load and follow `$introspection:recipes`, `$introspection:evals`, and `$introspection:introspection`. Resolve each CLI only when the approved deployment step first needs it.
+Load and follow `$introspection:pi`, `$introspection:recipes`, `$introspection:evals`, and `$introspection:introspection`. Resolve each CLI only when the approved deployment step first needs it.
 
 ## Think in provenance and lifecycle
 

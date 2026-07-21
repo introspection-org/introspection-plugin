@@ -7,7 +7,7 @@ description: Create a new focused agent from scratch or an existing recipe templ
 
 Turn the user's desired outcome into a locally proven recipe. Start from scratch or from a selected recipe template. End with something they can run in Pi; leave platform deployment to `$introspection:deploy`.
 
-Load and follow `$introspection:recipes` and `$introspection:evals`.
+Load and follow `$introspection:pi`, `$introspection:recipes`, and `$introspection:evals`.
 
 ## Think like an agent builder
 
@@ -30,7 +30,7 @@ For template mode, prefer a source the user supplied. Otherwise let `$introspect
 
 Inspect relevant repository context and nearby recipes without changing anything. Learn who invokes the agent, what triggers it, what result it promises, what sources it may trust, what it may change, and when it must stop or ask for help. In template mode, distinguish behavior worth retaining from example behavior that must be removed or replaced.
 
-Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let `$introspection:recipes` resolve provider and model choices that affect the design, while deferring tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
+Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let `$introspection:recipes` resolve the portable package and provider/model choices that affect it, and `$introspection:pi` resolve harness, extension, provider, and local execution behavior. Defer tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
 
 Treat any model written by a scaffold or template as inherited input, not an approved provider decision. Resolve it explicitly before editing the recipe. If the request and repository do not establish a safe choice, pause for that decision instead of silently retaining the placeholder.
 
@@ -45,7 +45,7 @@ Ask for confirmation before changing project files or configuration. Treat confi
 Resolve the real package root and use current recipe tooling to build the smallest recipe that satisfies the approved cases:
 
 - In scratch mode, scaffold a new recipe at the approved repository-local path.
-- In template mode, start from the approved repository-local package path prepared by `$introspection:recipes`. Preserve required attribution and license files. Treat the template as a starting point, not proof that the customized agent is correct. Creating a new GitHub repository is outside this local workflow.
+- In template mode, use `$introspection:recipes` to customize the approved source into the approved repository-local output path. Preserve required attribution and license files. Treat the template as a starting point, not proof that the customized agent is correct. Creating a new GitHub repository is outside this local workflow.
 
 Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. Do not register a scratch recipe globally unless the user explicitly asks. Treat any recipe-store registration performed by template tooling as an implementation detail; the owned package path is the source of truth.
 

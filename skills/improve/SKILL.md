@@ -7,7 +7,7 @@ description: Improve an existing agent with human approval, using production evi
 
 Improve the right layer of an existing agent with a human in the loop. Start from production evidence unless the user directs the investigation toward a prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Treat that direction as scope or a hypothesis, not proof of the cause or permission for a predetermined edit.
 
-Load and follow `$introspection:introspection`, `$introspection:evals`, and `$introspection:recipes`. Leave deployment to `$introspection:deploy`.
+Load and follow `$introspection:introspection`, `$introspection:evals`, `$introspection:pi`, and `$introspection:recipes`. Leave deployment to `$introspection:deploy`.
 
 ## Think from evidence to ownership
 
