@@ -49,7 +49,7 @@ Resolve the real package root and use current recipe tooling to build the smalle
 
 Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. Do not register a scratch recipe globally unless the user explicitly asks. Treat any recipe-store registration performed by template tooling as an implementation detail; the owned package path is the source of truth.
 
-When the agent uses declared skills, preserve Pi's discovered-skill inventory. Prefer concise appended agent instructions and omit `SYSTEM.md`; use a full replacement prompt only when it explicitly retains the required resource-discovery guidance and fresh runtime proof confirms the skills remain visible.
+Preserve the recipe composition model. Put instructions shared across the root agent and delegated subagents in `SYSTEM.md`; put specialized role instructions in each agent's `system_instructions`. Use `from:` when a variant or subagent genuinely inherits a base configuration, and make capability overrides explicit because `tools`, `skills`, and `subagents` arrays replace rather than merge. Keep reusable detailed judgment in skills selected by the agents that need it.
 
 Run representative cases in fresh Pi sessions. Keep the evidence needed to explain what worked, what failed, and why. Fix the owning layer rather than accumulating prompt instructions. Once repeatable checks are credible, offer the user the Pi TUI so they can try the agent and continue iterating with them until the local version is accepted or a concrete blocker remains.
 

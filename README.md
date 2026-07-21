@@ -71,15 +71,12 @@ The plugin carries cross-cutting agent judgment. It intentionally does not copy 
 
 ## Validate a contribution
 
-Run the repository contract checks and both discovery targets before exercising the workflows in a clean host session:
+Run both discovery targets before exercising the workflows in a clean host session:
 
 ```bash
-python3 scripts/validate_plugin.py
 npx --yes plugins@latest discover . --target codex
 npx --yes plugins@latest discover . --target claude-code
 ```
-
-The local validator rejects duplicate command and skill surfaces, unqualified cross-skill references, broken local references, incomplete confirmation contracts, and missing trigger coverage. Extend [`tests/trigger-cases.json`](tests/trigger-cases.json) whenever a description or routing boundary changes, then run representative positive, paraphrased, and near-miss cases repeatedly in both hosts before release.
 
 ## License
 
