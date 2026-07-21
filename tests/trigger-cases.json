@@ -2,7 +2,8 @@
   {
     "id": "create-explicit-claude",
     "prompt": "/introspection:create Build a read-only support triage agent.",
-    "expected_skill": "introspection:create"
+    "expected_skill": "introspection:create",
+    "entrypoint": "scratch"
   },
   {
     "id": "create-paraphrase",
@@ -10,9 +11,16 @@
     "expected_skill": "introspection:create"
   },
   {
+    "id": "create-template",
+    "prompt": "Find a suitable recipe template for a customer research agent, customize it for our workflow, and prove it locally.",
+    "expected_skill": "introspection:create",
+    "entrypoint": "template"
+  },
+  {
     "id": "migrate-explicit-codex",
     "prompt": "$introspection:migrate ./existing-agent",
-    "expected_skill": "introspection:migrate"
+    "expected_skill": "introspection:migrate",
+    "entrypoint": "migrate"
   },
   {
     "id": "migrate-paraphrase",
@@ -48,6 +56,11 @@
     "id": "evals-supporting",
     "prompt": "Help me calibrate this semantic judge against the labeled examples.",
     "expected_skill": "introspection:evals"
+  },
+  {
+    "id": "near-miss-react-template",
+    "prompt": "Apply this React dashboard template to our existing website.",
+    "expected_skill": null
   },
   {
     "id": "near-miss-generic-git",

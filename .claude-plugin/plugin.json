@@ -1,7 +1,7 @@
 {
   "name": "introspection",
   "version": "0.1.0",
-  "description": "Build, evaluate, deploy, and improve vertical agents on Introspection.",
+  "description": "Create, migrate, deploy, and improve vertical agents on Introspection.",
   "author": {
     "name": "Introspection",
     "url": "https://github.com/introspection-org"

@@ -10,17 +10,17 @@ Choose your coding agent and run the matching command in a terminal:
 
 ```bash
 # Codex
-npx plugins add introspection-org/introspection-plugin -t codex
+npx --yes plugins@latest add introspection-org/introspection-plugin --target codex --scope user --yes
 
 # Claude Code
-npx plugins add introspection-org/introspection-plugin -t claude-code
+npx --yes plugins@latest add introspection-org/introspection-plugin --target claude-code --scope user --yes
 ```
 
 Restart the coding agent after installation so it can load the plugin. The guided workflows check their own prerequisites and keep recognized installations of Pi, recipe tooling, and the Introspection CLI current before normal workflow approval. They never switch installation methods, replace an unrecognized development build, request elevated privileges, or change authentication or user configuration without stopping for the user.
 
 | Skill | Owns |
 | --- | --- |
-| `create` | Turn an agent idea into a locally proven Pi recipe |
+| `create` | Build a locally proven Pi recipe from scratch or a selected template |
 | `migrate` | Convert an existing agent into a locally proven Pi recipe |
 | `improve` | Improve an agent from production evidence by default or an optional user-directed target |
 | `deploy` | Publish a proven recipe and verify its Introspection runtime |
@@ -33,12 +33,18 @@ Start with the skill matching the current problem. Skills route to one another a
 
 ## Commands
 
-- `/introspection:create` builds a new recipe and proves it locally with Pi.
+- `/introspection:create` builds from scratch or a selected recipe template and proves the result locally with Pi.
 - `/introspection:migrate` converts an existing agent and proves approved behavioral parity locally.
 - `/introspection:improve [focus]` turns production evidence or an optional prompt, skill, tool, configuration, eval, failure pattern, or goal into approved fixes, tests, and focused pull requests.
 - `/introspection:deploy` publishes a proven recipe and verifies its resolved runtime, task, conversation, and Git commit.
 
 In Codex, invoke the same workflows with `$introspection:create`, `$introspection:migrate`, `$introspection:improve`, and `$introspection:deploy`. Codex surfaces enabled skills in its slash menu and inserts them using the plugin-and-skill mention syntax.
+
+The onboarding entry points stay deliberately small:
+
+- An outcome with no implementation routes to `create` from scratch.
+- A supplied or requested recipe template routes to `create` in template mode.
+- An existing agent whose behavior should be preserved routes to `migrate`.
 
 Every public workflow begins with context collection, completes the narrowly scoped toolchain-freshness preflight described above, presents one concrete execution brief, and asks for confirmation before changing the recipe, repository, configuration, runtime, or product behavior. After approval it proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change. Any preflight upgrade is reported in the execution brief.
 

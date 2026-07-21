@@ -1,7 +1,7 @@
 {
   "name": "introspection",
   "version": "0.1.0",
-  "description": "Build, evaluate, deploy, and improve vertical agents on Introspection.",
+  "description": "Create, migrate, deploy, and improve vertical agents on Introspection.",
   "author": {
     "name": "Introspection",
     "url": "https://github.com/introspection-org"
@@ -13,15 +13,15 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Introspection",
-    "shortDescription": "Build and improve production agents",
-    "longDescription": "Define quality, build focused recipes, create trustworthy evals, deploy through the Introspection CLI, and improve from production evidence or a chosen target.",
+    "shortDescription": "Create and improve production agents",
+    "longDescription": "Create focused recipes from scratch or templates, migrate existing agents, deploy through the Introspection CLI, and improve from production evidence or a chosen target.",
     "composerIcon": "./assets/square-square.svg",
     "logo": "./assets/square-square.svg",
     "developerName": "Introspection",
     "category": "Developer Tools",
     "websiteURL": "https://docs.introspection.dev",
     "defaultPrompt": [
-      "Use $introspection:create for a new agent or $introspection:migrate for an existing agent, then prove the recipe locally.",
+      "Use $introspection:create for a new agent from scratch or a selected template, or $introspection:migrate to preserve an existing agent, then prove the recipe locally.",
       "Use $introspection:improve with an optional focus, or omit it to start from production evidence.",
       "Use $introspection:deploy to publish and verify a proven recipe."
     ]

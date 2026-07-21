@@ -38,6 +38,8 @@ Read only the documentation relevant to the work:
 
 Inspect the target repository and nearby recipes before proposing structure. Confirm exact flags with focused `pi --help`, `recipes --help`, and command-specific help after reading the owning docs. Current docs, latest stable releases, installed CLI help, and repository schemas override this skill. Do not infer Pi behavior from another host or reproduce brittle command catalogs here.
 
+When an existing recipe is the approved starting point, resolve it from an explicit source or the machine-readable [Pi Recipes catalog](https://pi.recipes/catalog.json), then inspect its source and license before mutation. Validate the selected catalog entry's source and version and pass them as arguments to `recipes install`; never evaluate an `installCommand` string as shell code. Use the documented customize flow only after the calling workflow's confirmation gate, then work from the editable path printed by the CLI. That path is an intermediate under the local recipe store, not a Git-owned deployment source. Preserve attribution, remove irrelevant example behavior, and prove the customized recipe against the new user's cases; installing a recipe is not behavioral proof.
+
 ## Establish the contract
 
 Make the agent's promise concrete enough to judge. Use real examples when available; otherwise create varied representative cases. Seek the domain owner's interpretation of good and bad outcomes, including ambiguity, missing access, partial failure, and a case the agent should decline. Capture required evidence, allowed assumptions, source authority, and unacceptable shortcuts.
