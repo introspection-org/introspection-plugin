@@ -144,7 +144,8 @@ Before authoring fixtures, scaffolding a task, implementing a verifier, calibrat
 - proposed expected answer or label
 - rationale and provenance
 - proposed verification method
-- intended development, validation, or held-out split when relevant
+
+Omit splits for offline evals. Include train, development, or held-out splits only for judge calibration or when the user explicitly requests a holdout strategy.
 
 Mark all machine-generated answers and labels as proposed. Ask the domain owner to approve, reject, edit, or relabel every case and confirm that the set covers the intended boundaries. Pause until that approval is explicit. General authorization to improve an agent, deterministic generation, agreement between models, or a passing reference solution does not approve the cases.
 

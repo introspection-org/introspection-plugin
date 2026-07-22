@@ -58,6 +58,8 @@ Before writing fixtures, scaffolding a Harbor task, implementing a verifier, cal
 
 Do not treat silence, prior general workflow approval, machine agreement, a reference solution, or deterministic generation as case approval. If a material case, expected answer, label, rationale, split, or success contract changes later, show the changed case and obtain approval again before using it. Preserve the approval decision with the versioned dataset.
 
+Omit dataset splits for offline evals. Use splits only for judge calibration or when the user explicitly requests a holdout strategy.
+
 ## Measure only what earns measurement
 
 For each selected failure mode, choose the cheapest faithful offline evaluation method:
