@@ -1,11 +1,13 @@
 ---
 name: recipes
-description: Provide focused Pi Recipes expertise for creating, customizing, migrating, composing, validating, running, and distributing portable agent recipes. Use inside Introspection create, migrate, improve, and deploy workflows, or for narrowly scoped questions about recipe packages, agents, SYSTEM.md, from inheritance, resources, capabilities, checks, and local proof. Keep Pi harness mechanics in the pi skill.
+description: Provide focused Pi Recipes expertise for creating, customizing, migrating, composing, validating, running, and distributing portable agent recipes, including exact Harbor eval pins and separate online judge declarations. Use inside Introspection create, migrate, improve, and deploy workflows, after a Harbor suite earns durable recipe coverage, or for narrowly scoped questions about recipe packages, agents, SYSTEM.md, from inheritance, resources, capabilities, checks, and local proof. Keep Pi harness mechanics in the pi skill.
 ---
 
 # Recipes
 
 Treat a recipe as portable agent IP: the versioned package that carries instructions, agents, skills, extensions, and declared capabilities. Keep Pi harness mechanics in `$introspection:pi`, outcome design in the calling workflow, evaluation reasoning in `$introspection:evals`, and hosted operation in `$introspection:introspection`.
+
+Keep offline evals and online judges as distinct recipe resources. `$introspection:evals` owns the human-approved offline measurement contract, `$introspection:harbor` owns an accepted environment-level task and its run evidence, and this skill owns the immutable Harbor reference declared by the recipe. Online judges follow a separate human-label, calibration, declaration, and deployment path through `$introspection:evals` and `$introspection:introspection`.
 
 ## Use the canonical recipe contract
 
@@ -70,7 +72,7 @@ Resolve the actual recipe root and run the current recipe check against that pat
 
 Run the selected agent directly from its recipe path in a fresh Pi process. Load `$introspection:pi` for setup, invocation, and host preflight. Defer authentication and capability setup until the first approved behavior run needs them. Prefer a supported redacted status check; if none exists, use the first minimal model call as authentication proof. Never read, print, copy, or parse raw credential files or secret values.
 
-Exercise the calling workflow's representative cases, retain meaningful output and tool evidence, and distinguish configuration, authentication, deterministic implementation, and agent-judgment failures. Use Harbor suites or portable judges only when `$introspection:evals` establishes that the risk merits durable behavioral measurement. Keep Harbor datasets outside the recipe and pin accepted suites exactly.
+Exercise the calling workflow's representative cases, retain meaningful output and tool evidence, and distinguish configuration, authentication, deterministic implementation, and agent-judgment failures. Use Harbor suites or portable judges only when `$introspection:evals` establishes that the risk merits durable behavioral measurement and the human has approved every case or calibration label. Keep Harbor datasets outside the recipe and pin accepted suites by exact dataset version or Git revision. Change an eval pin separately from agent behavior. Never encode an online judge as a Harbor eval declaration or reuse machine-proposed labels as judge ground truth.
 
 ## Keep distribution portable
 

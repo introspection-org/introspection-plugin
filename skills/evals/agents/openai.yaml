@@ -1,4 +1,4 @@
 interface:
   display_name: "Evals"
-  short_description: "Turn agent traces into trustworthy measures"
-  default_prompt: "Use $introspection:evals to analyze these agent traces, discover failure modes, and build trustworthy measurements."
+  short_description: "Design approved offline evals and calibrate judges"
+  default_prompt: "Use $introspection:evals to analyze these traces, propose cases and labels for human approval, and design trustworthy offline evals or online judge calibration."

@@ -1,6 +1,6 @@
 ---
 name: introspection
-description: Provide supporting expertise for narrowly scoped Introspection CLI operations, production-evidence reads, judges, and release verification inside another workflow. Route end-to-end creation, migration, production improvement, and deployment requests to the corresponding public Introspection workflow.
+description: Provide supporting expertise for narrowly scoped Introspection CLI operations, production-evidence reads, human-calibrated online judges, and release verification inside another workflow. Route offline eval design to evals and end-to-end creation, migration, production improvement, and deployment requests to the corresponding public Introspection workflow.
 license: Apache-2.0
 ---
 
@@ -42,7 +42,7 @@ Prove the loop with a visible recipe-specific change in a development conversati
 
 A successful deployment is a proven user workflow, not merely a created runtime.
 
-Judge definition calibration and judgement reads are supported by the CLI. Live judge enablement and production sampling may not be; report that boundary when encountered and do not silently switch interfaces.
+A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results. Live judge enablement and production sampling may not be supported by the CLI; report that boundary when encountered and do not silently switch interfaces.
 
 ## Learn from production
 
@@ -64,7 +64,8 @@ Treat business outcomes as pressure on eval coverage, not as a reward to chase d
 ## Judge and compare
 
 - Export representative fixtures, including positives, negatives, edge cases, and random controls.
-- Calibrate a judge on labeled development data and verify it on held-out data.
+- Show every fixture with its proposed label, rationale, provenance, and split to the domain owner. Pause until every label is approved or corrected; a model may propose labels but cannot establish its own ground truth.
+- Calibrate the exact judge definition on the human-approved development data and verify it on human-approved held-out data.
 - Add the calibrated judge to the recipe, promote it through the normal Git release path, and inspect both aggregate movement and individual disagreements.
 - Prefer sequential release comparison when traffic is comparable.
 - Use a live experiment only when simultaneous traffic allocation is necessary for a bounded question.

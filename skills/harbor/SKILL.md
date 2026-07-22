@@ -1,12 +1,14 @@
 ---
 name: harbor
-description: Provide supporting Harbor expertise for environment-level agent evaluations. Use for a narrowly scoped Harbor task, Reward Kit, exec, adapter, grading, or publishing request, or when the evals workflow selects Harbor as the lowest faithful layer. Route general evaluation design to evals and end-to-end agent improvement to improve.
+description: Provide supporting Harbor expertise for implementing human-approved offline environment-level agent evals and handing accepted suites to Recipes for exact version pinning. Use for a narrowly scoped Harbor task, Reward Kit, exec, adapter, grading, or publishing request, or when the evals workflow selects Harbor as the lowest faithful layer. Route general evaluation design to evals, online judges to Introspection, and end-to-end agent improvement to improve.
 license: Apache-2.0
 ---
 
 # Harbor
 
 Use Harbor as the recommended framework for new reproducible environment-level agent evaluations, after `$introspection:evals` establishes that a lower deterministic seam would not faithfully test the capability. This skill is the Introspection quickstart and quality layer. Harbor's installed skills and CLI own Harbor mechanics.
+
+Harbor implements offline evals; it does not own online judges. Require the human-approved case matrix from `$introspection:evals` before scaffolding, grading, or running a task. If the matrix is missing or contains unapproved expected answers or labels, present it for review and pause instead of inventing ground truth.
 
 Do not force a project with a working evaluation framework to migrate. Keep its existing cases, graders, runner, history, and CI integration when they faithfully exercise the behavior. Use `$introspection:evals` with that framework, and introduce Harbor only for a missing environment, isolation, execution, portability, or verification capability.
 
@@ -19,7 +21,7 @@ Before spending any approved real-agent attempt, resolve and print the complete 
 Assume the current skills from [`harbor-framework/harbor/skills`](https://github.com/harbor-framework/harbor/tree/main/skills) are installed. Load only the matching upstream skill:
 
 - `create-task` for ordinary task scaffolding, environment design, verifier selection, reference solutions, Oracle validation, and real-agent runs.
-- `rewardkit` when grading needs multiple criteria, partial credit, reusable programmatic checks, or a semantic or agent judge.
+- `rewardkit` when offline grading needs multiple criteria, partial credit, or reusable programmatic checks. Do not use model-based grading to disguise semantic correctness as a deterministic eval; route an online judge request through `$introspection:evals` and `$introspection:introspection`.
 - `harbor-exec` only for `harbor exec`: compiling loose files, directories, or globs into tasks and running map or map-reduce jobs. Do not use it as the ordinary task runner.
 - `create-adapter` only when adapting an external benchmark into Harbor.
 - `publish` only when the user explicitly asks to publish a task or dataset to the Harbor registry.
@@ -37,4 +39,4 @@ Freeze the instruction, fixtures, environment, verifier, reference solution, and
 
 Classify incomplete runs before scoring them: infrastructure failure, task-definition failure, agent failure, or inconclusive noise. A pre-execution configuration failure is not a completed real-agent attempt: correct it and rerun within the user's approved real-agent budget. Do not rerun a trial that reached agent execution or verification unless the user approved another attempt. Return valid results to `$introspection:evals` with the task version, run configuration, raw trial evidence, reward details, and observed variance. When a representative, repeatable suite cannot distinguish credible candidates, return the evidence needed for a bounded experiment proposal; do not launch an experiment or autonomous candidate search.
 
-When an accepted task becomes durable recipe coverage, load `$introspection:recipes` for the recipe declaration and `$introspection:pi` for the local harness run. Then read the current Pi Recipe Evals documentation, pin the exact Harbor dataset version or Git revision in the recipe, and establish a new unchanged baseline through Pi recipe tooling. Keep the dataset outside the recipe and change an eval pin separately from agent behavior.
+Treat durable coverage as an explicit handoff: `$introspection:evals` owns the approved offline measurement contract, Harbor owns the environment, verifier, and run evidence, and `$introspection:recipes` owns the package declaration. When an accepted task becomes durable recipe coverage, load `$introspection:recipes` for the declaration and `$introspection:pi` for the local harness run. Read the current Pi Recipe Evals documentation, pin the exact Harbor dataset version or Git revision in the recipe, and establish a new unchanged baseline through Pi recipe tooling. Keep the dataset outside the recipe and change an eval pin separately from agent behavior. Keep online judge declarations separate from Harbor eval pins.

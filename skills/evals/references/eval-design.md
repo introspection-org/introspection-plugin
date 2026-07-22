@@ -9,7 +9,10 @@ Use this reference when performing error analysis, assembling datasets, validati
 - [Run error analysis](#run-error-analysis)
 - [Build and prioritize the taxonomy](#build-and-prioritize-the-taxonomy)
 - [Audit an existing suite](#audit-an-existing-suite)
+- [Separate offline evals from online judges](#separate-offline-evals-from-online-judges)
 - [Choose the evaluation layer](#choose-the-evaluation-layer)
+- [Approve cases before implementation](#approve-cases-before-implementation)
+- [Design deterministic verification](#design-deterministic-verification)
 - [Design the dataset](#design-the-dataset)
 - [Generate synthetic coverage](#generate-synthetic-coverage)
 - [Write semantic judges](#write-semantic-judges)
@@ -112,20 +115,46 @@ Audit from evidence rather than evaluator names or test counts:
 
 Do not preserve an evaluator merely because it already exists. Do not remove one merely because the current agent scores well; first establish whether it guards a meaningful regression.
 
+## Separate offline evals from online judges
+
+Use **eval** for an offline, versioned set of approved cases run during development, regression testing, or candidate comparison. Use **judge** for an online measurement instrument applied to sampled or live conversations. Judge calibration is an offline validation activity, but its purpose is to decide whether the exact judge is trustworthy enough for online use; it does not convert model outputs into ground truth.
+
+Keep the artifacts separate. An eval owns cases, approved expected outcomes, offline run configuration, and comparison results. A judge owns a narrow online decision, a human-labeled calibration dataset, its exact prompt and model, held-out validation, deployment declaration, sampling policy, and production disagreements. Do not use either name as a generic synonym for the other.
+
 ## Choose the evaluation layer
 
 Choose the lowest layer that faithfully represents the failure:
 
 1. deterministic assertions for exact, inspectable outcomes
 2. environment-level agent tasks for end-to-end work across files, tools, services, or multiple steps
-3. semantic judges for narrow meaning-dependent decisions
-4. human review for unresolved judgment
+3. human review for meaning-dependent or unresolved judgment
 
 Keep regression and capability measurement distinct. A remembered failure proves that one case stays fixed; a varied capability set estimates how the system generalizes.
 
 Prefer Harbor when building a new environment-level agent evaluation because it packages the instruction, environment, execution, and verifier into a reproducible task. When a project already has an evaluation framework, first map the observed failure modes into its native cases, graders, runner, and reporting. Preserve comparable history and CI wiring. Introduce Harbor only for missing fidelity, isolation, reproducibility, or grading—not merely to standardize names or commands.
 
 Avoid generic off-the-shelf metrics unless they match an observed product-specific failure. A handful of important evaluators is often more useful than broad rubric coverage. Do not optimize for an evaluator count.
+
+## Approve cases before implementation
+
+Before authoring fixtures, scaffolding a task, implementing a verifier, calibrating a judge, or running a proposed suite, present a case matrix containing:
+
+- case identifier and input or scenario
+- capability, invariant, or failure mode covered
+- proposed expected answer or label
+- rationale and provenance
+- proposed verification method
+- intended development, validation, or held-out split when relevant
+
+Mark all machine-generated answers and labels as proposed. Ask the domain owner to approve, reject, edit, or relabel every case and confirm that the set covers the intended boundaries. Pause until that approval is explicit. General authorization to improve an agent, deterministic generation, agreement between models, or a passing reference solution does not approve the cases.
+
+Record the approver and dataset version. Reopen approval when a material case, expected outcome, label, rationale, split, or success contract changes. Do not silently replace a rejected case or move a case between splits.
+
+## Design deterministic verification
+
+Call a verifier deterministic only when it checks an objective product contract and produces reproducible results. Prefer structured parsing, schema and type checks, exact calculations, filesystem or database state, API side effects, compilation and executable behavior, tool outcomes, invariants, idempotency, or other durable task artifacts.
+
+Regex, keywords, substrings, edit distance, and exact prose matching are deterministic implementations but usually semantic proxies. Use them only when the literal surface form is itself the human-approved requirement. Do not accept a brittle proxy merely because the reference answer matches it. Redesign the task to expose an inspectable outcome when possible; if meaning remains essential, retain approved human review rather than disguising semantic judgment as deterministic grading.
 
 ## Design the dataset
 
@@ -144,7 +173,7 @@ Separate data used to invent or revise the rubric and judge prompt from validati
 
 Use real traces to discover taste and failure modes. Use synthetic examples to fill deliberate coverage gaps, stress boundaries, or create controlled variants, then require domain review before treating them as truth.
 
-Version data and labels. Criteria drift is expected: reviewers discover new requirements and reinterpret old examples as they see more behavior. Revisit earlier labels when definitions change.
+Version data, labels, rationales, and approvals. Criteria drift is expected: reviewers discover new requirements and reinterpret old examples as they see more behavior. Revisit earlier labels when definitions change and obtain explicit approval for every relabeled case before reuse.
 
 Introspection judge calibration has a stricter provenance contract than a generic local dataset. Create its fixture rows with the current CLI's bounded conversation export, then add only `expected` and optional `split` at the top level. Do not rewrite the exported conversation or engine metadata, synthesize snapshot hashes, convert arbitrary trace JSON into `judge_fixture` rows, or invoke internal judge-engine protocols. For non-Introspection evidence, keep the original local evaluator or first replay the case into a real Introspection conversation that the CLI can export.
 
@@ -165,7 +194,7 @@ Use controlled variants to test one factor at a time. Never let a generator labe
 
 ## Write semantic judges
 
-Write a judge only after the failure definition and labeled examples are stable enough for another reviewer to apply. Give it:
+Write a judge only when an online semantic signal is required and after the failure definition and human-approved labeled examples are stable enough for another reviewer to apply. Give it:
 
 - one narrow decision to make
 - only the trace fields required for that decision
@@ -182,7 +211,7 @@ Use deterministic parsing for judge output. Treat missing fields, malformed outp
 
 Make each judge answer one narrow question. Prefer a clear binary operational decision. If graded severity is truly required, define what each level changes operationally rather than relying on vague numerical quality.
 
-Calibrate the exact judge prompt and model against domain-expert labels. Record rationales for labels and judge disagreements. Examine:
+Before calibration, show every fixture, proposed label, rationale, provenance, and split to the domain owner. Do not let the model that proposes or generates a case establish its authoritative label. Calibrate the exact judge prompt and model only against explicitly approved domain-expert labels. Record rationales for labels and judge disagreements. Examine:
 
 - true-positive rate: how often real failures are caught
 - true-negative rate: how often acceptable cases pass

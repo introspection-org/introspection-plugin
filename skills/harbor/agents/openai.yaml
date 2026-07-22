@@ -1,4 +1,4 @@
 interface:
   display_name: "Harbor"
-  short_description: "Create trustworthy environment-level evals"
-  default_prompt: "Use $introspection:harbor to create and validate this Harbor evaluation task with the official Harbor skills."
+  short_description: "Implement approved offline environment evals"
+  default_prompt: "Use $introspection:harbor to implement and validate this human-approved offline Harbor eval, then hand durable coverage to Recipes."

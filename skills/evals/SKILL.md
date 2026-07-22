@@ -1,6 +1,6 @@
 ---
 name: evals
-description: Provide supporting expertise for agent trace review, error analysis, measurement design, judge calibration, regressions, and evaluation interpretation inside another workflow. Use for a narrowly scoped evaluation question or when a public workflow needs to decide what merits durable measurement. Route end-to-end agent improvement to the improve workflow.
+description: Provide supporting expertise for agent trace review, error analysis, human-approved offline eval design, online judge calibration, regressions, and evaluation interpretation inside another workflow. Use for a narrowly scoped evaluation question or when a public workflow needs to decide what merits durable measurement. Route end-to-end agent improvement to the improve workflow.
 license: Apache-2.0
 ---
 
@@ -11,6 +11,14 @@ Treat evals as the systematic practice of understanding, measuring, and improvin
 **observe → analyze → measure → improve → monitor → repeat**
 
 The aim is actionable product improvement. A large suite, polished dashboard, or rising score is not success by itself.
+
+Use these terms consistently:
+
+- An **eval** is an offline, versioned set of approved cases used for development, regression testing, and candidate comparison.
+- A **judge** is an online measurement instrument applied to sampled or live conversations.
+- **Judge calibration** is the offline process of testing an exact judge definition against human-owned labels before online use. Calibration does not make the judge ground truth.
+
+Do not call an offline eval a judge or present an online judge as an eval suite. Keep their datasets, declarations, approval decisions, and operational results distinct.
 
 ## Own the complete agent-eval loop
 
@@ -44,18 +52,25 @@ Use AI to reduce review friction: render traces clearly, propose representative 
 
 After open coding, cluster related notes into specific, actionable failure modes. Let AI propose groupings, then have the quality owner refine them and preserve a `none of the above` path. Count prevalence, but prioritize with severity, business importance, reach, and tractability as well; a rare catastrophic failure can outrank a common cosmetic one.
 
+## Get case approval before implementation
+
+Before writing fixtures, scaffolding a Harbor task, implementing a verifier, calibrating a judge, or running a proposed suite, show the human every proposed case with its input or scenario, capability or failure mode, proposed expected answer or label, rationale, provenance, and verification method. Mark machine-proposed answers and labels as proposals. Pause for the domain owner to approve, reject, edit, or relabel each case and to confirm the coverage.
+
+Do not treat silence, prior general workflow approval, machine agreement, a reference solution, or deterministic generation as case approval. If a material case, expected answer, label, rationale, split, or success contract changes later, show the changed case and obtain approval again before using it. Preserve the approval decision with the versioned dataset.
+
 ## Measure only what earns measurement
 
-For each selected failure mode, choose the cheapest faithful evaluator:
+For each selected failure mode, choose the cheapest faithful offline evaluation method:
 
 1. deterministic code for exact invariants, schemas, calculations, and known outcomes
 2. an environment-level agent task when behavior across files, tools, services, or multiple steps is the capability under test; prefer `$introspection:harbor` for new work, or use the project's established evaluation framework
-3. a narrowly scoped semantic judge when correctness depends on meaning
-4. human review when policy is disputed, rare, or not yet expressible reliably
+3. human review when success depends on meaning, policy is disputed, or the requirement is not yet expressible as an objective contract
 
-Make one judge answer one specific question. Prefer an operational pass/fail decision over an ambiguous rating scale. A judge is another fallible model and must earn trust against human-labeled examples before it gates changes or monitors production.
+A check is not trustworthy merely because it runs deterministically. Verify an objective product contract: structured data, exact calculations, resulting files or state, executable behavior, tool effects, invariants, or other directly inspectable outcomes. Do not use regex, keywords, substring matching, or exact prose matching as proxies for semantic correctness unless the literal text is itself the approved requirement. Redesign the task to expose an objective outcome when possible; otherwise use approved human review.
 
-Build balanced development examples with positives, negatives, hard boundaries, and written rationales. Keep prompt-development, validation, and held-out test data separate. Diagnose true-positive and true-negative behavior, false positives, and false negatives separately; aggregate agreement can hide a judge that always predicts the majority class.
+Design a judge only when the product needs an online semantic signal. Make one judge answer one specific question and prefer an operational pass/fail decision over an ambiguous rating scale. A judge is another fallible model and must earn trust against human-labeled examples before it gates changes or monitors production.
+
+Let AI propose balanced development examples with positives, negatives, hard boundaries, and written rationales, but require the domain owner to approve or relabel every example before calibration. Keep prompt-development, validation, and held-out test data separate. Diagnose true-positive and true-negative behavior, false positives, and false negatives separately; aggregate agreement can hide a judge that always predicts the majority class.
 
 For `introspection judges eval`, use only schema-v1 judge fixtures exported by the current CLI from complete Introspection conversations. Preserve the exported `conversation`, `engine`, and `snapshot_hash` exactly; add only the owner-approved top-level `expected` and optional `split` fields. Never hand-author a `judge_fixture`, adapt arbitrary JSONL into one, guess its hash or engine contract, or call the private judge-engine binary. If evidence starts as local or third-party traces, evaluate it in the project's faithful local harness, or replay it through a real Introspection conversation and export that conversation before CLI judge calibration. Treat unavailable provenance as a calibration blocker, not an invitation to forge a fixture.
 

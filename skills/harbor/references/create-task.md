@@ -4,7 +4,7 @@ Use this reference only after `$introspection:evals` selects Harbor as the lowes
 
 ## Start from an evaluation contract
 
-Carry these fields into the task design:
+Do not scaffold, implement, or run the task until `$introspection:evals` has shown the complete case matrix to the domain owner and every proposed expected answer or label has been explicitly approved or relabeled. Carry these fields into the task design:
 
 - behavior and user outcome being measured
 - source and owner of the requirement
@@ -12,6 +12,7 @@ Carry these fields into the task design:
 - observable success and required evidence
 - unacceptable shortcuts
 - expected variability and known infrastructure risks
+- approved cases, expected outcomes, rationales, provenance, approver, and dataset version
 
 Keep one task focused on one coherent capability. Split independent behaviors when they need different environments, instructions, or grading contracts.
 
@@ -25,7 +26,9 @@ Select the simplest faithful verifier:
 
 1. deterministic assertions for exact outcomes
 2. the installed `rewardkit` skill for composable criteria or multiple reward dimensions
-3. a semantic judge only for meaning-dependent quality that deterministic checks cannot establish
+3. approved human review when meaning-dependent quality cannot be reduced to an objective outcome
+
+Determinism is a property of the contract being checked, not merely the grader implementation. Prefer structured results, resulting state, executable behavior, tool effects, exact calculations, and invariants. Do not use regex, keywords, substring matching, or exact prose matching as semantic proxies unless literal wording is the approved requirement. If no objective verifier exists, redesign the task or retain human review; do not call model-based semantic grading a deterministic Harbor eval.
 
 Keep legitimate starting inputs visible to the agent. Keep hidden checks, expected outputs, grading prompts, secrets, and the reference solution outside the agent-visible workspace. Verify durable outcomes rather than one preferred command sequence.
 
