@@ -1,6 +1,6 @@
 ---
 name: introspection
-description: Provide supporting expertise for narrowly scoped Introspection CLI operations, production-evidence reads, judges, and release verification inside another workflow. Route end-to-end creation, migration, production improvement, and deployment requests to the corresponding public Introspection workflow.
+description: Provide supporting expertise for narrowly scoped Introspection CLI operations, production-evidence reads, human-calibrated online judges, and release verification inside another workflow. Route offline eval design to evals and end-to-end creation, migration, production improvement, and deployment requests to the corresponding public Introspection workflow.
 license: Apache-2.0
 ---
 
@@ -42,7 +42,7 @@ Prove the loop with a visible recipe-specific change in a development conversati
 
 A successful deployment is a proven user workflow, not merely a created runtime.
 
-Judge definition calibration and judgement reads are supported by the CLI. Live judge enablement and production sampling may not be; report that boundary when encountered and do not silently switch interfaces.
+A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results. Live judge enablement and production sampling may not be supported by the CLI; report that boundary when encountered and do not silently switch interfaces.
 
 ## Learn from production
 
@@ -63,9 +63,12 @@ Treat business outcomes as pressure on eval coverage, not as a reward to chase d
 
 ## Judge and compare
 
-- Export representative fixtures, including positives, negatives, edge cases, and random controls.
-- Calibrate a judge on labeled development data and verify it on held-out data.
-- Add the calibrated judge to the recipe, promote it through the normal Git release path, and inspect both aggregate movement and individual disagreements.
+- Resolve the owning recipe Git worktree and judge name. Export representative fixtures, including positives, negatives, edge cases, and random controls, then persist them at `judges/<judge-name>.calibration.jsonl` beside `judges/<judge-name>.yaml`. Use temporary output only while assembling the review draft; never calibrate from a temp file that remains the sole retained copy.
+- Show every fixture with its proposed label, rationale, provenance, and split to the domain owner. Pause until every label is approved or corrected; a model may propose labels but cannot establish its own ground truth.
+- Confirm the fixture data is authorized for repository storage and contains no secrets. If a source conversation cannot be committed, replay an authorized sanitized conversation and export a fresh valid fixture; do not rewrite the export's protected provenance fields.
+- Calibrate the exact judge definition on the human-approved development data and verify it on human-approved held-out data, passing the repository-owned calibration JSONL to `--dataset`.
+- Stage the judge YAML and calibration JSONL together, inspect the Git diff, and commit both files as one focused change. If Git mutation is not authorized, request approval and stop before claiming completion.
+- Promote the versioned judge and calibration data through the normal Git release path, then inspect both aggregate movement and individual disagreements.
 - Prefer sequential release comparison when traffic is comparable.
 - Use a live experiment only when simultaneous traffic allocation is necessary for a bounded question.
 
