@@ -11,10 +11,12 @@ Treat a recipe as portable agent IP: the versioned package that carries instruct
 
 Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to [`introspection-org/pi-recipes/docs`](https://github.com/introspection-org/pi-recipes/tree/main/docs):
 
+- `index.md` to choose the shortest current path when the routing below is ambiguous or stale.
 - `recipe-flow.md` for scratch, template, local ownership, and publication flow.
-- `recipe-cli.md` for current CLI operations, package resources, and package-level MCP declarations.
+- `recipe-cli.md` for current CLI operations, package resources, and store, install, and publish mechanics.
 - `agent-composition.md` for `SYSTEM.md`, agent YAML, `system_instructions`, `from:`, inheritance, and root/subagent behavior.
-- `pi-extension.md` for recipe extension loading, tools, subagents, agent-level MCP selection, and session materialization.
+- `mcp-configuration.md` for the complete MCP model: the package boundary, per-agent selection, package or environment endpoint sources, and fail-closed authorization.
+- `pi-extension.md` for recipe extension loading, tools, subagents, and session materialization.
 - `interactions.md` only for portable questions, approvals, or interrupts.
 - `mcp-auth.md` only for local or hosted authentication.
 - `recipe-evals.md` only when a Harbor suite has earned durable recipe coverage.
