@@ -16,7 +16,7 @@ Use the CLI as the only platform interface. Never use the dashboard, a browser, 
 4. Immediately before the first platform command the workflow needs, confirm `introspection` exists and inspect focused help for the exact operation.
 5. Use the installed CLI when it supports the required command and flags. Install it only when missing; upgrade a recognized installation only when an actual incompatibility blocks the operation. Use the documented command for its detected installation method, verify in a fresh process, and retry the blocked operation.
 
-Current docs and compatible installed CLI output are authoritative. Do not repeat schemas or command catalogs in this skill. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
+Current docs and compatible installed CLI output are authoritative. Do not repeat schemas or command catalogs in this skill. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, declared capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
 
 If a requested documented operation is absent from installed help, verify command resolution and compare the installed version with the official CLI package named by current Introspection documentation before declaring the operation unsupported. Resolve that package through its documented installation source; do not probe similarly named packages, unrelated package managers, repository release APIs, or source checkouts. That missing operation is an actual incompatibility, not a reason to stop at the older surface. Upgrade through the detected installation method, or use an isolated transient invocation of the exact official version when the approved workflow explicitly forbids changing the global installation. Recheck focused help in the resulting fresh process. Do not guess at flags from another source checkout.
 
@@ -42,7 +42,7 @@ Prove the loop with a visible recipe-specific change in a development conversati
 
 A successful deployment is a proven user workflow, not merely a created runtime.
 
-Judge definition calibration and judgement reads are supported by the CLI. Live judge enablement and production sampling may not be; report that boundary when encountered and do not silently switch interfaces.
+Judge definition calibration, judgement reads, and enable/disable (`judges update --enable`/`--disable`, sample-rate) are all supported by the CLI. If a genuinely absent knob appears (for example live production traffic sampling), report that boundary when encountered and do not silently switch interfaces.
 
 ## Learn from production
 
