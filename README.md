@@ -32,7 +32,7 @@ Restart the coding agent after installation so it can load the plugin. The guide
 
 Start with the skill matching the current problem. Skills route to one another at clear boundaries and load detailed references only when needed.
 
-Offline evals and online judges have different contracts. Every eval case and expected answer must be shown to the domain owner before implementation or execution. Every judge calibration label must likewise be human-approved before calibration. Harbor implements accepted offline environment-level evals; Recipes pins their exact versions while declaring online judges separately.
+Offline evals and online judges have different contracts. Every eval case and expected answer must be shown to the domain owner before implementation or execution. Every judge calibration label must likewise be human-approved before calibration. Harbor implements accepted offline environment-level evals; Recipes pins their exact versions while declaring online judges separately. Judge calibration data lives beside its definition as `judges/<judge-name>.calibration.jsonl` and is committed with the judge YAML rather than retained in a temporary directory.
 
 All workflow and supporting skills ship in this plugin. Pi Recipes remains the lightweight, open implementation and canonical specification for portable recipe behavior; the plugin adds the forward-deployed engineering workflow across Pi, recipes, Introspection, evals, and Harbor.
 

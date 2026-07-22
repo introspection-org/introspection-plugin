@@ -177,6 +177,8 @@ Version data, labels, rationales, and approvals. Criteria drift is expected: rev
 
 Introspection judge calibration has a stricter provenance contract than a generic local dataset. Create its fixture rows with the current CLI's bounded conversation export, then add only `expected` and optional `split` at the top level. Do not rewrite the exported conversation or engine metadata, synthesize snapshot hashes, convert arbitrary trace JSON into `judge_fixture` rows, or invoke internal judge-engine protocols. For non-Introspection evidence, keep the original local evaluator or first replay the case into a real Introspection conversation that the CLI can export.
 
+Store the approved fixture set in the owning recipe at `judges/<judge-name>.calibration.jsonl`, next to `judges/<judge-name>.yaml`, and run calibration from that canonical path. Temporary directories are acceptable only while exporting or assembling a review draft; they are not durable dataset locations. Confirm repository-storage authorization and secret hygiene before persistence. When a source conversation cannot be committed, replay an authorized sanitized case and export a new valid fixture instead of editing the protected conversation, engine, or snapshot fields.
+
 ## Generate synthetic coverage
 
 Generate synthetic cases only from an explicit coverage plan. Define the missing failure mode, cohort, boundary, or environmental condition first; otherwise collect more real traces.
@@ -225,6 +227,8 @@ Inspect every disagreement in a small calibration set. Improve the failure defin
 Set acceptance thresholds from the cost of each error type. A release gate may demand extremely low false negatives for a dangerous behavior, while a monitoring signal may tolerate more noise. Freeze the validated model with the prompt; changing the judge model requires revalidation.
 
 Treat judge execution errors, malformed outputs, and missing context as invalid measurements rather than passes or agent failures.
+
+After calibration, stage `judges/<judge-name>.yaml` and `judges/<judge-name>.calibration.jsonl` together, inspect the Git diff for both files, and commit them as one focused measurement change. A calibration result backed only by an untracked or temporary dataset is not a durable artifact and is not ready for recipe promotion.
 
 ## Define ownership
 
