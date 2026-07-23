@@ -9,7 +9,6 @@
       "name": "introspection",
       "source": "./",
       "description": "Create, migrate, deploy, and improve vertical agents on Introspection.",
-      "version": "0.1.0",
       "author": {
         "name": "Introspection"
       },
