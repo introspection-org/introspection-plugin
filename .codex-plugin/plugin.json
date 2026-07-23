@@ -19,6 +19,10 @@
     "logo": "./assets/square-square.svg",
     "developerName": "Introspection",
     "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
     "websiteURL": "https://docs.introspection.dev",
     "defaultPrompt": [
       "Use $introspection:create for a new agent, or $introspection:migrate to preserve an existing agent.",
