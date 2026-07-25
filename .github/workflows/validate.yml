@@ -37,12 +37,16 @@ jobs:
   discover:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         target: [codex, claude-code]
+        # Users install with @latest, so validate against it as well as the
+        # pinned version; an installer change should surface here first.
+        installer: ["1.3.4", "latest"]
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-node@v7.0.0
         with:
           node-version: 22
-      - name: Validate ${{ matrix.target }} discovery
-        run: npx --yes plugins@1.3.4 discover . --target "${{ matrix.target }}"
+      - name: Validate ${{ matrix.target }} discovery (plugins@${{ matrix.installer }})
+        run: npx --yes plugins@${{ matrix.installer }} discover . --target "${{ matrix.target }}"

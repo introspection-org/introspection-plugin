@@ -14,6 +14,15 @@
  * exists. A network failure skips that check rather than failing the build; a
  * reachable index that is missing a cited key is a hard failure.
  *
+ * A new reference must land in introspection-docs before the skill that cites
+ * it, or this check fails on the published index. To validate both sides
+ * together first, serve the docs branch and point this script at it:
+ *
+ *   (cd ../introspection-docs && pnpm generate:plugin-index)
+ *   python3 -m http.server 8899 --directory ../introspection-docs/public &
+ *   PLUGIN_INDEX_URL=http://127.0.0.1:8899/plugin/index.json \
+ *     node scripts/validate-references.mjs
+ *
  * Run: node scripts/validate-references.mjs
  */
 import { readFileSync, readdirSync } from 'node:fs'
@@ -23,6 +32,8 @@ import { fileURLToPath } from 'node:url'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SKILLS_DIR = join(ROOT, 'skills')
 const INDEX_URL = 'https://docs.introspection.dev/plugin/index.json'
+// Point at a locally served docs branch to validate an unpublished reference.
+const RESOLVED_INDEX_URL = process.env.PLUGIN_INDEX_URL ?? INDEX_URL
 
 const CONTRACT = `Resolve every reference and source through the plugin reference index at \`${INDEX_URL}\`, by key and never by a hard-coded content URL. Fetch the index once per session, load an entry only when the work reaches the step its \`load_when\` describes, and report the key and \`revision\` you used. If the index reports a newer \`plugin.current_version\` than this installation, mention its upgrade command once; below \`plugin.min_supported_version\`, stop and require the upgrade.
 
@@ -72,7 +83,7 @@ if (citedKeys.size === 0) {
 // A reachable index must contain every cited key. Offline CI skips this.
 let index = null
 try {
-  const response = await fetch(INDEX_URL, { signal: AbortSignal.timeout(10_000) })
+  const response = await fetch(RESOLVED_INDEX_URL, { signal: AbortSignal.timeout(10_000) })
   if (response.ok) index = await response.json()
 } catch {
   // Intentionally ignored: offline validation still enforces rules 1-3.

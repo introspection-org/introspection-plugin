@@ -35,6 +35,18 @@ Use a `Release-As: x.y.z` footer only when a maintainer explicitly requests a ve
 Never commit local Codex cachebuster versions such as `1.2.3+codex.<token>`; published manifests
 must use the same clean SemVer version.
 
+### After a release
+
+The `plugins` CLI clones the default branch with no ref, so a release tag does
+not reach anyone by itself and there is no update command to prompt them. The
+only signal users get is the index.
+
+Update `plugin.current_version` in `plugin-index.source.json` in
+`introspection-docs` to the released version and regenerate the index. Raise
+`min_supported_version` only when older installations can no longer safely
+follow the published references; they will stop and require an upgrade rather
+than act on content shaped for newer semantics.
+
 ## Validation
 
 Before handing off a change, run the relevant repository checks:
@@ -65,6 +77,15 @@ Consequences for changes here:
 - Adding a new *trigger* — a skill, or its `description` — does need a plugin
   release, because the routing surface cannot be fetched.
 - Every skill that cites the index must carry the reference-loading and
-  degradation contract verbatim. `validate-references.mjs` enforces this.
-- Reference bodies are served from the docs site and inherit its house style,
-  which `validate-public-language.mjs` enforces there.
+  degradation contract verbatim. `validate-references.mjs` enforces this, so
+  the copies cannot drift.
+
+To validate a skill against an unpublished reference, serve the docs branch and
+point the validator at it instead of the published index:
+
+```bash
+(cd ../introspection-docs && pnpm generate:plugin-index)
+python3 -m http.server 8899 --directory ../introspection-docs/public &
+PLUGIN_INDEX_URL=http://127.0.0.1:8899/plugin/index.json \
+  node scripts/validate-references.mjs
+```
