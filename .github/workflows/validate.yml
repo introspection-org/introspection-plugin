@@ -1,7 +1,10 @@
 name: Validate plugin
 
 on:
+  # `edited` matters: the PR title becomes the squash commit and drives the
+  # release, so a title-only correction must be able to turn this check green.
   pull_request:
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [main]
 
