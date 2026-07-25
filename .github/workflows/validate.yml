@@ -46,8 +46,13 @@ jobs:
       - uses: actions/setup-node@v7.0.0
         with:
           node-version: 22
-      - name: Validate plugin and marketplace manifests
-        run: npx --yes @anthropic-ai/claude-code@latest plugin validate ./ --strict
+      # Pointed at a directory the validator picks a single manifest, and the
+      # marketplace one wins when both are present. Target each explicitly so
+      # plugin.json is actually checked.
+      - name: Validate marketplace manifest
+        run: npx --yes @anthropic-ai/claude-code@latest plugin validate ./.claude-plugin/marketplace.json --strict
+      - name: Validate plugin manifest
+        run: npx --yes @anthropic-ai/claude-code@latest plugin validate ./.claude-plugin/plugin.json --strict
       - name: Check plugin.json agrees with its marketplace entry
         run: npx --yes @anthropic-ai/claude-code@latest plugin tag --dry-run
 
