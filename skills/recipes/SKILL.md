@@ -17,17 +17,9 @@ On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduc
 
 ## Use the canonical recipe contract
 
-Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to the `pi-recipes-docs` source:
+Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to the `pi-recipes-docs` source.
 
-- `recipe-flow.md` for scratch, template, local ownership, and publication flow.
-- `recipe-cli.md` for current CLI operations, package resources, and package-level MCP declarations.
-- `agent-composition.md` for `SYSTEM.md`, agent YAML, `system_instructions`, `from:`, inheritance, and root/subagent behavior.
-- `pi-extension.md` for recipe extension loading, tools, subagents, agent-level MCP selection, and session materialization.
-- `interactions.md` only for portable questions, approvals, or interrupts.
-- `mcp-auth.md` only for local or hosted authentication.
-- `recipe-evals.md` only when a Harbor suite has earned durable recipe coverage.
-- `recipe-judges.md` only when authoring or validating portable judge definitions.
-- `deployment-configuration.md` only when a host manifest is in scope.
+Select the page from that source's `pages` map rather than from memory: each entry states what it should be read for. Read the narrowest page that answers the question, and do not assume the set of pages is fixed — it changes as the standard evolves.
 
 Confirm changing mechanics with focused `recipes --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this skill. Do not duplicate their schemas, flags, or examples here.
 

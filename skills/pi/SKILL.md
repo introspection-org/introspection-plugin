@@ -15,7 +15,7 @@ On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduc
 
 ## Resolve only the behavior the task needs
 
-Inspect the target repository and its package metadata before assuming how Pi is installed or extended. When exact current behavior matters, open the `pi-docs` source and read only the relevant page: Using Pi, Providers, Settings, Extensions, Skills, Prompt Templates, or Pi Packages. Use the `pi-source-docs` source when the rendered documentation is unavailable or implementation-level precision is required.
+Inspect the target repository and its package metadata before assuming how Pi is installed or extended. When exact current behavior matters, open the `pi-docs` source and read only the page its entry indicates for the work at hand. Use the `pi-source-docs` source when the rendered documentation is unavailable or implementation-level precision is required.
 
 Do not install or upgrade Pi merely to answer a question, inspect a repository, or design a change. When an approved operation actually requires Pi, inspect the available executable, its version, and focused command help. Install or upgrade only when it is missing or demonstrably incompatible, using the canonical method for the detected installation. Do not switch package managers or installation methods. Stop before elevated privileges, replacement of an unrecognized development build, or authentication and user-configuration changes.
 

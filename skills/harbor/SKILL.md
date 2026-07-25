@@ -33,7 +33,7 @@ Assume the current official Harbor skills are installed; the `harbor-skills` sou
 - `publish` only when the user explicitly asks to publish a task or dataset to the Harbor registry.
 - `upload-parity-experiments` only while contributing adapter parity artifacts to Harbor's shared dataset.
 
-Do not copy their schemas, commands, examples, or troubleshooting tables into this plugin. Confirm current behavior with the installed `harbor` CLI help.
+Do not copy their schemas, commands, examples, or troubleshooting tables into this plugin. Confirm current behavior with the installed `harbor` CLI help, and use the `harbor-docs` source only when help does not settle the question.
 
 ## Create a task
 
