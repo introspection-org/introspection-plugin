@@ -8,10 +8,16 @@ license: Apache-2.0
 
 Use the CLI as the only platform interface. Never use the dashboard, a browser, browser automation, a direct API, an SDK, or database access to operate Introspection. Keep recipe design in `$introspection:recipes`, evaluation reasoning in `$introspection:evals`, and production diagnosis and fixes in `$introspection:improve`.
 
+## Load references
+
+Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch the index once per session, load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. If the index reports a newer `plugin.current_version` than this installation, mention its upgrade command once; below `plugin.min_supported_version`, stop and require the upgrade.
+
+On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
+
 ## Route through current documentation
 
 1. Select only the workflow matching the request: connect, deploy, run, observe, judge, experiment, or ship.
-2. Fetch `https://docs.introspection.dev/llms.txt` and read only the linked CLI workflow and concepts required for that operation.
+2. Open the `introspection-docs` source and read only the linked CLI workflow and concepts required for that operation.
 3. Inspect repository and task context and prepare the execution brief before installing, upgrading, authenticating, or configuring the CLI.
 4. Immediately before the first platform command the workflow needs, confirm `introspection` exists and inspect focused help for the exact operation.
 5. Use the installed CLI when it supports the required command and flags. Install it only when missing; upgrade a recognized installation only when an actual incompatibility blocks the operation. Use the documented command for its detected installation method, verify in a fresh process, and retry the blocked operation.

@@ -40,8 +40,31 @@ must use the same clean SemVer version.
 Before handing off a change, run the relevant repository checks:
 
 ```bash
+node scripts/validate-references.mjs
 npx --yes plugins@1.3.4 discover . --target codex
 npx --yes plugins@1.3.4 discover . --target claude-code
 ```
 
 For release automation changes, also validate the Release Please configuration with a dry run.
+
+## References
+
+Skills resolve all content through the reference index at
+`https://docs.introspection.dev/plugin/index.json`, by key and never by a
+hard-coded URL. Reference bodies live in the `introspection-docs` repository
+under `public/plugin/v1/`, and their metadata in `plugin-index.source.json`.
+
+This keeps content correctable without a plugin release, which matters because
+the `plugins` CLI has no update command: an installation stays at the commit it
+was installed from until a user re-runs `plugins add`.
+
+Consequences for changes here:
+
+- Adding a new reference is a docs change, not a plugin change. Land it in
+  `introspection-docs` first so the published index has the key.
+- Adding a new *trigger* — a skill, or its `description` — does need a plugin
+  release, because the routing surface cannot be fetched.
+- Every skill that cites the index must carry the reference-loading and
+  degradation contract verbatim. `validate-references.mjs` enforces this.
+- Reference bodies are served from the docs site and inherit its house style,
+  which `validate-public-language.mjs` enforces there.

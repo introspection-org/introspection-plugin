@@ -9,6 +9,12 @@ Deploy the locally proven recipe identified by the request. Resolve the actual p
 
 Load and follow `$introspection:pi`, `$introspection:recipes`, `$introspection:evals`, and `$introspection:introspection`. Resolve each CLI only when the approved deployment step first needs it.
 
+## Load references
+
+Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch the index once per session, load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. If the index reports a newer `plugin.current_version` than this installation, mention its upgrade command once; below `plugin.min_supported_version`, stop and require the upgrade.
+
+On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
+
 ## Think in provenance and lifecycle
 
 Deployment is a proof problem: establish which recipe, repository, commit, project, runtime group, version, bindings, and environment will be affected. A passing recipe check is necessary but not sufficient. The deployed task must resolve to the intended immutable Git commit and produce representative behavior through staging.
@@ -19,7 +25,7 @@ Reuse the existing runtime lifecycle. A matching runtime group is not a reason t
 
 Confirm local evidence in proportion to the agent's risk. For a newly created agent, use its approved acceptance set and retained local proof. For a migrated or improved agent, use the parity or comparison evidence from that workflow. Do not invent an eval, Harbor task, or calibrated judge when the job does not require one.
 
-Read the current deployment and connection workflows routed through [`docs.introspection.dev/llms.txt`](https://docs.introspection.dev/llms.txt), then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
+Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 
 Without changing anything, resolve CLI version and login identity, project and scopes, Git remote and status, recipe package root, `.introspection` manifest, and intended diff. Run the current recipe check. Identify missing or invalid configuration, but do not repair it yet.
 

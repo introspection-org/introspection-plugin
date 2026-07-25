@@ -65,9 +65,22 @@ The default improvement path is production evidence → adaptive parallel invest
 
 ## Sources of truth
 
-For Pi harness work, read only the relevant current [Pi documentation](https://pi.dev/docs/latest). For portable recipe work, use the installed Pi Recipes documentation or the canonical [`pi-recipes` docs](https://github.com/introspection-org/pi-recipes/tree/main/docs). For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. Operate the product entirely through the CLI; never substitute the dashboard, a browser, or browser automation. For Harbor work, load the matching skill from the [official Harbor collection](https://github.com/harbor-framework/harbor/tree/main/skills) and confirm exact operations with CLI help.
+The plugin is a stable router. It carries the routing surface and the safety contract — skill descriptions, workflow control flow, approval gates, and firm boundaries — and resolves everything else at run time.
 
-The plugin carries cross-cutting agent judgment. It intentionally does not copy product schemas, command catalogs, or full documentation.
+All content is resolved through the **plugin reference index** at [`docs.introspection.dev/plugin/index.json`](https://docs.introspection.dev/plugin/index.json), by key rather than by URL, so content can be corrected, split, or re-hosted without a plugin release. The index carries two kinds of entry:
+
+- **References** are the plugin's own cross-cutting judgment, such as evaluation design and vertical-agent composition. They are published from the docs repository and reach every installation on its next session.
+- **Sources** are external truth: Pi, Pi Recipes, Harbor, and the Introspection documentation. Read only the page the current operation needs, then confirm exact operations with installed CLI help.
+
+Each entry declares a `degradation` class that governs a failed fetch: `advisory` proceeds at reduced depth, `required-for-step` skips only that step, and `gating` stops. A reference that could not be loaded is never reconstructed from memory; the workflow names the key that failed. Workflows report the key and `revision` they used, so a session's judgment is reproducible.
+
+Operate the product entirely through the CLI; never substitute the dashboard, a browser, or browser automation.
+
+The plugin intentionally does not copy product schemas, command catalogs, or full documentation.
+
+## Staying current
+
+The `plugins` CLI has no update command, so an installation stays at the commit it was installed from until the same `add` command is run again. The index reports `plugin.current_version` and `plugin.min_supported_version`; a workflow mentions the upgrade command once when a newer version exists, and stops when the installation is older than the supported floor.
 
 ## Requirements
 

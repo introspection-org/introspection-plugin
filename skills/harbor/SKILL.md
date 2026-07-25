@@ -16,9 +16,15 @@ Before an approved task-authoring or execution operation requires Harbor, confir
 
 Before spending any approved real-agent attempt, resolve and print the complete run configuration with current CLI help: agent, explicit model, authentication source, environment, task or dataset selector, attempt count, and output directory. Run a non-mutating setup or config check when the agent supports one. For Codex, `--model` is required; when using an existing ChatGPT login, pass `CODEX_AUTH_JSON_PATH` or `CODEX_FORCE_AUTH_JSON` through `--agent-env` instead of assuming the host login will appear inside the Harbor environment. Never print credential contents.
 
+## Load references
+
+Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch the index once per session, load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. If the index reports a newer `plugin.current_version` than this installation, mention its upgrade command once; below `plugin.min_supported_version`, stop and require the upgrade.
+
+On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
+
 ## Load only the official skill needed
 
-Assume the current skills from [`harbor-framework/harbor/skills`](https://github.com/harbor-framework/harbor/tree/main/skills) are installed. Load only the matching upstream skill:
+Assume the current official Harbor skills are installed; the `harbor-skills` source locates them when one is missing or incompatible. Load only the matching upstream skill:
 
 - `create-task` for ordinary task scaffolding, environment design, verifier selection, reference solutions, Oracle validation, and real-agent runs.
 - `rewardkit` when offline grading needs multiple criteria, partial credit, or reusable programmatic checks. Do not use model-based grading to disguise semantic correctness as a deterministic eval; route an online judge request through `$introspection:evals` and `$introspection:introspection`.
@@ -31,7 +37,7 @@ Do not copy their schemas, commands, examples, or troubleshooting tables into th
 
 ## Create a task
 
-Read [create-task.md](references/create-task.md), then follow the installed `create-task` skill. The local reference supplies the Introspection-to-Harbor handoff, integrity checks, and result interpretation that the upstream task mechanics do not own.
+Load the `harbor-create-task` reference, then follow the installed `create-task` skill. The local reference supplies the Introspection-to-Harbor handoff, integrity checks, and result interpretation that the upstream task mechanics do not own.
 
 ## Preserve and interpret the benchmark
 
