@@ -48,7 +48,7 @@ When an existing recipe is the approved starting point, resolve it from an expli
 
 ## Compose the portable package
 
-Use the smallest structure required by the calling workflow's approved cases. Load the `vertical-agents` reference when deciding whether behavior belongs in shared instructions, a recipe skill, deterministic code, an external capability, or a child agent.
+Use the smallest structure required by the calling workflow's approved cases. Load the `agent-design` reference when deciding whether behavior belongs in shared instructions, a recipe skill, deterministic code, an external capability, or a child agent.
 
 - Declare package resources and portable metadata in the recipe package manifest.
 - Use `SYSTEM.md` for mission, terminology, policies, and workflow rules shared across the recipe's root and delegated agents.
