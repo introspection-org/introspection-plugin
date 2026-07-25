@@ -6,7 +6,20 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 
 ## Install
 
-Choose your coding agent and run the matching command in a terminal:
+Each host has a native marketplace. Register this repository as one, then install:
+
+```text
+# Claude Code
+/plugin marketplace add introspection-org/introspection-plugin
+/plugin install introspection@introspection-org-introspection-plugin
+```
+
+```bash
+# Codex
+codex plugin marketplace add introspection-org/introspection-plugin
+```
+
+A coding agent installing on your behalf cannot type a slash command, so it uses the cross-host installer instead. This is also the fallback when a host's marketplace is unavailable:
 
 ```bash
 # Codex
@@ -16,7 +29,9 @@ npx --yes plugins@latest add introspection-org/introspection-plugin --target cod
 npx --yes plugins@latest add introspection-org/introspection-plugin --target claude-code --scope user --yes
 ```
 
-Restart the coding agent after installation so it can load the plugin. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
+Restart the coding agent after installation so it can load the plugin.
+
+Updates are the host's job. Claude Code tracks the `version` in `.claude-plugin/plugin.json` and refreshes through its marketplace (`/plugin update`, or automatically when auto-update is on); Codex refreshes with `codex plugin marketplace upgrade`. Either way a restart applies the change. The plugin never prompts for its own upgrade. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
 | Skill | Owns |
 | --- | --- |
@@ -65,9 +80,28 @@ The default improvement path is production evidence → adaptive parallel invest
 
 ## Sources of truth
 
-For Pi harness work, read only the relevant current [Pi documentation](https://pi.dev/docs/latest). For portable recipe work, use the installed Pi Recipes documentation or the canonical [`pi-recipes` docs](https://github.com/introspection-org/pi-recipes/tree/main/docs). For Introspection work, fetch [llms.txt](https://docs.introspection.dev/llms.txt), open only the relevant linked pages, and confirm exact operations with the installed `introspection` CLI help. Operate the product entirely through the CLI; never substitute the dashboard, a browser, or browser automation. For Harbor work, load the matching skill from the [official Harbor collection](https://github.com/harbor-framework/harbor/tree/main/skills) and confirm exact operations with CLI help.
+The plugin is a stable router. It carries the routing surface and the safety contract — skill descriptions, workflow control flow, approval gates, and firm boundaries — and resolves everything else at run time.
 
-The plugin carries cross-cutting agent judgment. It intentionally does not copy product schemas, command catalogs, or full documentation.
+All content is resolved through the **plugin reference index** at [`docs.introspection.dev/plugin/index.json`](https://docs.introspection.dev/plugin/index.json), by key rather than by URL, so content can be corrected, split, or re-hosted without a plugin release. The index carries two kinds of entry:
+
+- **References** are the plugin's own cross-cutting judgment, such as evaluation design and vertical-agent composition. They are published from the docs repository and reach every installation on its next session.
+- **Sources** are external truth: Pi, Pi Recipes, Harbor, and the Introspection documentation. Read only the page the current operation needs, then confirm exact operations with installed CLI help.
+
+Each entry declares a `degradation` class that governs a failed fetch: `advisory` proceeds at reduced depth, `required-for-step` skips only that step, and `gating` stops. A reference that could not be loaded is never reconstructed from memory; the workflow names the key that failed. Workflows report the key and `revision` they used, so a session's judgment is reproducible.
+
+Operate the product entirely through the CLI; never substitute the dashboard, a browser, or browser automation.
+
+The plugin intentionally does not copy product schemas, command catalogs, or full documentation.
+
+## Staying current
+
+Two things update on different clocks.
+
+**The plugin** is the host's responsibility. `version` in `.claude-plugin/plugin.json` is the release signal: Claude Code pins an installation to that string and delivers a new one only when it changes, so a Release Please version bump is what reaches users. Codex refreshes its marketplace on demand. Both need a restart to apply, and the plugin never prompts for its own upgrade — it would only duplicate the host, and cannot activate the result anyway.
+
+The index still publishes `plugin.min_supported_version` as a safety floor. An installation below it stops rather than acting on content shaped for newer semantics. `plugin.current_version` is informational.
+
+**Reference content** is fetched per session, so a correction reaches every installation on every host immediately, with no release, no update, and no restart. That is why the judgment lives there and only the routing lives here.
 
 ## Requirements
 

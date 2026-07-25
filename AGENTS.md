@@ -35,13 +35,60 @@ Use a `Release-As: x.y.z` footer only when a maintainer explicitly requests a ve
 Never commit local Codex cachebuster versions such as `1.2.3+codex.<token>`; published manifests
 must use the same clean SemVer version.
 
+### After a release
+
+Release Please bumps `version` in `.claude-plugin/plugin.json` and
+`.codex-plugin/plugin.json`. That version *is* the release signal: Claude Code
+pins an installation to it and ships a new one only when it changes. Keep the
+two manifests and the marketplace entry in agreement — CI checks this with
+`claude plugin tag --dry-run`.
+
+Nothing else is required. Raise `plugin.min_supported_version` in
+`plugin-index.source.json` in `introspection-docs` only when older installations
+can no longer safely follow the published references; they will stop and require
+an upgrade rather than act on content shaped for newer semantics.
+
 ## Validation
 
 Before handing off a change, run the relevant repository checks:
 
 ```bash
+node scripts/validate-references.mjs
 npx --yes plugins@1.3.4 discover . --target codex
 npx --yes plugins@1.3.4 discover . --target claude-code
 ```
 
 For release automation changes, also validate the Release Please configuration with a dry run.
+
+## References
+
+Skills resolve all content through the reference index at
+`https://docs.introspection.dev/plugin/index.json`, by key and never by a
+hard-coded URL. Reference bodies live in the `introspection-docs` repository
+under `public/plugin/v1/`, and their metadata in `plugin-index.source.json`.
+
+This keeps content correctable without a plugin release. It matters because how
+an update reaches an installation varies by host: Claude Code and Cursor may
+auto-update the marketplace, while a Codex installation stays at the commit it
+was installed from until a user re-runs `plugins add`. Reference content is
+fetched per session, so it reaches all of them equally.
+
+Consequences for changes here:
+
+- Adding a new reference is a docs change, not a plugin change. Land it in
+  `introspection-docs` first so the published index has the key.
+- Adding a new *trigger* — a skill, or its `description` — does need a plugin
+  release, because the routing surface cannot be fetched.
+- Every skill that cites the index must carry the reference-loading and
+  degradation contract verbatim. `validate-references.mjs` enforces this, so
+  the copies cannot drift.
+
+To validate a skill against an unpublished reference, serve the docs branch and
+point the validator at it instead of the published index:
+
+```bash
+(cd ../introspection-docs && pnpm generate:plugin-index)
+python3 -m http.server 8899 --directory ../introspection-docs/public &
+PLUGIN_INDEX_URL=http://127.0.0.1:8899/plugin/index.json \
+  node scripts/validate-references.mjs
+```

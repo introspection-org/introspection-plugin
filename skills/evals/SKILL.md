@@ -26,7 +26,15 @@ Use this skill without requiring another evaluation package for ordinary agent w
 
 Recommend Harbor when creating new environment-level agent evaluations. If the project already has an evaluation framework, preserve its runner, fixtures, result history, and CI integration unless migration has a demonstrated benefit. Apply the same methodology through the existing framework and add Harbor only for capabilities it cannot faithfully represent.
 
-Read [eval-design.md](references/eval-design.md) for the operational procedures. Consult external evaluation skills only for an adjacent specialty explicitly outside this scope, such as building a bespoke annotation application or evaluating a retrieval system as a system in its own right.
+Load the `eval-design` reference for the operational procedures. Consult external evaluation skills only for an adjacent specialty explicitly outside this scope, such as building a bespoke annotation application or evaluating a retrieval system as a system in its own right.
+
+## Load references
+
+Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
+
+On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
+
+Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
 
 ## Start with evidence, not evaluators
 
@@ -80,7 +88,7 @@ Resolve the recipe root and persist each approved judge calibration dataset as `
 
 Treat the judge definition and calibration dataset as one versioned measurement contract. Confirm the fixtures are authorized for repository storage and contain no secrets. If source conversations cannot be committed safely, create authorized sanitized conversations and export fresh fixtures rather than mutating protected export fields. Stage the judge YAML and calibration JSONL together, verify both appear in the Git diff, and include them in the same focused commit. If Git mutation is not yet authorized, pause for approval and do not claim judge calibration complete until the dataset is tracked by the recipe repository.
 
-Read [eval-design.md](references/eval-design.md) for the complete error-analysis protocol, suite audit, dataset and synthetic-case design, judge construction and calibration, collaboration model, and operationalization checks.
+Load the `eval-design` reference for the complete error-analysis protocol, suite audit, dataset and synthetic-case design, judge construction and calibration, collaboration model, and operationalization checks.
 
 ## Improve and close the loop
 
@@ -115,7 +123,7 @@ Do not block a prototype on optimization-grade coverage. Do not call an agent de
 
 For work outside the agent-evaluation loop, consult the relevant upstream Hamel skill instead of expanding this plugin:
 
-- [`build-review-interface`](https://github.com/hamelsmu/evals-skills/tree/main/skills/build-review-interface) when the deliverable is a custom annotation or review application rather than an Introspection review workflow.
-- [`evaluate-rag`](https://github.com/hamelsmu/evals-skills/tree/main/skills/evaluate-rag) when retrieval quality, chunking, ranking, or answer-grounding requires a dedicated retrieval evaluation program.
+- The `evals-build-review-interface` source when the deliverable is a custom annotation or review application rather than an Introspection review workflow.
+- The `evals-evaluate-rag` source when retrieval quality, chunking, ranking, or answer-grounding requires a dedicated retrieval evaluation program.
 
 Never improve a score by weakening the task, labels, evaluator, judge, or acceptance policy. Treat evaluator failures as invalid measurement, never as agent failures.

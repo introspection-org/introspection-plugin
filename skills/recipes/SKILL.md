@@ -9,19 +9,17 @@ Treat a recipe as portable agent IP: the versioned package that carries instruct
 
 Keep offline evals and online judges as distinct recipe resources. `$introspection:evals` owns the human-approved offline measurement contract, `$introspection:harbor` owns an accepted environment-level task and its run evidence, and this skill owns the immutable Harbor reference declared by the recipe. Online judges follow a separate human-label, calibration, declaration, and deployment path through `$introspection:evals` and `$introspection:introspection`. Keep each judge's direct-child YAML and approved calibration data together as `judges/<judge-name>.yaml` and `judges/<judge-name>.calibration.jsonl`; both belong to the recipe Git repository.
 
+## Load references
+
+Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
+
+On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
+
+Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
+
 ## Use the canonical recipe contract
 
-Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to [`introspection-org/pi-recipes/docs`](https://github.com/introspection-org/pi-recipes/tree/main/docs):
-
-- `recipe-flow.md` for scratch, template, local ownership, and publication flow.
-- `recipe-cli.md` for current CLI operations, package resources, and package-level MCP declarations.
-- `agent-composition.md` for `SYSTEM.md`, agent YAML, `system_instructions`, `from:`, inheritance, and root/subagent behavior.
-- `pi-extension.md` for recipe extension loading, tools, subagents, agent-level MCP selection, and session materialization.
-- `interactions.md` only for portable questions, approvals, or interrupts.
-- `mcp-auth.md` only for local or hosted authentication.
-- `recipe-evals.md` only when a Harbor suite has earned durable recipe coverage.
-- `recipe-judges.md` only when authoring or validating portable judge definitions.
-- `deployment-configuration.md` only when a host manifest is in scope.
+Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to the `pi-recipes-docs` source and reading the narrowest page that answers the question.
 
 Confirm changing mechanics with focused `recipes --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this skill. Do not duplicate their schemas, flags, or examples here.
 
@@ -46,11 +44,11 @@ Do not silently switch package managers or installation methods. Stop if the req
 
 All paths converge on an inspectable package that can be checked and run directly by path. Do not require global registration for local work.
 
-When an existing recipe is the approved starting point, resolve it from an explicit source or the machine-readable [Pi Recipes catalog](https://pi.recipes/catalog.json). Inspect its source, license text, providers, and required capabilities before mutation. Validate the selected entry's source and version and pass them as arguments to the documented commands; never evaluate an `installCommand` string as shell code. After the calling workflow's confirmation gate, customize into the approved repository-local output path. Preserve attribution, remove irrelevant example behavior and local capability configuration, and prove the result against the new user's cases. Installing or copying a recipe is not behavioral proof.
+When an existing recipe is the approved starting point, resolve it from an explicit source or the machine-readable catalog behind the `pi-recipes-catalog` source. Inspect its source, license text, providers, and required capabilities before mutation. Validate the selected entry's source and version and pass them as arguments to the documented commands; never evaluate an `installCommand` string as shell code. After the calling workflow's confirmation gate, customize into the approved repository-local output path. Preserve attribution, remove irrelevant example behavior and local capability configuration, and prove the result against the new user's cases. Installing or copying a recipe is not behavioral proof.
 
 ## Compose the portable package
 
-Use the smallest structure required by the calling workflow's approved cases. Read [vertical-agents.md](references/vertical-agents.md) when deciding whether behavior belongs in shared instructions, a recipe skill, deterministic code, an external capability, or a child agent.
+Use the smallest structure required by the calling workflow's approved cases. Load the `agent-design` reference when deciding whether behavior belongs in shared instructions, a recipe skill, deterministic code, an external capability, or a child agent.
 
 - Declare package resources and portable metadata in the recipe package manifest.
 - Use `SYSTEM.md` for mission, terminology, policies, and workflow rules shared across the recipe's root and delegated agents.
