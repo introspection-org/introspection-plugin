@@ -14,7 +14,7 @@ Resolve every reference and source through the plugin reference index at `https:
 
 On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
 
-Compare the index's `plugin.current_version` with the `version.txt` beside this plugin's `skills/` directory. If the index is newer, mention its upgrade command once; if this installation is below `plugin.min_supported_version`, stop and require the upgrade.
+Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
 
 ## Route through current documentation
 

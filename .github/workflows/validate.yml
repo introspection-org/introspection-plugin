@@ -37,6 +37,20 @@ jobs:
       - name: Validate reference resolution
         run: node scripts/validate-references.mjs
 
+  # The vendor's own conformance check. It tracks the plugin and marketplace
+  # schemas as they evolve, which a third-party installer cannot.
+  manifests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+      - name: Validate plugin and marketplace manifests
+        run: npx --yes @anthropic-ai/claude-code@latest plugin validate ./ --strict
+      - name: Check plugin.json agrees with its marketplace entry
+        run: npx --yes @anthropic-ai/claude-code@latest plugin tag --dry-run
+
   discover:
     runs-on: ubuntu-latest
     strategy:

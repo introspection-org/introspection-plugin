@@ -37,17 +37,16 @@ must use the same clean SemVer version.
 
 ### After a release
 
-The `plugins` CLI clones the default branch with no ref, so a release tag does
-not reach anyone by itself, and the CLI has no update command to prompt them.
-Claude Code and Cursor installations may auto-update the marketplace, but Codex
-installations and any host where auto-update was declined do not. The index is
-the only signal that reaches every installation.
+Release Please bumps `version` in `.claude-plugin/plugin.json` and
+`.codex-plugin/plugin.json`. That version *is* the release signal: Claude Code
+pins an installation to it and ships a new one only when it changes. Keep the
+two manifests and the marketplace entry in agreement — CI checks this with
+`claude plugin tag --dry-run`.
 
-Update `plugin.current_version` in `plugin-index.source.json` in
-`introspection-docs` to the released version and regenerate the index. Raise
-`min_supported_version` only when older installations can no longer safely
-follow the published references; they will stop and require an upgrade rather
-than act on content shaped for newer semantics.
+Nothing else is required. Raise `plugin.min_supported_version` in
+`plugin-index.source.json` in `introspection-docs` only when older installations
+can no longer safely follow the published references; they will stop and require
+an upgrade rather than act on content shaped for newer semantics.
 
 ## Validation
 

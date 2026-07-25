@@ -6,7 +6,20 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 
 ## Install
 
-Choose your coding agent and run the matching command in a terminal:
+Each host has a native marketplace. Register this repository as one, then install:
+
+```text
+# Claude Code
+/plugin marketplace add introspection-org/introspection-plugin
+/plugin install introspection@introspection-org-introspection-plugin
+```
+
+```bash
+# Codex
+codex plugin marketplace add introspection-org/introspection-plugin
+```
+
+A coding agent installing on your behalf cannot type a slash command, so it uses the cross-host installer instead. This is also the fallback when a host's marketplace is unavailable:
 
 ```bash
 # Codex
@@ -16,7 +29,9 @@ npx --yes plugins@latest add introspection-org/introspection-plugin --target cod
 npx --yes plugins@latest add introspection-org/introspection-plugin --target claude-code --scope user --yes
 ```
 
-Restart the coding agent after installation so it can load the plugin. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
+Restart the coding agent after installation so it can load the plugin.
+
+Updates are the host's job. Claude Code tracks the `version` in `.claude-plugin/plugin.json` and refreshes through its marketplace (`/plugin update`, or automatically when auto-update is on); Codex refreshes with `codex plugin marketplace upgrade`. Either way a restart applies the change. The plugin never prompts for its own upgrade. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
 | Skill | Owns |
 | --- | --- |
@@ -80,16 +95,13 @@ The plugin intentionally does not copy product schemas, command catalogs, or ful
 
 ## Staying current
 
-How a plugin update reaches an installation depends on the host:
+Two things update on different clocks.
 
-- **Claude Code and Cursor:** installing a marketplace for the first time enables auto-update by default (recorded as `autoUpdate` in `~/.claude/plugins/known_marketplaces.json`), so the host can refresh the plugin without the user running anything. A refresh still only takes effect after a restart.
-- **Codex, a declined prompt, or an already-known marketplace:** no auto-update is configured, and the installation stays at the commit it was installed from until the same `add` command is run again.
+**The plugin** is the host's responsibility. `version` in `.claude-plugin/plugin.json` is the release signal: Claude Code pins an installation to that string and delivers a new one only when it changes, so a Release Please version bump is what reaches users. Codex refreshes its marketplace on demand. Both need a restart to apply, and the plugin never prompts for its own upgrade — it would only duplicate the host, and cannot activate the result anyway.
 
-The `plugins` CLI itself has no update command in any case, so it never prompts.
+The index still publishes `plugin.min_supported_version` as a safety floor. An installation below it stops rather than acting on content shaped for newer semantics. `plugin.current_version` is informational.
 
-Because that floor varies by host, the index reports `plugin.current_version` and `plugin.min_supported_version`. A workflow compares them against the installed `version.txt`, mentions the upgrade command once when a newer version exists, and stops when the installation is older than the supported floor.
-
-Reference content is the exception: it is fetched per session, so it reaches every installation on every host immediately, with no update, restart, or user action.
+**Reference content** is fetched per session, so a correction reaches every installation on every host immediately, with no release, no update, and no restart. That is why the judgment lives there and only the routing lives here.
 
 ## Requirements
 
