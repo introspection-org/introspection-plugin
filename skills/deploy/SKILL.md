@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Deploy a locally proven Introspection recipe and verify it in staging. Use when the user asks to deploy, publish, stage, or create a runtime for an agent recipe, or invokes deploy.
+description: Deploy a locally proven Introspection recipe and verify the runtime it resolves to, in staging and then in production, including the environment-scoped bindings each lane needs. Use when the user asks to deploy, publish, stage, promote, release, configure bindings for, or create a runtime for an agent recipe, or invokes deploy.
 ---
 
 # Deploy
@@ -19,7 +19,9 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 ## Think in provenance and lifecycle
 
-Deployment is a proof problem: establish which recipe, repository, commit, project, runtime group, version, bindings, and environment will be affected. A passing recipe check is necessary but not sufficient. The deployed task must resolve to the intended immutable Git commit and produce representative behavior through staging.
+Deployment is a proof problem: establish which recipe, repository, commit, project, runtime group, version, bindings, and environments will be affected. A passing recipe check is necessary but not sufficient. The deployed task must resolve to the intended immutable Git commit and produce representative behavior in every environment lane it will serve.
+
+Staging is pinned directly; production moves when the configured branch merges. Deployment therefore does not end at staging, and it is not finished because a version exists.
 
 Reuse the existing runtime lifecycle. A matching runtime group is not a reason to create another one, and an ambiguous identity is not permission to guess.
 
@@ -43,7 +45,7 @@ Never create a GitHub repository for the user. If the repository, remote, or Git
 
 Explain the resolved target and provenance, local readiness, recipe-check result, proposed Git or configuration work, runtime lifecycle, environment effects, and verification plan. Make material side effects and uncertainty unmistakable, but choose the clearest natural presentation rather than a fixed deployment brief.
 
-Ask for explicit confirmation covering the complete proposed mutation: configuration edits, commit, push, runtime registration or candidate selection, bindings, and staging changes. Continue through the approved deployment without routine stops, but pause if the target, side effects, or scope changes materially.
+Ask for explicit confirmation covering the complete proposed mutation: configuration edits, commit, push, runtime registration or candidate selection, bindings in every affected environment, and staging changes. Name what the eventual merge will activate in production so that consequence is approved before it is reachable, not discovered afterward. Continue through the approved deployment without routine stops, but pause if the target, side effects, or scope changes materially.
 
 ## Deploy and verify
 
@@ -51,7 +53,17 @@ Make approved manifest or configuration changes and rerun the recipe check. Do n
 
 Configure the approved staging bindings, select the candidate for staging, and run a representative task through the runtime-group slug so the smoke test exercises staging resolution. Follow the task to completion, retrieve its exact conversation ID, and inspect the complete conversation. Prove that the resolved runtime and recipe commit match the intended Git SHA.
 
-Report the deployed identity, active commit, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform.
+Use an API key scoped to the environment under test; the credential is what selects the environment, so a staging key cannot verify production. Load the `runtime-auth` reference when the product needs more than a trusted backend calling on its own behalf, and treat the move to a service-account application or federation as an integration decision the user makes, not a deployment step.
+
+## Carry both environments
+
+Bindings are environment-scoped. A configured staging endpoint, variable, or credential does not configure production, and production activates on merge without asking whether its bindings exist. Resolve the applicable rows for every environment the recipe will serve, and configure the missing production ones before the merge rather than after the first failed live task.
+
+Merging is the user's release decision, so do not merge to make production move. Explain what the merge will activate, which production bindings are in place, and what remains unresolved.
+
+After the user merges, verify production the same way staging was verified: run a representative task through the stable runtime-group slug, confirm it resolves to the merged recipe commit, and inspect the complete conversation. A created production version is not a verified one.
+
+Report the deployed identity, active commit per environment, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform.
 
 ## Firm boundaries
 
@@ -59,5 +71,7 @@ Report the deployed identity, active commit, runtime and task evidence, material
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command.
 - Do not deploy an ambiguous recipe, repository, commit, project, or runtime identity.
 - Do not create a duplicate runtime group or invent an unsupported update path.
+- Do not merge to production for the user; the merge is their release decision.
+- Do not leave production bindings unresolved once the merge would activate it.
 - Do not create a GitHub repository for the user.
 - Do not substitute another platform interface when a required operation is unavailable through the current CLI; expose the gap.
