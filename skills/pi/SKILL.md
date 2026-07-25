@@ -9,13 +9,15 @@ Treat Pi as an extensible agent harness. Keep portable agent packaging in `$intr
 
 ## Load references
 
-Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch the index once per session, load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. If the index reports a newer `plugin.current_version` than this installation, mention its upgrade command once; below `plugin.min_supported_version`, stop and require the upgrade.
+Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
 
 On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
 
+Compare the index's `plugin.current_version` with the `version.txt` beside this plugin's `skills/` directory. If the index is newer, mention its upgrade command once; if this installation is below `plugin.min_supported_version`, stop and require the upgrade.
+
 ## Resolve only the behavior the task needs
 
-Inspect the target repository and its package metadata before assuming how Pi is installed or extended. When exact current behavior matters, open the `pi-docs` source and read only the page its entry indicates for the work at hand. Use the `pi-source-docs` source when the rendered documentation is unavailable or implementation-level precision is required.
+Inspect the target repository and its package metadata before assuming how Pi is installed or extended. When exact current behavior matters, open the `pi-docs` source and read only the page relevant to the work. Use the `pi-source-docs` source when the rendered documentation is unavailable or implementation-level precision is required.
 
 Do not install or upgrade Pi merely to answer a question, inspect a repository, or design a change. When an approved operation actually requires Pi, inspect the available executable, its version, and focused command help. Install or upgrade only when it is missing or demonstrably incompatible, using the canonical method for the detected installation. Do not switch package managers or installation methods. Stop before elevated privileges, replacement of an unrecognized development build, or authentication and user-configuration changes.
 

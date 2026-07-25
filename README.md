@@ -80,7 +80,16 @@ The plugin intentionally does not copy product schemas, command catalogs, or ful
 
 ## Staying current
 
-The `plugins` CLI has no update command, so an installation stays at the commit it was installed from until the same `add` command is run again. The index reports `plugin.current_version` and `plugin.min_supported_version`; a workflow mentions the upgrade command once when a newer version exists, and stops when the installation is older than the supported floor.
+How a plugin update reaches an installation depends on the host:
+
+- **Claude Code and Cursor:** installing a marketplace for the first time enables auto-update by default (recorded as `autoUpdate` in `~/.claude/plugins/known_marketplaces.json`), so the host can refresh the plugin without the user running anything. A refresh still only takes effect after a restart.
+- **Codex, a declined prompt, or an already-known marketplace:** no auto-update is configured, and the installation stays at the commit it was installed from until the same `add` command is run again.
+
+The `plugins` CLI itself has no update command in any case, so it never prompts.
+
+Because that floor varies by host, the index reports `plugin.current_version` and `plugin.min_supported_version`. A workflow compares them against the installed `version.txt`, mentions the upgrade command once when a newer version exists, and stops when the installation is older than the supported floor.
+
+Reference content is the exception: it is fetched per session, so it reaches every installation on every host immediately, with no update, restart, or user action.
 
 ## Requirements
 

@@ -11,15 +11,15 @@ Keep offline evals and online judges as distinct recipe resources. `$introspecti
 
 ## Load references
 
-Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch the index once per session, load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. If the index reports a newer `plugin.current_version` than this installation, mention its upgrade command once; below `plugin.min_supported_version`, stop and require the upgrade.
+Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
 
 On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
 
+Compare the index's `plugin.current_version` with the `version.txt` beside this plugin's `skills/` directory. If the index is newer, mention its upgrade command once; if this installation is below `plugin.min_supported_version`, stop and require the upgrade.
+
 ## Use the canonical recipe contract
 
-Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to the `pi-recipes-docs` source.
-
-Select the page from that source's `pages` map rather than from memory: each entry states what it should be read for. Read the narrowest page that answers the question, and do not assume the set of pages is fixed — it changes as the standard evolves.
+Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to the `pi-recipes-docs` source and reading the narrowest page that answers the question.
 
 Confirm changing mechanics with focused `recipes --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this skill. Do not duplicate their schemas, flags, or examples here.
 

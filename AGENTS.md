@@ -38,8 +38,10 @@ must use the same clean SemVer version.
 ### After a release
 
 The `plugins` CLI clones the default branch with no ref, so a release tag does
-not reach anyone by itself and there is no update command to prompt them. The
-only signal users get is the index.
+not reach anyone by itself, and the CLI has no update command to prompt them.
+Claude Code and Cursor installations may auto-update the marketplace, but Codex
+installations and any host where auto-update was declined do not. The index is
+the only signal that reaches every installation.
 
 Update `plugin.current_version` in `plugin-index.source.json` in
 `introspection-docs` to the released version and regenerate the index. Raise
@@ -66,9 +68,11 @@ Skills resolve all content through the reference index at
 hard-coded URL. Reference bodies live in the `introspection-docs` repository
 under `public/plugin/v1/`, and their metadata in `plugin-index.source.json`.
 
-This keeps content correctable without a plugin release, which matters because
-the `plugins` CLI has no update command: an installation stays at the commit it
-was installed from until a user re-runs `plugins add`.
+This keeps content correctable without a plugin release. It matters because how
+an update reaches an installation varies by host: Claude Code and Cursor may
+auto-update the marketplace, while a Codex installation stays at the commit it
+was installed from until a user re-runs `plugins add`. Reference content is
+fetched per session, so it reaches all of them equally.
 
 Consequences for changes here:
 
