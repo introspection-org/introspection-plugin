@@ -31,6 +31,8 @@ Confirm local evidence in proportion to the agent's risk. For a newly created ag
 
 Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 
+Treat GitHub App access as a readiness gate, separate from the user's local Git or `gh` access. Use a supported read-only CLI check when the installed version provides one. Otherwise, resolve and show the canonical GitHub repository, direct the user to the organization Integrations page identified by the current connection documentation, and require explicit confirmation that the Introspection GitHub App is installed, that this repository is selected in its grant, and that it is connected to the intended Introspection organization and project. Do not carry unverified access into any deployment mutation, including configuration edits, commits, pushes, merges, bindings, or runtime registration. Do not use `runtimes create` or another mutation as an authorization probe, inspect stored credentials, or call an undocumented API to manufacture a preflight. After confirmation, resolve the repository identity again immediately before the first platform mutation; if it changed, repeat the gate.
+
 Without changing anything, resolve CLI version and login identity, project and scopes, Git remote and status, recipe package root, `.introspection` manifest, and intended diff. Run the Introspection CLI's `check` verb, which is the single recipe validation surface. Identify missing or invalid configuration, but do not repair it yet.
 
 ## Resolve runtime identity
@@ -74,4 +76,5 @@ Report the deployed identity, active commit per environment, runtime and task ev
 - Do not merge to production for the user; the merge is their release decision.
 - Do not leave production bindings unresolved once the merge would activate it.
 - Do not create a GitHub repository for the user.
+- Do not mutate Git or platform state while GitHub App access to the resolved repository remains unverified.
 - Do not substitute another platform interface when a required operation is unavailable through the current CLI; expose the gap.
