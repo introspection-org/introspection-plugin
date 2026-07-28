@@ -43,19 +43,27 @@ Treat this as the most consequential cheap decision in the workflow, and say why
 
 Then resolve the creation mode:
 
-- **Scratch (default):** use when the user has an outcome but no agent or requested starting point.
-- **Template:** use when the user names a recipe, asks for a template, or wants to compare existing starting points.
+- **Scratch (default):** start from the first-party `template-starter` template in the `introspection-recipes` catalog. Scratch means the user brought an outcome rather than a starting point; it does not mean an empty directory, and there is no hand-authored path to prefer over this one.
+- **Template:** use when the user names a recipe, asks for a template, or wants to compare starting points other than `template-starter`.
+
+Catalog templates are named `template-<key>`, so the repository name and the template key are the same value with a fixed prefix. Resolve the set from the catalog rather than listing it here, since templates are added and renamed.
 
 When the request does not settle the mode, ask through the host's structured selection affordance, listing scratch first and marked as the default. Never pose this in prose on a host that has the affordance; a paragraph ending in two questions is the thing this instruction exists to prevent. Fall back to a short prose question only where no such affordance exists.
 
 Ask the mode and the destination in the same round, so the starting point is one dialog rather than a sequence of small ones. With the name, that is two prompts for a first run, which is the target. Give each option a hint that names what the choice causes — which command runs, where the recipe lands, whether a repository is created — because the label alone does not let anyone choose. Always leave a path for an answer you did not anticipate.
 
-Scratch and template both reach `init`, and how far template mode diverges depends on what `init` currently accepts. Read its help and let that decide:
+Both modes now start from a catalog template, so they differ only in which one. How the template is obtained is a separate question, and `init --help` settles it rather than this skill:
 
-- A first-party **template key** is a positional `init` argument alongside the name, so template mode is the same scaffold with a different key. Read the available keys from help rather than naming one from memory, since the set grows, and treat a single available key as meaning scratch and template are currently the same command.
-- A **catalog or user-supplied repository** is not an `init` argument. It is obtained with ordinary Git and customized into the approved output path.
+- When `init` resolves the wanted template itself, use it. That keeps scaffolding, the manifest, and repository creation as one unit.
+- When it does not, obtain the template with ordinary Git and customize it into the approved output path.
 
-Do not present a repository and a template key as the same kind of choice, and do not imply `init` can take a URL.
+Read the keys `init` accepts from its help rather than naming one from memory, and do not assume a catalog repository is accepted as a URL; a key and a repository are different arguments even when they name the same template.
+
+Whichever route applies, the template carries its own identity and does not adopt the agreed slug on its own. Treat renaming it as part of scaffolding, not as later cleanup: the package name, the local runtime manifest and its filename, and anything else naming the template rather than the new recipe all have to move to the agreed slug before the recipe is proven. A recipe still carrying the template's runtime name will claim that name at deploy, where it is reserved per project.
+
+A template may be private. That is an access question rather than a capability question: the fetch uses whatever Git credentials the user already has, so no new authentication belongs in this workflow. When a private template cannot be reached, report it as access and let the user resolve it, rather than substituting a different template or asking them for credentials.
+
+Catalog templates are licensed, so preserve their `LICENSE` and attribution even in scratch mode. Starting from a template is not the same as authoring the package, and the obligation does not lapse because the mode is called scratch.
 
 Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
@@ -86,8 +94,9 @@ Resolve the real package root and use the Introspection CLI to build the smalles
 - In scratch mode, scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. It also installs the Pi coding agent and the Recipes extension, so expect that install here rather than treating it as a prerequisite or a fault.
 - Pass the agreed recipe slug as the name argument. Running the verb bare makes it prompt interactively for a recipe name, which stalls a non-interactive shell and takes the naming decision out of the dialog where it was already settled. Confirm the argument order and the available template keys from `init --help` before running; the name is the package name, the directory, and the manifest filename stem, and a template key is a separate positional.
 - Expect the scaffolded agent to be named `agent`, the recipe spec's default, rather than named after the recipe. Confirm it from the generated agent YAML instead of assuming, since a recipe may hold more than one agent and any of them can be renamed. Rename it only if the user asks, and treat that as an ordinary edit to its YAML.
-- The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root. Its templates are first-party and embedded in the binary; a starting point named by URL is a repository to clone in template mode, not a value to pass to `init`.
-- In template mode, use `$introspection:recipes` to customize the approved source into the approved repository-local output path. Preserve required attribution and license files. Treat the template as a starting point, not proof that the customized agent is correct. Creating a new GitHub repository is outside this local workflow.
+- The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root.
+- When the template has to be obtained with Git instead, use `$introspection:recipes` to customize it into the approved output path. Keep the new recipe's history its own: a clone carries the template's commits and its origin, and neither belongs to the user's agent. Creating a new GitHub repository is outside this local workflow.
+- Either way, rewrite the template's identity to the agreed slug before proving anything, and confirm it landed by reading the files back. The package name and the local runtime manifest are the two that matter, because they are what deployment later claims. Preserve required attribution and license files while doing it. Treat the template as a starting point, not proof that the customized agent is correct.
 
 Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. The owned package path is the source of truth: a recipe is an ordinary Git-backed source package, with no separate install store to register it in.
 
