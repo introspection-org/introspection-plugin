@@ -17,11 +17,13 @@ On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduc
 
 Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
 
-## Open with what this needs
+## Keep the first run short
 
-Before probing the environment, installing anything, or asking about the agent, state what this workflow requires. Let `$introspection:recipes` resolve the dependency chain and version floors, and present them as a compact table covering each dependency, why the workflow needs it, its floor, and whether it is already satisfied. Keep it to what create actually reaches, and mark anything unverified as unknown rather than asserting it.
+A first-time create should feel like a couple of prompts, not an interview. Two things must be true before scaffolding — a Node runtime at the Recipes toolchain's floor, and the Introspection CLI — and `$introspection:recipes` owns resolving both. Everything else the recipe needs, including Pi and the Recipes extension, is installed by `init` itself.
 
-This comes first because it is the user's decision, not a preliminary. They may already know their runtime is pinned, prefer to run installs themselves, or object to machine-wide changes shared with their other projects. Discovering that after a run of version checks wastes their attention and hides the choice. If the environment already satisfies everything, say so plainly and move on; the table is a handful of lines, not a gate.
+When both are already satisfied, spend two lines saying so and move to the agent. Do not narrate the probes that established it, and do not print a dependency table whose every row reads "already fine" — a table is how you present a decision the user has to make, not a receipt for work they did not ask to watch. Report a discrete step only where something is actually unresolved: a runtime below the floor, a missing CLI, or an install that will touch machine-wide state. Those are the user's decisions and deserve their own visible step; the rest is noise that buries them.
+
+Mention once, before scaffolding runs, that `init` installs Pi and the Recipes extension. That single sentence is what keeps a later install from reading as something going wrong.
 
 ## Think like an agent builder
 
@@ -31,12 +33,25 @@ Do not add tools, skills, subagents, or elaborate evaluation infrastructure beca
 
 ## Choose the starting point
 
-Resolve the creation mode from the user's request and the repository:
+Ask the name first. It is the one answer the workflow cannot proceed without, it is the argument `init` actually takes, and it is the question a user arrives already able to answer. Everything else about the starting point can be defaulted; this cannot.
+
+Take the name in the user's own words and derive a slug from it, since `init` uses that value as both the directory and the manifest filename stem. Show the derived slug alongside the name you were given and let the user correct it, rather than silently reshaping what they typed or passing prose where a slug belongs. Agree it before scaffolding: changing it afterwards is a manifest edit and a directory move, not a rename.
+
+Then resolve the creation mode:
 
 - **Scratch (default):** use when the user has an outcome but no agent or requested starting point.
 - **Template:** use when the user names a recipe, asks for a template, or wants to compare existing starting points.
 
-When the request does not settle the mode, do not make the user weigh it in prose. Offer the choice through the host's structured selection affordance when it has one, listing scratch first and marked as the default, and fall back to a short prose question only on a host without one.
+When the request does not settle the mode, ask through the host's structured selection affordance, listing scratch first and marked as the default. Never pose this in prose on a host that has the affordance; a paragraph ending in two questions is the thing this instruction exists to prevent. Fall back to a short prose question only where no such affordance exists.
+
+Ask the mode and the destination in the same round, so the starting point is one dialog rather than a sequence of small ones. With the name, that is two prompts for a first run, which is the target. Give each option a hint that names what the choice causes — which command runs, where the recipe lands, whether a repository is created — because the label alone does not let anyone choose. Always leave a path for an answer you did not anticipate.
+
+Scratch and template both reach `init`, and how far template mode diverges depends on what `init` currently accepts. Read its help and let that decide:
+
+- A first-party **template key** is a positional `init` argument alongside the name, so template mode is the same scaffold with a different key. Read the available keys from help rather than naming one from memory, since the set grows, and treat a single available key as meaning scratch and template are currently the same command.
+- A **catalog or user-supplied repository** is not an `init` argument. It is obtained with ordinary Git and customized into the approved output path.
+
+Do not present a repository and a template key as the same kind of choice, and do not imply `init` can take a URL.
 
 Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
@@ -64,7 +79,9 @@ Ask for confirmation before changing project files or configuration. Treat confi
 
 Resolve the real package root and use the Introspection CLI to build the smallest recipe that satisfies the approved cases:
 
-- In scratch mode, scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. Agree the recipe name before running it, because the name becomes the directory and the manifest filename stem; changing it afterwards is a manifest edit rather than a rename. The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root. Its templates are first-party and embedded in the binary; a starting point named by URL is a repository to clone in template mode, not a value to pass to `init`.
+- In scratch mode, scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. It also installs the Pi coding agent and the Recipes extension, so expect that install here rather than treating it as a prerequisite or a fault.
+- Pass the agreed slug as the name argument. Running the verb bare makes it prompt interactively for a recipe name, which stalls a non-interactive shell and takes the naming decision out of the dialog where it was already settled. Confirm the argument order and the available template keys from `init --help` before running; the name is the directory and the manifest filename stem, and a template key is a separate positional.
+- The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root. Its templates are first-party and embedded in the binary; a starting point named by URL is a repository to clone in template mode, not a value to pass to `init`.
 - In template mode, use `$introspection:recipes` to customize the approved source into the approved repository-local output path. Preserve required attribution and license files. Treat the template as a starting point, not proof that the customized agent is correct. Creating a new GitHub repository is outside this local workflow.
 
 Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. The owned package path is the source of truth: a recipe is an ordinary Git-backed source package, with no separate install store to register it in.
@@ -79,11 +96,13 @@ Explain what the agent now does, the evidence behind it, known limits, and the r
 
 ```text
 Try locally:
-pi --recipe <resolved-package-path> --agent <agent>
+introspection local --agent <agent>
 
 Deploy:
 <host invocation for introspection:deploy> <resolved-package-path>
 ```
+
+Give the local command as the CLI's own run verb rather than a raw Pi invocation. The verb resolves the local runtime manifest and launches Pi itself, so it keeps the single developer surface the user already has installed and does not require them to know a second command or where the package root sits. Confirm its flags from help before handing them over, note that it discovers the manifest by walking up from the working directory, and pass anything Pi-specific through the argument separator instead of switching to Pi directly.
 
 Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex. Omit `--agent` only for one unambiguous default agent. Omit the deploy invocation when the approved output is not inside a Git worktree, and explain that concrete boundary. Invite the user to request another iteration.
 

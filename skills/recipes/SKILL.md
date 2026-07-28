@@ -23,25 +23,23 @@ Inspect the target repository and nearby recipes before proposing structure. Rea
 
 Confirm changing mechanics with focused `introspection --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this skill. Do not duplicate their schemas, flags, or examples here.
 
-## State the dependency chain before checking the environment
+## Establish two prerequisites, then let the scaffold do the rest
 
-Every entry path through this skill reaches the Introspection CLI, so open with what the work requires before running a single probe. Lead with a compact table naming each dependency, why the workflow needs it, and its version floor, then fill in what is actually present. Nobody can make a decision from a stream of version checks, and a reader who sees the requirements first can tell you about a constraint you were about to discover the slow way.
+Recipe work needs exactly two things in place:
 
-Cover at least:
+- **Node** at the Recipes toolchain's declared floor. Read that floor from the toolchain's `engines` rather than trusting a number written here, since a published floor can move. The CLI's own floor is more permissive, so the two disagree and only the higher one governs.
+- **The Introspection CLI**, the single developer surface for recipes: it scaffolds them, validates them, and runs them locally. There is no second recipe binary, and the local path needs no account or login.
 
-- **Introspection CLI** — the single developer surface for recipes: it scaffolds them, validates them, and runs them locally. There is no second recipe binary to install, and the local path needs no account or login.
-- **Recipes toolchain** — pulled in by scaffolding, and the component that actually carries the Node floor. Resolve that floor from its declared `engines` rather than trusting a number written here, since a published floor can move.
-- **Pi** — needed only when an approved case actually runs, not to scaffold or validate.
-- **Node runtime** — the CLI's own floor is permissive while the Recipes floor is materially higher, so the two disagree and only the higher one governs.
+Nothing else is a prerequisite. The Pi coding agent and the Recipes extension are installed by `init` itself, the way a project scaffolder pulls its own toolchain. Do not pre-install them, do not check for them, and do not present them to the user as something to satisfy first. Say once that the scaffold installs them, so a later install is expected rather than a surprise, and leave it there.
 
-Mark anything not yet verified as unknown rather than asserting it, and name the package each floor comes from. A floor enforced at runtime rather than declared in the manifest that a reader would check is exactly the kind of surprise this table exists to prevent.
+State both prerequisites before running a probe, and report each as a discrete resolved step rather than folding a run of version checks into one summary. A reader who sees the requirement first can tell you about a pinned runtime or a machine-wide-install objection you were otherwise going to discover the slow way. When the environment already satisfies both, say so in a line or two and move on; this is a handful of lines, not a gate.
 
 ## Resolve the runtime, then ask before installing
 
-1. Establish the Node runtime first, because everything else depends on it. Installing under an older runtime yields a CLI that works right up until the first scaffold and then fails, which reads as a broken template rather than a wrong runtime.
+1. Establish the Node runtime first, because the CLI install binds to it. Installing under an older runtime yields a CLI that works right up until the first scaffold and then fails, which reads as a broken template rather than a wrong runtime.
 2. When the active version is below the floor, report the shortfall and its cause instead of quietly working around it. A stale or inherited shell environment, a version-manager default, and a genuinely missing runtime are three different problems with three different fixes, and the user cannot choose one without knowing which they have.
 3. Prefer a satisfying version the user's version manager has already installed over installing another one, and select it. Install a new runtime only when nothing installed satisfies the floor. Ask before changing the user's default runtime; selecting a version for this work is not the same as repointing their default.
-4. Confirm whether the command already exists under the now-selected runtime, and report the resolved path and version.
+4. Confirm whether the CLI already exists under the now-selected runtime, and report the resolved path and version.
 5. Use that installation when it carries the verb the workflow needs.
 6. Otherwise present the install as a decision before running it, and prefer handing the user the command over executing it yourself, since a global install is machine-wide state shared with every other project:
 
@@ -49,9 +47,9 @@ Mark anything not yet verified as unknown rather than asserting it, and name the
    npm install -g @introspection-ai/cli
    ```
 
-Then inspect focused help for the operation about to run. Order these steps as written: under a Node version manager a global install belongs to the runtime that was active when it ran, so installing first and switching runtimes afterwards silently removes the command from the path. A stale checkout of the CLI repository may also predate verbs that exist in the published release. Report either condition rather than presenting the install as unconditional.
+Order these steps as written: under a Node version manager a global install belongs to the runtime that was active when it ran, so installing first and switching runtimes afterwards silently removes the command from the path. A stale checkout of the CLI repository may also predate verbs that exist in the published release. Report either condition rather than presenting the install as unconditional.
 
-Continue to defer everything else — authentication, provider setup, MCP endpoints, and evaluation tooling — until an approved step needs it. Do not check the registry merely to make a working installation match the latest release.
+Continue to defer everything else — authentication, provider setup, MCP endpoints, and evaluation tooling — until an approved step needs it. Do not check the registry merely to make a working installation match the latest release; reading a package's declared floor is a different question from chasing its newest version, and only the first is in scope here.
 
 Do not silently switch package managers or installation methods. Stop if the required change needs elevated privileges, would replace an unrecognized development build, changes authentication or user configuration, or fails. Report the exact blocker instead of performing speculative setup.
 
