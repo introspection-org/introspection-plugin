@@ -31,6 +31,8 @@ Confirm local evidence in proportion to the agent's risk. For a newly created ag
 
 Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 
+Treat GitHub App access as a readiness gate when the target repository is new to the intended Introspection project. An existing runtime in that project backed by the same repository satisfies the gate unless access is known to have changed or been revoked. Otherwise, before pushing to or registering the repository, resolve and show it, direct the user to the organization Integrations page identified by the current connection documentation, and require confirmation that the Introspection GitHub App is installed and the repository is selected. Local Git work may proceed without this confirmation. Do not use `runtimes create` or another mutation as an authorization probe, inspect stored credentials, or call an undocumented API to manufacture a preflight. If the target repository changes before deployment, repeat the confirmation.
+
 Without changing anything, resolve CLI version and login identity, project and scopes, Git remote and status, recipe package root, `.introspection` manifest, and intended diff. Run the Introspection CLI's `check` verb, which is the single recipe validation surface. Identify missing or invalid configuration, but do not repair it yet.
 
 ## Resolve runtime identity
@@ -74,4 +76,5 @@ Report the deployed identity, active commit per environment, runtime and task ev
 - Do not merge to production for the user; the merge is their release decision.
 - Do not leave production bindings unresolved once the merge would activate it.
 - Do not create a GitHub repository for the user.
+- Do not push to or register a repository that is new to the intended project until its GitHub App access is confirmed; local Git work may proceed.
 - Do not substitute another platform interface when a required operation is unavailable through the current CLI; expose the gap.
