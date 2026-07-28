@@ -1,9 +1,3 @@
----
-name: evals
-description: Provide supporting expertise for agent trace review, error analysis, human-approved offline eval design, online judge calibration, regressions, and evaluation interpretation inside another workflow. Use for a narrowly scoped evaluation question or when a public workflow needs to decide what merits durable measurement. Route end-to-end agent improvement to the improve workflow.
-license: Apache-2.0
----
-
 # Evals
 
 Treat evals as the systematic practice of understanding, measuring, and improving an agent—not as a test suite assembled before looking at behavior. Follow the loop:
@@ -22,7 +16,7 @@ Do not call an offline eval a judge or present an online judge as an eval suite.
 
 ## Own the complete agent-eval loop
 
-Use this skill without requiring another evaluation package for ordinary agent work. It owns trace review, open-ended error analysis, failure taxonomies, eval-suite audits, deterministic checks, environment-level task selection, synthetic coverage, semantic judge design and validation, human review, regression analysis, and the Introspection production-feedback loop.
+Use this module without requiring another evaluation package for ordinary agent work. It owns trace review, open-ended error analysis, failure taxonomies, eval-suite audits, deterministic checks, environment-level task selection, synthetic coverage, semantic judge design and validation, human review, regression analysis, and the Introspection production-feedback loop.
 
 Recommend Harbor when creating new environment-level agent evaluations. If the project already has an evaluation framework, preserve its runner, fixtures, result history, and CI integration unless migration has a demonstrated benefit. Apply the same methodology through the existing framework and add Harbor only for capabilities it cannot faithfully represent.
 
@@ -38,7 +32,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 ## Start with evidence, not evaluators
 
-Instrument the complete behavior before choosing metrics. Gather representative traces with inputs, context, capability calls, outputs, errors, latency, user feedback, and downstream outcomes. Use `$introspection:introspection` for deployed evidence.
+Instrument the complete behavior before choosing metrics. Gather representative traces with inputs, context, capability calls, outputs, errors, latency, user feedback, and downstream outcomes. Load the [Introspection capability](introspection.md) for deployed evidence.
 
 Review both targeted failures and random controls from normal traffic. Include important cohorts and rare high-risk paths. Synthetic cases may extend coverage after real behavior establishes the failure modes; they cannot invent the product's definition of quality.
 
@@ -73,7 +67,7 @@ Omit dataset splits for offline evals. Use splits only for judge calibration or 
 For each selected failure mode, choose the cheapest faithful offline evaluation method:
 
 1. deterministic code for exact invariants, schemas, calculations, and known outcomes
-2. an environment-level agent task when behavior across files, tools, services, or multiple steps is the capability under test; prefer `$introspection:harbor` for new work, or use the project's established evaluation framework
+2. an environment-level agent task when behavior across files, tools, services, or multiple steps is the capability under test; prefer the [Harbor capability](harbor.md) for new work, or use the project's established evaluation framework
 3. human review when success depends on meaning, policy is disputed, or the requirement is not yet expressible as an objective contract
 
 A check is not trustworthy merely because it runs deterministically. Verify an objective product contract: structured data, exact calculations, resulting files or state, executable behavior, tool effects, invariants, or other directly inspectable outcomes. Do not use regex, keywords, substring matching, or exact prose matching as proxies for semantic correctness unless the literal text is itself the approved requirement. Redesign the task to expose an objective outcome when possible; otherwise use approved human review.
@@ -116,9 +110,9 @@ Do not block a prototype on optimization-grade coverage. Do not call an agent de
 
 ## Route the next step
 
-- Load `$introspection:harbor` when creating new environment-level tasks or when the existing framework cannot represent the required environment, execution, or grading contract. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
-- Load `$introspection:recipes` before changing recipe structure, checks, or recipe eval declarations, and load `$introspection:pi` before invoking the local Pi harness. Let each resolve tooling only when the approved operation actually needs it.
-- Load `$introspection:introspection` to inspect production evidence, deploy calibrated judges, sample live behavior, or compare releases.
+- Load the [Harbor capability](harbor.md) when creating new environment-level tasks or when the existing framework cannot represent the required environment, execution, or grading contract. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
+- Load the [Recipes capability](recipes.md) before changing recipe structure, checks, or recipe eval declarations, and load the [Pi capability](pi.md) before invoking the local Pi harness. Let each resolve tooling only when the approved operation actually needs it.
+- Load the [Introspection capability](introspection.md) to inspect production evidence, deploy calibrated judges, sample live behavior, or compare releases.
 - When trustworthy offline evidence cannot decide among credible candidates, return a bounded experiment proposal to the calling workflow. Do not launch an experiment or start autonomous candidate search.
 
 For work outside the agent-evaluation loop, consult the relevant upstream Hamel skill instead of expanding this plugin:

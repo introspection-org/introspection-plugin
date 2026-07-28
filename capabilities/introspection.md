@@ -1,12 +1,6 @@
----
-name: introspection
-description: Provide supporting expertise for narrowly scoped Introspection CLI operations, production-evidence reads, human-calibrated online judges, and release verification inside another workflow. Route offline eval design to evals and end-to-end creation, migration, production improvement, and deployment requests to the corresponding public Introspection workflow.
-license: Apache-2.0
----
-
 # Introspection
 
-Use the CLI as the only platform interface. Never use the dashboard, a browser, browser automation, a direct API, an SDK, or database access to operate Introspection. Keep recipe design in `$introspection:recipes`, evaluation reasoning in `$introspection:evals`, and production diagnosis and fixes in `$introspection:improve`.
+Use the CLI as the only platform interface. Never use the dashboard, a browser, browser automation, a direct API, an SDK, or database access to operate Introspection. Keep recipe design in the [Recipes capability](recipes.md), evaluation reasoning in the [Evals capability](evals.md), and production diagnosis and fixes in `$introspection:improve`.
 
 ## Load references
 
@@ -24,7 +18,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 4. Immediately before the first platform command the workflow needs, confirm `introspection` exists and inspect focused help for the exact operation.
 5. Use the installed CLI when it supports the required command and flags. Install it only when missing; upgrade a recognized installation only when an actual incompatibility blocks the operation. Use the documented command for its detected installation method, verify in a fresh process, and retry the blocked operation.
 
-Current docs and compatible installed CLI output are authoritative. Do not repeat schemas or command catalogs in this skill. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
+Current docs and compatible installed CLI output are authoritative. Do not repeat schemas or command catalogs in this module. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
 
 If a requested documented operation is absent from installed help, verify command resolution and compare the installed version with the official CLI package named by current Introspection documentation before declaring the operation unsupported. Resolve that package through its documented installation source; do not probe similarly named packages, unrelated package managers, repository release APIs, or source checkouts. That missing operation is an actual incompatibility, not a reason to stop at the older surface. Upgrade through the detected installation method, or use an isolated transient invocation of the exact official version when the approved workflow explicitly forbids changing the global installation. Recheck focused help in the resulting fresh process. Do not guess at flags from another source checkout.
 
@@ -34,7 +28,9 @@ If a required platform operation is not available in the current CLI, report the
 
 After a runtime exists, use `introspection dev` when the user wants to exercise uncommitted recipe changes through the platform's development chat. This complements local Pi proof; it does not replace it and does not create a deployable runtime version.
 
-Authenticate, validate the local recipe, and run from its Git worktree. Prefer an explicit runtime slug when repository-based resolution is ambiguous, and check required bindings before opening the preview when the recipe depends on external capabilities. Keep the command attached while testing: it refreshes the development recipe as files change and prints a runtime preview URL that works only for the attached session.
+Authenticate, validate the local recipe, and run from its Git worktree. Prefer an explicit runtime slug when repository-based resolution is ambiguous. Inspect binding readiness, but do not make remote MCP endpoints or credentials a prerequisite for development: missing required and optional development bindings warn by default, while `--check-bindings` deliberately turns missing required bindings into a failing readiness check.
+
+When a declared MCP server is still local, pass `--mcp NAME=URL`; the name must match the recipe declaration. This routes development calls to the local process while the command remains attached. It does not read local credential files or upload local secrets, so use a development binding only when that local server actually requires bound credentials. Keep the command attached while testing: it refreshes the development recipe as files change and prints a runtime preview URL that works only for the attached session.
 
 Prove the loop with a visible recipe-specific change in a development conversation. Stopping the command ends the preview attachment; publishing still follows the normal Git and deployment flow.
 
@@ -43,7 +39,8 @@ Prove the loop with a visible recipe-specific change in a development conversati
 - Validate the recipe locally first.
 - Confirm the intended Git state and whether this is a first bootstrap or a later candidate version.
 - Bootstrap the first runtime only through the documented manifest flow. For later versions, use the immutable version created from the pull-request head; do not create another runtime group.
-- Configure required bindings and select the candidate for staging through the CLI.
+- For a new runtime, allow registration with unresolved remote MCP bindings when the user chooses a development-only bootstrap; record the affected lane readiness instead of inventing placeholder values.
+- Configure required staging bindings before selecting and exercising the candidate through staging.
 - Start a representative task through staging runtime-group resolution, follow it to completion, and confirm which exact version answered.
 - Retrieve the conversation associated with that task and inspect its complete evidence bundle, not only task status.
 - Join the resolved runtime to its recipe pin and verify the intended Git commit.
@@ -62,7 +59,7 @@ Use the basic improvement loop:
 2. Find the earliest failure and classify it as environment/access, deterministic implementation, agent judgment, or disputed policy.
 3. Treat feedback as evidence of a possible eval gap, not as a direct edit instruction.
 4. Draft representative cases from traces, remove irrelevant sensitive details, and get domain-owner approval.
-5. Use `$introspection:evals` to add the smallest trustworthy check and establish the unchanged baseline.
+5. Use the Evals capability to add the smallest trustworthy check and establish the unchanged baseline.
 6. Make one focused improvement and validate it locally and in staging.
 7. Promote through the normal Git release path.
 8. Verify the active commit with a fresh task, full conversation inspection, and judgement trend.

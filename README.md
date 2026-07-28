@@ -36,23 +36,18 @@ Run `/reload-plugins` in Claude Code, or start a new Codex task, to apply the ch
 
 Updates are the host's job. Claude Code tracks the `version` in `.claude-plugin/plugin.json` and can refresh automatically when marketplace auto-update is enabled; Codex refreshes its marketplace and reinstalls explicitly. The plugin never prompts for its own upgrade. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
-| Skill | Owns |
+| Entry point | Owns |
 | --- | --- |
 | `create` | Build a locally proven Pi recipe from scratch or a selected template |
 | `migrate` | Convert an existing agent into a locally proven Pi recipe |
 | `improve` | Improve an agent from production evidence by default or an optional user-directed target |
 | `deploy` | Publish a proven recipe and verify its Introspection runtime |
-| `pi` | Pi harness operation, packages, extensions, skills, settings, and local execution |
-| `recipes` | Portable agent composition plus pinned offline evals and separate online judge declarations |
-| `evals` | Human-approved offline eval design and online judge calibration methodology |
-| `harbor` | Reproducible offline environment-level eval implementation and integrity |
-| `introspection` | CLI staging deployment, production evidence, online judges, comparisons, and Git-release verification |
 
-Start with the skill matching the current problem. Skills route to one another at clear boundaries and load detailed references only when needed.
+Only these four workflow skills appear in Claude and Codex autocomplete. They progressively load five packaged capability modules when needed: Pi, Recipes, evals, Harbor, and Introspection CLI operations. Focused supporting questions route through the closest entry point without forcing its end-to-end workflow.
 
 Offline evals and online judges have different contracts. Every eval case and expected answer must be shown to the domain owner before implementation or execution. Every judge calibration label must likewise be human-approved before calibration. Harbor implements accepted offline environment-level evals; Recipes pins their exact versions while declaring online judges separately. Judge calibration data lives beside its definition as `judges/<judge-name>.calibration.jsonl` and is committed with the judge YAML rather than retained in a temporary directory.
 
-All workflow and supporting skills ship in this plugin. Pi Recipes remains the lightweight, open implementation and canonical specification for portable recipe behavior; the plugin adds the forward-deployed engineering workflow across Pi, recipes, Introspection, evals, and Harbor.
+All workflow skills and supporting capability modules ship in this plugin. Pi Recipes remains the lightweight, open implementation and canonical specification for portable recipe behavior; the plugin adds the forward-deployed engineering workflow across Pi, recipes, Introspection, evals, and Harbor.
 
 ## Commands
 

@@ -1,13 +1,22 @@
 ---
 name: create
-description: Create a new focused agent from scratch or an existing recipe template, ending with a locally proven Introspection recipe. Use when the user asks to create, build, scaffold, or start from a template. Keep deployment separate.
+description: Create a focused agent from scratch or a recipe template, ending with a locally proven Introspection recipe, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, Pi, recipe, eval, or Harbor requests that are not migration, production improvement, or deployment. Keep migration and deployment separate.
 ---
 
 # Create
 
-Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave platform deployment to `$introspection:deploy`.
+Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `$introspection:migrate` and platform deployment to `$introspection:deploy`.
 
-Load and follow `$introspection:pi`, `$introspection:recipes`, and `$introspection:evals`.
+## Load capabilities
+
+Load only the local capability modules the request reaches:
+
+- [Pi](../../capabilities/pi.md) for harness, extension, skill-discovery, provider, settings, package, or local-execution behavior.
+- [Recipes](../../capabilities/recipes.md) for portable package composition, templates, validation, distribution, or eval declarations.
+- [Evals](../../capabilities/evals.md) for behavior discovery, trace analysis, measurement design, case approval, or judge calibration.
+- [Harbor](../../capabilities/harbor.md) only after the Evals module selects a new environment-level evaluation, or for a narrowly scoped Harbor question.
+
+For a focused supporting question, load and follow the matching module without forcing the full creation workflow. When one module routes to another, load the named module before acting at that boundary.
 
 ## Load references
 
@@ -19,7 +28,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 ## Keep the first run short
 
-Keep the setup invisible so the conversation can be about the agent. Two things must be true before scaffolding — a Node runtime at the Recipes toolchain's floor, and the Introspection CLI — and `$introspection:recipes` owns resolving both. Everything else the recipe needs, including Pi and the Recipes extension, is installed by `init` itself.
+Keep the setup invisible so the conversation can be about the agent. Two things must be true before scaffolding — a Node runtime at the Recipes toolchain's floor, and the Introspection CLI — and the Recipes capability owns resolving both. Everything else the recipe needs, including Pi and the Recipes extension, is installed by `init` itself.
 
 When both are already satisfied, spend two lines saying so and move to the agent. Do not narrate the probes that established it, and do not print a dependency table whose every row reads "already fine" — a table is how you present a decision the user has to make, not a receipt for work they did not ask to watch. Report a discrete step only where the user actually has to decide something: nothing installed meets the runtime floor, or setup failed. Installing the CLI is not such a case; install it and report the result in a line. Everything else is noise that buries the decisions that matter.
 
@@ -35,7 +44,7 @@ Do not add tools, skills, subagents, or elaborate evaluation infrastructure beca
 
 Open by asking what sort of agent the user wants to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Ask it on its own and wait; do not stack a second question behind it.
 
-Their first answer will be a sentence, not a specification, so step them through the job from there — a short interview of a few focused questions, one round at a time, each one narrowing what the agent owns. Never present them as a numbered list or a form; ask, listen, and let the next question follow from the last answer. `$introspection:evals` owns what to ask about behavior; this skill owns keeping it short and conversational.
+Their first answer will be a sentence, not a specification, so step them through the job from there — a short interview of a few focused questions, one round at a time, each one narrowing what the agent owns. Never present them as a numbered list or a form; ask, listen, and let the next question follow from the last answer. The Evals capability owns what to ask about behavior; this skill owns keeping it short and conversational.
 
 Everything else about the starting point — the name, the mode, the destination — follows from those answers and is proposed rather than asked for.
 
@@ -68,7 +77,7 @@ Catalog templates are licensed, so preserve their `LICENSE` and attribution. Tha
 
 Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
-Once the user has reached for a template, prefer a source they supplied. Otherwise let `$introspection:recipes` resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
+Once the user has reached for a template, prefer a source they supplied. Otherwise let the Recipes capability resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
 
 When candidate resolution fails, name the key that failed and ask the user for an explicit source. Do not dead-end the workflow, and do not name candidate templates from memory.
 
@@ -78,7 +87,7 @@ Inspect relevant repository context and nearby recipes without changing anything
 
 Continue the interview the opening question started, in small rounds rather than one dense block, and only for what the starting point did not already settle. Where a question reduces to known alternatives — who invokes it, what it may change, when it must stop — offer them through the host's structured selection affordance, always leaving a path for an answer you did not anticipate.
 
-Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let `$introspection:recipes` resolve the portable package and provider/model choices that affect it, and `$introspection:pi` resolve harness, extension, provider, and local execution behavior. Defer tool upgrades, setup, and authentication until an approved execution step actually needs them; the Introspection CLI is the exception, and `$introspection:recipes` resolves it up front so it is available in this and later shells.
+Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let the Recipes capability resolve the portable package and provider/model choices that affect it, and the Pi capability resolve harness, extension, provider, and local execution behavior. Defer tool upgrades, setup, and authentication until an approved execution step actually needs them; the Introspection CLI is the exception, and the Recipes capability resolves it up front so it is available in this and later shells.
 
 Treat any model written by a scaffold or template as inherited input, not an approved provider decision. Resolve it explicitly before editing the recipe. If the request and repository do not establish a safe choice, pause for that decision instead of silently retaining the placeholder.
 
@@ -96,7 +105,7 @@ Resolve the real package root and use the Introspection CLI to build the smalles
 - Pass the agreed recipe slug as the name argument. Running the verb bare makes it prompt interactively for a recipe name, which stalls a non-interactive shell and takes the naming decision out of the dialog where it was already settled. Confirm the argument order and the available template keys from `init --help` before running; the name is the package name, the directory, and the manifest filename stem, and a template key is a separate positional.
 - Expect the scaffolded agent to be named `agent`, the recipe spec's default, rather than named after the recipe. Confirm it from the generated agent YAML instead of assuming, since a recipe may hold more than one agent and any of them can be renamed. Rename it only if the user asks, and treat that as an ordinary edit to its YAML.
 - The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root.
-- When the template has to be obtained with Git instead, use `$introspection:recipes` to customize it into the approved output path. Keep the new recipe's history its own: a clone carries the template's commits and its origin, and neither belongs to the user's agent. Creating a new GitHub repository is outside this local workflow.
+- When the template has to be obtained with Git instead, use the Recipes capability to customize it into the approved output path. Keep the new recipe's history its own: a clone carries the template's commits and its origin, and neither belongs to the user's agent. Creating a new GitHub repository is outside this local workflow.
 - Either way, rewrite the template's identity to the agreed slug before proving anything, and confirm it landed by reading the files back. The package name and the local runtime manifest are the two that matter, because they are what deployment later claims. Preserve required attribution and license files while doing it. Treat the template as a starting point, not proof that the customized agent is correct.
 
 Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. The owned package path is the source of truth: a recipe is an ordinary Git-backed source package, with no separate install store to register it in.
