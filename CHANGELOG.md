@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/introspection-org/introspection-plugin/compare/v0.2.0...v0.2.1) (2026-07-28)
+
+
+### Bug Fixes
+
+* **skills:** allow repository setup before connector ([#17](https://github.com/introspection-org/introspection-plugin/issues/17)) ([5c01674](https://github.com/introspection-org/introspection-plugin/commit/5c01674b69f8478db38a1e049bd8b91423cfba7d))
+
 ## [0.2.0](https://github.com/introspection-org/introspection-plugin/compare/v0.1.0...v0.2.0) (2026-07-28)
 
 
