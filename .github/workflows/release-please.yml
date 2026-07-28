@@ -21,3 +21,56 @@ jobs:
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      - name: Check out the triggering commit
+        uses: actions/checkout@v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Publish stable plugin channel
+        env:
+          RELEASE_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          claude_version=$(node -p "require('./.claude-plugin/plugin.json').version")
+          codex_version=$(node -p "require('./.codex-plugin/plugin.json').version")
+          if [[ "$claude_version" != "$codex_version" ]]; then
+            echo "Claude ($claude_version) and Codex ($codex_version) manifest versions differ"
+            exit 1
+          fi
+
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git fetch origin --tags
+
+          release_tag="v${claude_version}"
+          release_tag_sha=$(git rev-list -n 1 "$release_tag" 2>/dev/null || true)
+          if [[ "$release_tag_sha" != "$RELEASE_SHA" ]]; then
+            echo "$RELEASE_SHA is not the released commit for $release_tag; stable is unchanged"
+            exit 0
+          fi
+
+          RELEASE_VERSION=$claude_version
+          claude_tag="introspection--v${RELEASE_VERSION}"
+          existing_tag_sha=$(git rev-list -n 1 "$claude_tag" 2>/dev/null || true)
+          if [[ -n "$existing_tag_sha" && "$existing_tag_sha" != "$RELEASE_SHA" ]]; then
+            echo "$claude_tag already points to $existing_tag_sha, not $RELEASE_SHA"
+            exit 1
+          fi
+          if [[ -z "$existing_tag_sha" ]]; then
+            git tag -a "$claude_tag" "$RELEASE_SHA" -m "introspection $RELEASE_VERSION"
+          fi
+
+          if git ls-remote --exit-code --heads origin stable >/dev/null 2>&1; then
+            git fetch origin stable:refs/remotes/origin/stable
+            if ! git merge-base --is-ancestor refs/remotes/origin/stable "$RELEASE_SHA"; then
+              echo "Refusing to move stable backward or onto unrelated history"
+              exit 1
+            fi
+          fi
+
+          git push origin "refs/tags/$claude_tag"
+          git push origin "$RELEASE_SHA:refs/heads/stable"

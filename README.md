@@ -6,32 +6,35 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 
 ## Install
 
-Each host has a native marketplace. Register this repository as one, then install:
+Each host has a native marketplace. Register the `stable` release channel, then install:
 
-```text
+```bash
 # Claude Code
-/plugin marketplace add introspection-org/introspection-plugin
-/plugin install introspection@introspection-org-introspection-plugin
+claude plugin marketplace add https://github.com/introspection-org/introspection-plugin.git#stable
+claude plugin install introspection@introspection-org-introspection-plugin --scope user
 ```
 
 ```bash
 # Codex
-codex plugin marketplace add introspection-org/introspection-plugin
+codex plugin marketplace add introspection-org/introspection-plugin@stable
+codex plugin add introspection@introspection-org
 ```
 
-A coding agent installing on your behalf cannot type a slash command, so it uses the cross-host installer instead. This is also the fallback when a host's marketplace is unavailable:
+The `stable` branch advances only when Release Please creates a versioned release, so normal development on `main` cannot change an installed plugin. To update:
 
 ```bash
-# Codex
-npx --yes plugins@latest add introspection-org/introspection-plugin --target codex --scope user --yes
-
 # Claude Code
-npx --yes plugins@latest add introspection-org/introspection-plugin --target claude-code --scope user --yes
+claude plugin marketplace update introspection-org-introspection-plugin
+claude plugin update introspection@introspection-org-introspection-plugin --scope user
+
+# Codex
+codex plugin marketplace upgrade introspection-org
+codex plugin add introspection@introspection-org
 ```
 
-Restart the coding agent after installation so it can load the plugin.
+Run `/reload-plugins` in Claude Code, or start a new Codex task, to apply the change.
 
-Updates are the host's job. Claude Code tracks the `version` in `.claude-plugin/plugin.json` and refreshes through its marketplace (`/plugin update`, or automatically when auto-update is on); Codex refreshes with `codex plugin marketplace upgrade`. Either way a restart applies the change. The plugin never prompts for its own upgrade. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
+Updates are the host's job. Claude Code tracks the `version` in `.claude-plugin/plugin.json` and can refresh automatically when marketplace auto-update is enabled; Codex refreshes its marketplace and reinstalls explicitly. The plugin never prompts for its own upgrade. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
 | Skill | Owns |
 | --- | --- |
