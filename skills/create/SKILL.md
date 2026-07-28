@@ -19,7 +19,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 ## Keep the first run short
 
-A first-time create should feel like a couple of prompts, not an interview. Two things must be true before scaffolding — a Node runtime at the Recipes toolchain's floor, and the Introspection CLI — and `$introspection:recipes` owns resolving both. Everything else the recipe needs, including Pi and the Recipes extension, is installed by `init` itself.
+Keep the setup invisible so the conversation can be about the agent. Two things must be true before scaffolding — a Node runtime at the Recipes toolchain's floor, and the Introspection CLI — and `$introspection:recipes` owns resolving both. Everything else the recipe needs, including Pi and the Recipes extension, is installed by `init` itself.
 
 When both are already satisfied, spend two lines saying so and move to the agent. Do not narrate the probes that established it, and do not print a dependency table whose every row reads "already fine" — a table is how you present a decision the user has to make, not a receipt for work they did not ask to watch. Report a discrete step only where the user actually has to decide something: nothing installed meets the runtime floor, or setup failed. Installing the CLI is not such a case; install it and report the result in a line. Everything else is noise that buries the decisions that matter.
 
@@ -33,7 +33,11 @@ Do not add tools, skills, subagents, or elaborate evaluation infrastructure beca
 
 ## Choose the starting point
 
-Open by asking what the user is trying to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Everything else about the starting point — the name, the mode, the destination — follows from that answer and is proposed rather than asked for. Never open with a numbered list of questions; a first run should read as a short exchange, not a form.
+Open by asking what sort of agent the user wants to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Ask it on its own and wait; do not stack a second question behind it.
+
+Their first answer will be a sentence, not a specification, so step them through the job from there — a short interview of a few focused questions, one round at a time, each one narrowing what the agent owns. Never present them as a numbered list or a form; ask, listen, and let the next question follow from the last answer. `$introspection:evals` owns what to ask about behavior; this skill owns keeping it short and conversational.
+
+Everything else about the starting point — the name, the mode, the destination — follows from those answers and is proposed rather than asked for.
 
 Derive the **recipe** name from what they described instead of spending a prompt on it. Propose a slug and let the user correct it, saying in one sentence what it costs: it names the directory and the manifest now, it names the Git repository when scaffolding creates one, and it becomes the basis of the runtime identity at deploy, where it is reserved per project. Settle it before scaffolding runs, because that is the last point where changing it is free — but settle it inside the dialog you are already having, not as a question of its own.
 
@@ -50,7 +54,7 @@ Catalog templates are named `template-<key>`, so the repository name and the tem
 
 When the request does not settle the mode, ask through the host's structured selection affordance, listing scratch first and marked as the default. Never pose this in prose on a host that has the affordance; a paragraph ending in two questions is the thing this instruction exists to prevent. Fall back to a short prose question only where no such affordance exists.
 
-Ask the mode and the destination in the same round, so the starting point is one dialog rather than a sequence of small ones. With the opening question, and the proposed slug carried alongside for correction, that is two prompts for a first run, which is the target. Give each option a hint that names what the choice causes — which command runs, where the recipe lands, whether a repository is created — because the label alone does not let anyone choose. Always leave a path for an answer you did not anticipate.
+Ask the mode and the destination in the same round, so the starting point is one dialog rather than a sequence of small ones. Carry the proposed slug alongside for correction rather than spending a round on it. This round closes the interview; it is not another of its questions. Give each option a hint that names what the choice causes — which command runs, where the recipe lands, whether a repository is created — because the label alone does not let anyone choose. Always leave a path for an answer you did not anticipate.
 
 Do not ask for a template source before the user has chosen template mode. When they choose it without naming one, that is the moment to ask for the source or to resolve candidates; asking earlier spends a prompt on a branch most first runs never take.
 
@@ -77,7 +81,7 @@ When candidate resolution fails, name the key that failed and ask the user for a
 
 Inspect relevant repository context and nearby recipes without changing anything. Learn who invokes the agent, what triggers it, what result it promises, what sources it may trust, what it may change, and when it must stop or ask for help. In template mode, distinguish behavior worth retaining from example behavior that must be removed or replaced.
 
-Interview the user for the job in small rounds rather than one dense block. Where a question reduces to known alternatives — who invokes it, what it may change, when it must stop — offer them through the host's structured selection affordance, always leaving a path for an answer you did not anticipate.
+Continue the interview the opening question started, in small rounds rather than one dense block, and only for what the starting point did not already settle. Where a question reduces to known alternatives — who invokes it, what it may change, when it must stop — offer them through the host's structured selection affordance, always leaving a path for an answer you did not anticipate.
 
 Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let `$introspection:recipes` resolve the portable package and provider/model choices that affect it, and `$introspection:pi` resolve harness, extension, provider, and local execution behavior. Defer tool upgrades, setup, and authentication until an approved execution step actually needs them; the Introspection CLI is the exception, and `$introspection:recipes` resolves it up front so it is available in this and later shells.
 
