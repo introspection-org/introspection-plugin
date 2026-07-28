@@ -17,6 +17,12 @@ On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduc
 
 Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
 
+## Open with what this needs
+
+Before probing the environment, installing anything, or asking about the agent, state what this workflow requires. Let `$introspection:recipes` resolve the dependency chain and version floors, and present them as a compact table covering each dependency, why the workflow needs it, its floor, and whether it is already satisfied. Keep it to what create actually reaches, and mark anything unverified as unknown rather than asserting it.
+
+This comes first because it is the user's decision, not a preliminary. They may already know their runtime is pinned, prefer to run installs themselves, or object to machine-wide changes shared with their other projects. Discovering that after a run of version checks wastes their attention and hides the choice. If the environment already satisfies everything, say so plainly and move on; the table is a handful of lines, not a gate.
+
 ## Think like an agent builder
 
 Clarify the job before designing the agent. A strong first version owns one meaningful outcome for one accountable user. Representative cases are the working specification: use them to discover required judgment, evidence, side effects, and boundaries.
@@ -44,7 +50,7 @@ Inspect relevant repository context and nearby recipes without changing anything
 
 Interview the user for the job in small rounds rather than one dense block. Where a question reduces to known alternatives — who invokes it, what it may change, when it must stop — offer them through the host's structured selection affordance, always leaving a path for an answer you did not anticipate.
 
-Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let `$introspection:recipes` resolve the portable package and provider/model choices that affect it, and `$introspection:pi` resolve harness, extension, provider, and local execution behavior. Defer tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
+Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let `$introspection:recipes` resolve the portable package and provider/model choices that affect it, and `$introspection:pi` resolve harness, extension, provider, and local execution behavior. Defer tool upgrades, setup, and authentication until an approved execution step actually needs them; the Introspection CLI is the exception, and `$introspection:recipes` resolves it up front so it is available in this and later shells.
 
 Treat any model written by a scaffold or template as inherited input, not an approved provider decision. Resolve it explicitly before editing the recipe. If the request and repository do not establish a safe choice, pause for that decision instead of silently retaining the placeholder.
 
@@ -56,12 +62,12 @@ Ask for confirmation before changing project files or configuration. Treat confi
 
 ## Build and prove
 
-Resolve the real package root and use current recipe tooling to build the smallest recipe that satisfies the approved cases:
+Resolve the real package root and use the Introspection CLI to build the smallest recipe that satisfies the approved cases:
 
-- In scratch mode, scaffold a new recipe at the approved repository-local path.
+- In scratch mode, scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. Agree the recipe name before running it, because the name becomes the directory and the manifest filename stem; changing it afterwards is a manifest edit rather than a rename. The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root. Its templates are first-party and embedded in the binary; a starting point named by URL is a repository to clone in template mode, not a value to pass to `init`.
 - In template mode, use `$introspection:recipes` to customize the approved source into the approved repository-local output path. Preserve required attribution and license files. Treat the template as a starting point, not proof that the customized agent is correct. Creating a new GitHub repository is outside this local workflow.
 
-Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. Do not register a scratch recipe globally unless the user explicitly asks. Treat any recipe-store registration performed by template tooling as an implementation detail; the owned package path is the source of truth.
+Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. The owned package path is the source of truth: a recipe is an ordinary Git-backed source package, with no separate install store to register it in.
 
 Preserve the recipe composition model. Put instructions shared across the root agent and delegated subagents in `SYSTEM.md`; put specialized role instructions in each agent's `system_instructions`. Use `from:` when a variant or subagent genuinely inherits a base configuration, and make capability overrides explicit because `tools`, `skills`, and `subagents` arrays replace rather than merge. Keep reusable detailed judgment in skills selected by the agents that need it.
 
@@ -85,7 +91,8 @@ Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex.
 
 - Do not edit project files or configuration before confirmation.
 - Do not silently switch providers, models, package managers, installation methods, or authentication.
-- Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command.
+- Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command, apart from the Introspection CLI, which every path through this workflow needs.
+- Do not check the environment before stating what the workflow requires, and do not install or switch a runtime without asking first.
 - Do not silently choose a template or imply that customization removes its license obligations.
 - Do not read or expose credentials.
 - Do not commit, push, open a pull request, register a runtime, change bindings, or deploy in this workflow.

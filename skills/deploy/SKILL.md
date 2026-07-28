@@ -31,7 +31,7 @@ Confirm local evidence in proportion to the agent's risk. For a newly created ag
 
 Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 
-Without changing anything, resolve CLI version and login identity, project and scopes, Git remote and status, recipe package root, `.introspection` manifest, and intended diff. Run the current recipe check. Identify missing or invalid configuration, but do not repair it yet.
+Without changing anything, resolve CLI version and login identity, project and scopes, Git remote and status, recipe package root, `.introspection` manifest, and intended diff. Run the Introspection CLI's `check` verb, which is the single recipe validation surface. Identify missing or invalid configuration, but do not repair it yet.
 
 ## Resolve runtime identity
 

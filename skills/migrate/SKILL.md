@@ -37,7 +37,7 @@ Ask the user to confirm before changing project files or configuration. Treat ap
 
 ## Translate and prove
 
-Resolve the real package root and use current recipe tooling to scaffold and check it. Translate durable judgment into skills, deterministic operations into scripts and tests, and external access into explicit capabilities or bindings. Default to one agent and avoid global registration unless the user explicitly requests it.
+Resolve the real package root and use the Introspection CLI to scaffold and check it. Translate durable judgment into skills, deterministic operations into scripts and tests, and external access into explicit capabilities or bindings. Default to one agent.
 
 Build a small varied parity set from real usage. Where practical, run the same inputs through the source and fresh Pi recipe sessions. Retain prompts, configuration, outputs, tool evidence, and meaningful differences. Investigate the earliest divergence; do not paper over a translation error with broader prompting. Iterate until the approved behavior is faithfully reproduced or a concrete blocker remains. Then offer the user an interactive Pi TUI run. A `.introspection` manifest is not required for local migration readiness.
 
