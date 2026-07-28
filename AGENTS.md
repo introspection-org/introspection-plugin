@@ -43,7 +43,13 @@ pins an installation to it and ships a new one only when it changes. Keep the
 two manifests and the marketplace entry in agreement — CI checks this with
 `claude plugin tag --dry-run`.
 
-Nothing else is required. Raise `plugin.min_supported_version` in
+After Release Please creates `vX.Y.Z`, the release workflow creates Claude's
+immutable `introspection--vX.Y.Z` tag at the same commit and fast-forwards the
+`stable` branch to it. Never move `stable` by hand, force-push it, or reuse a
+version tag. Marketplace installation instructions must target `stable`, not
+`main`, so unreleased commits cannot be installed under the previous version.
+
+No manual publication step is required. Raise `plugin.min_supported_version` in
 `plugin-index.source.json` in `introspection-docs` only when older installations
 can no longer safely follow the published references; they will stop and require
 an upgrade rather than act on content shaped for newer semantics.
@@ -69,9 +75,9 @@ under `public/plugin/v1/`, and their metadata in `plugin-index.source.json`.
 
 This keeps content correctable without a plugin release. It matters because how
 an update reaches an installation varies by host: Claude Code and Cursor may
-auto-update the marketplace, while a Codex installation stays at the commit it
-was installed from until a user re-runs `plugins add`. Reference content is
-fetched per session, so it reaches all of them equally.
+auto-update the marketplace, while Codex requires a marketplace upgrade and
+plugin reinstall. Reference content is fetched per session, so it reaches all
+of them equally.
 
 Consequences for changes here:
 
