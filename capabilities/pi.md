@@ -1,11 +1,6 @@
----
-name: pi
-description: Provide focused expertise for the Pi coding-agent harness, including supported extension points, packages, extensions, skills, prompt templates, settings, providers, and local CLI operation. Use for a narrowly scoped Pi question or inside Introspection workflows that need to extend or run Pi. Keep portable recipe composition in the recipes skill.
----
-
 # Pi
 
-Treat Pi as an extensible agent harness. Keep portable agent packaging in `$introspection:recipes`, outcome design in the calling workflow, and hosted operation in `$introspection:introspection`.
+Treat Pi as an extensible agent harness. Keep portable agent packaging in the [Recipes capability](recipes.md), outcome design in the calling workflow, and hosted operation in the [Introspection capability](introspection.md).
 
 ## Load references
 
@@ -21,7 +16,7 @@ Inspect the target repository and its package metadata before assuming how Pi is
 
 Do not install or upgrade Pi merely to answer a question, inspect a repository, or design a change. When an approved operation actually requires Pi, inspect the available executable, its version, and focused command help. Install or upgrade only when it is missing or demonstrably incompatible, using the canonical method for the detected installation. Do not switch package managers or installation methods. Stop before elevated privileges, replacement of an unrecognized development build, or authentication and user-configuration changes.
 
-Current official documentation, compatible installed CLI help, and the target repository override this skill. Do not reproduce a command catalog here.
+Current official documentation, compatible installed CLI help, and the target repository override this module. Do not reproduce a command catalog here.
 
 ## Extend Pi without modifying the harness
 
@@ -52,4 +47,4 @@ Return the exact invocation that was used, the relevant loaded extension points,
 - Do not install, upgrade, set up, or authenticate Pi before the workflow needs the corresponding command.
 - Do not silently change provider, model, package manager, installation method, or authentication.
 - Do not confuse Pi settings with portable recipe behavior.
-- Let `$introspection:recipes` own recipe manifests, agent composition, capabilities, validation, and distribution.
+- Let the Recipes capability own recipe manifests, agent composition, capabilities, validation, and distribution.

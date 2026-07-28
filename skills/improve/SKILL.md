@@ -7,7 +7,17 @@ description: Improve an existing agent with human approval, using production evi
 
 Improve the right layer of an existing agent with a human in the loop. Start from production evidence unless the user directs the investigation toward a prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Treat that direction as scope or a hypothesis, not proof of the cause or permission for a predetermined edit.
 
-Load and follow `$introspection:introspection`, `$introspection:evals`, `$introspection:pi`, and `$introspection:recipes`. Leave deployment to `$introspection:deploy`.
+## Load capabilities
+
+Load only the local capability modules the investigation reaches:
+
+- [Introspection](../../capabilities/introspection.md) for deployed identity, production evidence, observations, judges, comparisons, or release verification.
+- [Evals](../../capabilities/evals.md) for trace analysis, measurement design, suite audits, case approval, judge calibration, or regression interpretation.
+- [Pi](../../capabilities/pi.md) for harness, extension, provider, settings, skill, package, or local-execution behavior.
+- [Recipes](../../capabilities/recipes.md) for package composition, checks, capability declarations, or durable eval and judge resources.
+- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects a new environment-level evaluation or existing Harbor evidence must be interpreted.
+
+For a focused supporting question about an existing agent, load and follow the matching module without forcing an end-to-end production investigation. When one module routes to another, load the named module before acting at that boundary. Leave deployment to `$introspection:deploy`.
 
 ## Load references
 

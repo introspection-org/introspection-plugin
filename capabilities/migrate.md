@@ -1,13 +1,8 @@
----
-name: migrate
-description: Convert an existing agent into a locally proven Introspection recipe while preserving its approved behavior. Use when the user asks to migrate, port, or package an existing agent for Pi and Introspection.
----
-
 # Migrate
 
 Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `$introspection:deploy`.
 
-Load and follow `$introspection:pi`, `$introspection:recipes`, and `$introspection:evals`.
+Load and follow the [Pi](pi.md), [Recipes](recipes.md), and [Evals](evals.md) capabilities before proceeding.
 
 ## Load references
 
@@ -27,7 +22,7 @@ Prefer the smallest faithful translation. Recipes are not valuable merely becaus
 
 Locate the real instructions, tools, skills, model configuration, runtime assumptions, authentication, side effects, tests, traces, and representative inputs. Use safe existing evidence and run the source during discovery only when doing so is read-only and cannot trigger an external side effect.
 
-Determine the migration boundary: behavior that must remain equivalent, bugs that should not survive, intentional improvements, unsupported dependencies, and evidence that would demonstrate acceptable parity. Resolve any provider or model choice that is not preserved by the source. Let `$introspection:recipes` resolve the portable package contract and `$introspection:pi` resolve harness, extension, provider, and local execution behavior. Defer tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
+Determine the migration boundary: behavior that must remain equivalent, bugs that should not survive, intentional improvements, unsupported dependencies, and evidence that would demonstrate acceptable parity. Resolve any provider or model choice that is not preserved by the source. Let the Recipes capability resolve the portable package contract and the Pi capability resolve harness, extension, provider, and local execution behavior. Defer tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
 
 ## Align with the user
 

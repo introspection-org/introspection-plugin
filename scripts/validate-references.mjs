@@ -6,15 +6,17 @@
  * that contract offline:
  *
  *   1. The only URL allowed in a skill is the index itself.
- *   2. Every skill that resolves content carries the reference-loading and
- *      degradation contract verbatim, so a copy cannot drift.
- *   3. Cited keys are well-formed.
+ *   2. Every public skill and capability module that resolves content carries
+ *      the reference-loading and degradation contract verbatim, so a copy
+ *      cannot drift.
+ *   3. Exactly the three intended public skills are discoverable.
+ *   4. Cited keys are well-formed.
  *
  * When the published index is reachable it also checks that every cited key
  * exists. A network failure skips that check rather than failing the build; a
  * reachable index that is missing a cited key is a hard failure.
  *
- * A new reference must land in introspection-docs before the skill that cites
+ * A new reference must land in introspection-docs before plugin content cites
  * it, or this check fails on the published index. To validate both sides
  * together first, serve the docs branch and point this script at it:
  *
@@ -31,6 +33,7 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SKILLS_DIR = join(ROOT, 'skills')
+const CAPABILITIES_DIR = join(ROOT, 'capabilities')
 const INDEX_URL = 'https://docs.introspection.dev/plugin/index.json'
 // Point at a locally served docs branch to validate an unpublished reference.
 const RESOLVED_INDEX_URL = process.env.PLUGIN_INDEX_URL ?? INDEX_URL
@@ -43,15 +46,45 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 const errors = []
 const citedKeys = new Set()
+const expectedSkills = new Set(['create', 'deploy', 'improve'])
+const expectedCapabilities = new Set(['evals', 'harbor', 'introspection', 'migrate', 'pi', 'recipes'])
+const skillNames = readdirSync(SKILLS_DIR, { withFileTypes: true })
+  .filter(entry => entry.isDirectory())
+  .map(entry => entry.name)
+const capabilityNames = readdirSync(CAPABILITIES_DIR, { withFileTypes: true })
+  .filter(entry => entry.isFile() && entry.name.endsWith('.md'))
+  .map(entry => entry.name.slice(0, -3))
 
-for (const skill of readdirSync(SKILLS_DIR, { withFileTypes: true })) {
-  if (!skill.isDirectory()) continue
-  const relativePath = `skills/${skill.name}/SKILL.md`
+for (const name of expectedSkills) {
+  if (!skillNames.includes(name)) errors.push(`public skill skills/${name}/SKILL.md is missing`)
+}
+for (const name of skillNames) {
+  if (!expectedSkills.has(name)) errors.push(`unexpected discoverable skill: skills/${name}/SKILL.md`)
+}
+for (const name of expectedCapabilities) {
+  if (!capabilityNames.includes(name)) errors.push(`capability module capabilities/${name}.md is missing`)
+}
+for (const name of capabilityNames) {
+  if (!expectedCapabilities.has(name)) errors.push(`unexpected capability module: capabilities/${name}.md`)
+}
+
+const contentFiles = [
+  ...skillNames.map(name => ({
+    absolutePath: join(SKILLS_DIR, name, 'SKILL.md'),
+    relativePath: `skills/${name}/SKILL.md`,
+  })),
+  ...capabilityNames.map(name => ({
+    absolutePath: join(CAPABILITIES_DIR, `${name}.md`),
+    relativePath: `capabilities/${name}.md`,
+  })),
+]
+
+for (const { absolutePath, relativePath } of contentFiles) {
   let body
   try {
-    body = readFileSync(join(SKILLS_DIR, skill.name, 'SKILL.md'), 'utf8')
+    body = readFileSync(absolutePath, 'utf8')
   } catch {
-    errors.push(`${relativePath} is missing`)
+    errors.push(`${relativePath} is missing or unreadable`)
     continue
   }
 
@@ -79,7 +112,7 @@ for (const skill of readdirSync(SKILLS_DIR, { withFileTypes: true })) {
 }
 
 if (citedKeys.size === 0) {
-  errors.push('no reference or source keys are cited by any skill')
+  errors.push('no reference or source keys are cited by any public skill or capability module')
 }
 
 // A reachable index must contain every cited key. Offline CI skips this.
@@ -88,14 +121,14 @@ try {
   const response = await fetch(RESOLVED_INDEX_URL, { signal: AbortSignal.timeout(10_000) })
   if (response.ok) index = await response.json()
 } catch {
-  // Intentionally ignored: offline validation still enforces rules 1-3.
+  // Intentionally ignored: offline validation still enforces rules 1-4.
 }
 
 if (index) {
   const known = new Set([...Object.keys(index.references ?? {}), ...Object.keys(index.sources ?? {})])
   for (const key of [...citedKeys].sort()) {
     if (!known.has(key)) {
-      errors.push(`key "${key}" is cited by a skill but absent from the published index`)
+      errors.push(`key "${key}" is cited by plugin content but absent from the published index`)
     }
   }
 } else {

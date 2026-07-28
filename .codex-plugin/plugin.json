@@ -1,7 +1,7 @@
 {
   "name": "introspection",
   "version": "0.1.0",
-  "description": "Create, migrate, deploy, and improve vertical agents on Introspection.",
+  "description": "Create, deploy, and improve vertical agents on Introspection.",
   "author": {
     "name": "Introspection",
     "url": "https://github.com/introspection-org"
@@ -25,7 +25,7 @@
     ],
     "websiteURL": "https://docs.introspection.dev",
     "defaultPrompt": [
-      "Use $introspection:create for a new agent, or $introspection:migrate to preserve an existing agent.",
+      "Use $introspection:create to build a new agent or preserve an existing agent through migration.",
       "Use $introspection:improve with an optional focus, or omit it to start from production evidence.",
       "Use $introspection:deploy to publish and verify a proven recipe."
     ]

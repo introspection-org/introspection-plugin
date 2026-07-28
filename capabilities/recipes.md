@@ -1,13 +1,8 @@
----
-name: recipes
-description: Provide focused Pi Recipes expertise for creating, customizing, migrating, composing, validating, running, and distributing portable agent recipes, including exact Harbor eval pins plus separate online judge definitions and versioned calibration datasets. Use inside Introspection create, migrate, improve, and deploy workflows, after a Harbor suite earns durable recipe coverage, or for narrowly scoped questions about recipe packages, agents, SYSTEM.md, from inheritance, resources, capabilities, checks, and local proof. Keep Pi harness mechanics in the pi skill.
----
-
 # Recipes
 
-Treat a recipe as portable agent IP: the versioned package that carries instructions, agents, skills, extensions, and declared capabilities. Keep Pi harness mechanics in `$introspection:pi`, outcome design in the calling workflow, evaluation reasoning in `$introspection:evals`, and hosted operation in `$introspection:introspection`.
+Treat a recipe as portable agent IP: the versioned package that carries instructions, agents, skills, extensions, and declared capabilities. Keep Pi harness mechanics in the [Pi capability](pi.md), outcome design in the calling workflow, evaluation reasoning in the [Evals capability](evals.md), and hosted operation in the [Introspection capability](introspection.md).
 
-Keep offline evals and online judges as distinct recipe resources. `$introspection:evals` owns the human-approved offline measurement contract, `$introspection:harbor` owns an accepted environment-level task and its run evidence, and this skill owns the immutable Harbor reference declared by the recipe. Online judges follow a separate human-label, calibration, declaration, and deployment path through `$introspection:evals` and `$introspection:introspection`. Keep each judge's direct-child YAML and approved calibration data together as `judges/<judge-name>.yaml` and `judges/<judge-name>.calibration.jsonl`; both belong to the recipe Git repository.
+Keep offline evals and online judges as distinct recipe resources. The Evals capability owns the human-approved offline measurement contract, the [Harbor capability](harbor.md) owns an accepted environment-level task and its run evidence, and this module owns the immutable Harbor reference declared by the recipe. Online judges follow a separate human-label, calibration, declaration, and deployment path through the Evals and Introspection capabilities. Keep each judge's direct-child YAML and approved calibration data together as `judges/<judge-name>.yaml` and `judges/<judge-name>.calibration.jsonl`; both belong to the recipe Git repository.
 
 ## Load references
 
@@ -21,7 +16,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 Inspect the target repository and nearby recipes before proposing structure. Read only the installed Pi Recipes documentation relevant to the work, falling back to the `pi-recipes-docs` source and reading the narrowest page that answers the question.
 
-Confirm changing mechanics with focused `introspection --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this skill. Do not duplicate their schemas, flags, or examples here.
+Confirm changing mechanics with focused `introspection --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this module. Do not duplicate their schemas, flags, or examples here.
 
 ## Establish two prerequisites, then let the scaffold do the rest
 
@@ -78,7 +73,7 @@ Use the smallest structure required by the calling workflow's approved cases. Lo
 - Treat host-specific connectors, policies, deployment manifests, eval pins, and judges as conditional resources rather than default scaffolding.
 - Keep an approved judge calibration dataset beside its judge definition under `judges/`. Never use a temporary directory as the retained dataset location.
 
-Use `$introspection:pi` when the work requires exact Pi extension, skill-discovery, package, provider, settings, setup, or invocation behavior. Never modify Pi core to make a recipe work.
+Load the Pi capability when the work requires exact Pi extension, skill-discovery, package, provider, settings, setup, or invocation behavior. Never modify Pi core to make a recipe work.
 
 ## Check structure and prove behavior
 
@@ -86,9 +81,9 @@ Resolve any provider or model choice that changes the recipe before writing it. 
 
 Resolve the actual recipe root and run the Introspection CLI's `check` verb against that path using the profile appropriate to the workflow, since it is the single recipe validation surface. Fix structural diagnostics at their owning layer. A successful check proves the authored package contract, not useful behavior.
 
-Run the selected agent directly from its recipe path in a fresh Pi process. Load `$introspection:pi` for setup, invocation, and host preflight. Defer authentication and capability setup until the first approved behavior run needs them. Prefer a supported redacted status check; if none exists, use the first minimal model call as authentication proof. Never read, print, copy, or parse raw credential files or secret values.
+Run the selected agent directly from its recipe path in a fresh Pi process. Load the Pi capability for setup, invocation, and host preflight. Defer authentication and capability setup until the first approved behavior run needs them. Prefer a supported redacted status check; if none exists, use the first minimal model call as authentication proof. Never read, print, copy, or parse raw credential files or secret values.
 
-Exercise the calling workflow's representative cases, retain meaningful output and tool evidence, and distinguish configuration, authentication, deterministic implementation, and agent-judgment failures. Use Harbor suites or portable judges only when `$introspection:evals` establishes that the risk merits durable behavioral measurement and the human has approved every case or calibration label. Keep Harbor datasets outside the recipe and pin accepted suites by exact dataset version or Git revision. Change an eval pin separately from agent behavior. Never encode an online judge as a Harbor eval declaration or reuse machine-proposed labels as judge ground truth.
+Exercise the calling workflow's representative cases, retain meaningful output and tool evidence, and distinguish configuration, authentication, deterministic implementation, and agent-judgment failures. Use Harbor suites or portable judges only when the Evals capability establishes that the risk merits durable behavioral measurement and the human has approved every case or calibration label. Keep Harbor datasets outside the recipe and pin accepted suites by exact dataset version or Git revision. Change an eval pin separately from agent behavior. Never encode an online judge as a Harbor eval declaration or reuse machine-proposed labels as judge ground truth.
 
 For judge calibration, resolve the real recipe root before exporting fixtures. Persist the authorized dataset at `judges/<judge-name>.calibration.jsonl`, calibrate from that path, and stage it with `judges/<judge-name>.yaml`. Inspect the Git diff and commit both files together through the calling workflow. Do not claim a judge is recipe-owned, calibrated, or promotion-ready while its approved labels exist only in a temporary or untracked file.
 

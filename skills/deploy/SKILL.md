@@ -7,7 +7,17 @@ description: Deploy a locally proven Introspection recipe and verify the runtime
 
 Deploy the locally proven recipe identified by the request. Resolve the actual package and platform identity instead of assuming the current directory or a passing check points to the right thing.
 
-Load and follow `$introspection:pi`, `$introspection:recipes`, `$introspection:evals`, and `$introspection:introspection`. Resolve each CLI only when the approved deployment step first needs it.
+## Load capabilities
+
+Load only the local capability modules the deployment reaches:
+
+- [Recipes](../../capabilities/recipes.md) for package identity, validation, and deployment declarations.
+- [Introspection](../../capabilities/introspection.md) for CLI, project, runtime, environment, evidence, and release operations.
+- [Pi](../../capabilities/pi.md) when local harness execution or Pi-specific configuration must be resolved.
+- [Evals](../../capabilities/evals.md) when readiness or verification relies on behavioral measurement rather than existing approved proof.
+- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects an environment-level suite or deployment must interpret existing Harbor evidence.
+
+When one module routes to another, load the named module before acting at that boundary. Resolve each CLI only when the approved deployment step first needs it.
 
 ## Load references
 
