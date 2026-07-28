@@ -126,7 +126,7 @@ Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex.
 - Do not edit project files or configuration before confirmation.
 - Do not silently switch providers, models, package managers, installation methods, or authentication.
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command, apart from the Introspection CLI, which every path through this workflow needs.
-- Do not check the environment before stating what the workflow requires, and do not install or switch a runtime without asking first.
+- Do not install or switch a runtime without asking first, and do not narrate a probe whose result required no decision from the user.
 - Do not silently choose a template or imply that customization removes its license obligations.
 - Do not read or expose credentials.
 - Do not commit, push, open a pull request, register a runtime, change bindings, or deploy in this workflow.
