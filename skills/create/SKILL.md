@@ -5,7 +5,7 @@ description: Create a new focused agent from scratch or an existing recipe templ
 
 # Create
 
-Turn the user's desired outcome into a locally proven recipe. Start from scratch or from a selected recipe template. End with something they can run in Pi; leave platform deployment to `$introspection:deploy`.
+Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave platform deployment to `$introspection:deploy`.
 
 Load and follow `$introspection:pi`, `$introspection:recipes`, and `$introspection:evals`.
 
@@ -39,26 +39,21 @@ Their first answer will be a sentence, not a specification, so step them through
 
 Everything else about the starting point — the name, the mode, the destination — follows from those answers and is proposed rather than asked for.
 
-Derive the **recipe** name from what they described instead of spending a prompt on it. Propose a slug and let the user correct it, saying in one sentence what it costs: it names the directory and the manifest now, it names the Git repository when scaffolding creates one, and it becomes the basis of the runtime identity at deploy, where it is reserved per project. Settle it before scaffolding runs, because that is the last point where changing it is free — but settle it inside the dialog you are already having, not as a question of its own.
+Derive the **recipe** name from what they described and propose a slug for correction. Put real effort into it; a good name is the point, and a lazy one pushes the work back onto the user. Ask for one outright only when the description genuinely does not yield it — too vague, or naming a domain rather than a job.
 
-Put real effort into that proposal; a good name is the point, and a lazy one pushes the work back onto the user. Ask for a name outright only when the description genuinely does not yield one — too vague, or naming a domain rather than a job. That is the exception, not the opening move.
+Give one reason it is worth settling now rather than a tour of everywhere the string lands: it is fixed once scaffolding runs, and it cannot collide with a name the project has already reserved. Settle it inside the dialog you are already having, not as a question of its own.
 
-Call it the recipe name, not the agent name. A recipe is the package, and it holds one or more agents; scratch mode simply starts it with one. The two names are independent: the value given to `init` becomes the package name, the directory, and the manifest filename stem, while each agent is named by its own YAML, where the recipe spec's default is `agent`.
+Call it the recipe name, not the agent name: the recipe is the package and the slug names it, while each agent inside it is named by its own YAML.
 
-Then resolve the creation mode:
+Creating a recipe starts from the first-party `template-starter` template in the `introspection-recipes` catalog. That is not a choice to put to the user — it is simply what creating a recipe means, and there is no hand-authored path to prefer over it. Never ask a scratch-versus-template question; a user who brought an outcome rather than a starting point has already answered it.
 
-- **Scratch (default):** start from the first-party `template-starter` template in the `introspection-recipes` catalog. Scratch means the user brought an outcome rather than a starting point; it does not mean an empty directory, and there is no hand-authored path to prefer over this one.
-- **Template:** use when the user names a recipe, asks for a template, or wants to compare starting points other than `template-starter`.
+Some other template becomes the starting point only when the user reaches for one: they name a recipe, ask for a template, or describe something they already have. Until that happens, the branch does not exist and asking about it spends a prompt on a road most first runs never take. When they reach for one without naming it, that is the moment to ask for the source or resolve candidates.
+
+Propose the destination the same way you propose the slug — say where the recipe will land and let the user move it — rather than making it a question. Where it lands has consequences worth one clause, since a directory outside a repository becomes its own repository, and that is what deployment later requires.
 
 Catalog templates are named `template-<key>`, so the repository name and the template key are the same value with a fixed prefix. Resolve the set from the catalog rather than listing it here, since templates are added and renamed.
 
-When the request does not settle the mode, ask through the host's structured selection affordance, listing scratch first and marked as the default. Never pose this in prose on a host that has the affordance; a paragraph ending in two questions is the thing this instruction exists to prevent. Fall back to a short prose question only where no such affordance exists.
-
-Ask the mode and the destination in the same round, so the starting point is one dialog rather than a sequence of small ones. Carry the proposed slug alongside for correction rather than spending a round on it. This round closes the interview; it is not another of its questions. Give each option a hint that names what the choice causes — which command runs, where the recipe lands, whether a repository is created — because the label alone does not let anyone choose. Always leave a path for an answer you did not anticipate.
-
-Do not ask for a template source before the user has chosen template mode. When they choose it without naming one, that is the moment to ask for the source or to resolve candidates; asking earlier spends a prompt on a branch most first runs never take.
-
-Both modes now start from a catalog template, so they differ only in which one. How the template is obtained is a separate question, and `init --help` settles it rather than this skill:
+Either way the starting point is a catalog template, so the routes differ only in how it is obtained, and `init --help` settles that rather than this skill:
 
 - When `init` resolves the wanted template itself, use it. That keeps scaffolding, the manifest, and repository creation as one unit.
 - When it does not, obtain the template with ordinary Git and customize it into the approved output path.
@@ -69,17 +64,17 @@ Whichever route applies, the template carries its own identity and does not adop
 
 A template may be private. That is an access question rather than a capability question: the fetch uses whatever Git credentials the user already has, so no new authentication belongs in this workflow. When a private template cannot be reached, report it as access and let the user resolve it, rather than substituting a different template or asking them for credentials.
 
-Catalog templates are licensed, so preserve their `LICENSE` and attribution even in scratch mode. Starting from a template is not the same as authoring the package, and the obligation does not lapse because the mode is called scratch.
+Catalog templates are licensed, so preserve their `LICENSE` and attribution. That holds for the starter too: every recipe begins as someone else's template, and starting from one is not the same as authoring the package.
 
 Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
-For template mode, prefer a source the user supplied. Otherwise let `$introspection:recipes` resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
+Once the user has reached for a template, prefer a source they supplied. Otherwise let `$introspection:recipes` resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
 
 When candidate resolution fails, name the key that failed and ask the user for an explicit source. Do not dead-end the workflow, and do not name candidate templates from memory.
 
 ## Understand the job
 
-Inspect relevant repository context and nearby recipes without changing anything. Learn who invokes the agent, what triggers it, what result it promises, what sources it may trust, what it may change, and when it must stop or ask for help. In template mode, distinguish behavior worth retaining from example behavior that must be removed or replaced.
+Inspect relevant repository context and nearby recipes without changing anything. Learn who invokes the agent, what triggers it, what result it promises, what sources it may trust, what it may change, and when it must stop or ask for help. When starting from a template the user brought, distinguish behavior worth retaining from example behavior that must be removed or replaced.
 
 Continue the interview the opening question started, in small rounds rather than one dense block, and only for what the starting point did not already settle. Where a question reduces to known alternatives — who invokes it, what it may change, when it must stop — offer them through the host's structured selection affordance, always leaving a path for an answer you did not anticipate.
 
@@ -89,7 +84,7 @@ Treat any model written by a scaffold or template as inherited input, not an app
 
 ## Align with the user
 
-Share what you learned, whether you recommend scratch or a named template, the agent you intend to build, how its representative cases will prove the promise, and any consequential choices or unresolved assumptions. For a template, include its source, license, provider and capability requirements, retained behavior, expected customization, and owned destination. Present this in the clearest natural form for the situation; do not force a standard brief or checklist onto the user. Use the host's structured selection affordance for a discrete choice among known alternatives, and prose for genuinely open-ended questions such as the outcome the agent should own.
+Share what you learned, the agent you intend to build, how its representative cases will prove the promise, and any consequential choices or unresolved assumptions. When a template the user brought is the starting point, include its source, license, provider and capability requirements, retained behavior, expected customization, and owned destination. Present this in the clearest natural form for the situation; do not force a standard brief or checklist onto the user. Use the host's structured selection affordance for a discrete choice among known alternatives, and prose for genuinely open-ended questions such as the outcome the agent should own.
 
 Ask for confirmation before changing project files or configuration. Treat confirmation as approval to build and prove the agreed local recipe in one continuous pass. Pause again only when a newly discovered dependency, side effect, provider choice, or product decision materially changes that agreement.
 
@@ -97,7 +92,7 @@ Ask for confirmation before changing project files or configuration. Treat confi
 
 Resolve the real package root and use the Introspection CLI to build the smallest recipe that satisfies the approved cases:
 
-- In scratch mode, scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. It also installs the Pi coding agent and the Recipes extension, so expect that install here rather than treating it as a prerequisite or a fault.
+- Scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. It also installs the Pi coding agent and the Recipes extension, so expect that install here rather than treating it as a prerequisite or a fault.
 - Pass the agreed recipe slug as the name argument. Running the verb bare makes it prompt interactively for a recipe name, which stalls a non-interactive shell and takes the naming decision out of the dialog where it was already settled. Confirm the argument order and the available template keys from `init --help` before running; the name is the package name, the directory, and the manifest filename stem, and a template key is a separate positional.
 - Expect the scaffolded agent to be named `agent`, the recipe spec's default, rather than named after the recipe. Confirm it from the generated agent YAML instead of assuming, since a recipe may hold more than one agent and any of them can be renamed. Rename it only if the user asks, and treat that as an ordinary edit to its YAML.
 - The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root.
