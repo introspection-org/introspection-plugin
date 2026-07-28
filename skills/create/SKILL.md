@@ -33,7 +33,7 @@ Do not add tools, skills, subagents, or elaborate evaluation infrastructure beca
 
 ## Choose the starting point
 
-Use any question or selection tools the host provides during this interview; fall back to prose when none fits.
+When asking for user input, use any question or selection tool the host makes available; otherwise ask in prose.
 
 Open by asking what sort of agent the user wants to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Ask it on its own and wait; do not stack a second question behind it.
 
