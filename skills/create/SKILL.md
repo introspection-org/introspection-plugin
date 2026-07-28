@@ -33,9 +33,13 @@ Do not add tools, skills, subagents, or elaborate evaluation infrastructure beca
 
 ## Choose the starting point
 
-Ask the name first. It is the one answer the workflow cannot proceed without, it is the argument `init` actually takes, and it is the question a user arrives already able to answer. Everything else about the starting point can be defaulted; this cannot.
+Ask for the **recipe** name first, and call it that. It is the one answer the workflow cannot proceed without, it is the argument `init` actually takes, and it is a question the user arrives already able to answer. Everything else about the starting point can be defaulted; this cannot.
 
-Take the name in the user's own words and derive a slug from it, since `init` uses that value as both the directory and the manifest filename stem. Show the derived slug alongside the name you were given and let the user correct it, rather than silently reshaping what they typed or passing prose where a slug belongs. Agree it before scaffolding: changing it afterwards is a manifest edit and a directory move, not a rename.
+Do not call it the agent name. A recipe is the package, and it holds one or more agents; scratch mode simply starts it with one. The two names are independent: the value given to `init` becomes the package name, the directory, and the manifest filename stem, while each agent is named by its own YAML, where the recipe spec's default is `agent`.
+
+Take the name in the user's own words and derive a slug from it. Show the derived slug alongside the name you were given and let the user correct it, rather than silently reshaping what they typed or passing prose where a slug belongs.
+
+Treat this as the most consequential cheap decision in the workflow, and say why when you ask. The slug does not stay inside the package: it names the recipe, the directory, and the manifest stem now, it names the Git repository when scaffolding creates one, and it becomes the basis of the runtime identity when the recipe is later deployed. Only the first of those is a local edit. By deploy the name has been reserved, so a placeholder chosen to get moving is not free to abandon later, and this prompt is the last point where changing it costs nothing. Get it right here rather than offering to fix it afterwards.
 
 Then resolve the creation mode:
 
@@ -80,7 +84,8 @@ Ask for confirmation before changing project files or configuration. Treat confi
 Resolve the real package root and use the Introspection CLI to build the smallest recipe that satisfies the approved cases:
 
 - In scratch mode, scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. It also installs the Pi coding agent and the Recipes extension, so expect that install here rather than treating it as a prerequisite or a fault.
-- Pass the agreed slug as the name argument. Running the verb bare makes it prompt interactively for a recipe name, which stalls a non-interactive shell and takes the naming decision out of the dialog where it was already settled. Confirm the argument order and the available template keys from `init --help` before running; the name is the directory and the manifest filename stem, and a template key is a separate positional.
+- Pass the agreed recipe slug as the name argument. Running the verb bare makes it prompt interactively for a recipe name, which stalls a non-interactive shell and takes the naming decision out of the dialog where it was already settled. Confirm the argument order and the available template keys from `init --help` before running; the name is the package name, the directory, and the manifest filename stem, and a template key is a separate positional.
+- Expect the scaffolded agent to be named `agent`, the recipe spec's default, rather than named after the recipe. Confirm it from the generated agent YAML instead of assuming, since a recipe may hold more than one agent and any of them can be renamed. Rename it only if the user asks, and treat that as an ordinary edit to its YAML.
 - The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root. Its templates are first-party and embedded in the binary; a starting point named by URL is a repository to clone in template mode, not a value to pass to `init`.
 - In template mode, use `$introspection:recipes` to customize the approved source into the approved repository-local output path. Preserve required attribution and license files. Treat the template as a starting point, not proof that the customized agent is correct. Creating a new GitHub repository is outside this local workflow.
 
