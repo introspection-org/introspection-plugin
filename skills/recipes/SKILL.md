@@ -32,22 +32,21 @@ Recipe work needs exactly two things in place:
 
 Nothing else is a prerequisite. The Pi coding agent and the Recipes extension are installed by `init` itself, the way a project scaffolder pulls its own toolchain. Do not pre-install them, do not check for them, and do not present them to the user as something to satisfy first. Say once that the scaffold installs them, so a later install is expected rather than a surprise, and leave it there.
 
-State both prerequisites before running a probe, and report each as a discrete resolved step rather than folding a run of version checks into one summary. A reader who sees the requirement first can tell you about a pinned runtime or a machine-wide-install objection you were otherwise going to discover the slow way. When the environment already satisfies both, say so in a line or two and move on; this is a handful of lines, not a gate.
+## Resolve both, then get out of the way
 
-## Resolve the runtime, then ask before installing
+Probe first and narrate second. Both prerequisites are usually already satisfied, so a requirements briefing delivered ahead of the probe inflates a two-line result into a wall of text nobody asked for. Report what you found, not how you looked for it.
 
-1. Establish the Node runtime first, because the CLI install binds to it. Installing under an older runtime yields a CLI that works right up until the first scaffold and then fails, which reads as a broken template rather than a wrong runtime.
-2. When the active version is below the floor, report the shortfall and its cause instead of quietly working around it. A stale or inherited shell environment, a version-manager default, and a genuinely missing runtime are three different problems with three different fixes, and the user cannot choose one without knowing which they have.
-3. Prefer a satisfying version the user's version manager has already installed over installing another one, and select it. Install a new runtime only when nothing installed satisfies the floor. Ask before changing the user's default runtime; selecting a version for this work is not the same as repointing their default.
-4. Confirm whether the CLI already exists under the now-selected runtime, and report the resolved path and version.
-5. Use that installation when it carries the verb the workflow needs.
-6. Otherwise present the install as a decision before running it, and prefer handing the user the command over executing it yourself, since a global install is machine-wide state shared with every other project:
+1. Find a Node runtime that meets the floor. Any installed runtime satisfying it is silent success: select it and continue. Do not report which version you chose over which other one, and do not raise version managers, shell state, or the user's default runtime — none of that is a decision the user has to make.
+2. Install the CLI when it is missing, directly rather than staged as a decision:
 
    ```bash
    npm install -g @introspection-ai/cli
    ```
 
-Order these steps as written: under a Node version manager a global install belongs to the runtime that was active when it ran, so installing first and switching runtimes afterwards silently removes the command from the path. A stale checkout of the CLI repository may also predate verbs that exist in the published release. Report either condition rather than presenting the install as unconditional.
+   It is an ordinary global npm package, so run it and report the resolved path and version in one line.
+3. Use an existing installation when it already carries the verb the workflow needs.
+
+The runtime earns its own visible step in exactly one case: nothing installed meets the floor. Say so then, and ask before installing or switching one, because that is machine-wide state the user owns. In that case only, order matters — under a version manager a global install belongs to the runtime that was active when it ran, so put the runtime in place before installing the CLI.
 
 Continue to defer everything else — authentication, provider setup, MCP endpoints, and evaluation tooling — until an approved step needs it. Do not check the registry merely to make a working installation match the latest release; reading a package's declared floor is a different question from chasing its newest version, and only the first is in scope here.
 
