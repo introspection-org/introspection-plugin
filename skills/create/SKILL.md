@@ -33,6 +33,8 @@ Do not add tools, skills, subagents, or elaborate evaluation infrastructure beca
 
 ## Choose the starting point
 
+Use any question or selection tools the host provides during this interview; fall back to prose when none fits.
+
 Open by asking what sort of agent the user wants to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Ask it on its own and wait; do not stack a second question behind it.
 
 Their first answer will be a sentence, not a specification, so step them through the job from there — a short interview of a few focused questions, one round at a time, each one narrowing what the agent owns. Never present them as a numbered list or a form; ask, listen, and let the next question follow from the last answer. `$introspection:evals` owns what to ask about behavior; this skill owns keeping it short and conversational.
