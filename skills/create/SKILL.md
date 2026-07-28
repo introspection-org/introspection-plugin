@@ -1,17 +1,16 @@
 ---
 name: create
-description: Create or migrate a focused agent into a locally proven Introspection recipe, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, migrate, port, package, Pi, recipe, eval, or Harbor requests that are not production improvement or deployment. Keep deployment separate.
+description: Create a focused agent from scratch or a recipe template, ending with a locally proven Introspection recipe, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, Pi, recipe, eval, or Harbor requests that are not migration, production improvement, or deployment. Keep migration and deployment separate.
 ---
 
 # Create
 
-Turn the user's desired outcome or existing agent into a locally proven recipe. End with something they can run in Pi; leave platform deployment to `$introspection:deploy`.
+Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `$introspection:migrate` and platform deployment to `$introspection:deploy`.
 
 ## Load capabilities
 
 Load only the local capability modules the request reaches:
 
-- [Migrate](../../capabilities/migrate.md) when an existing agent implementation must preserve approved behavior. Follow that module as the owning workflow instead of the creation workflow below.
 - [Pi](../../capabilities/pi.md) for harness, extension, skill-discovery, provider, settings, package, or local-execution behavior.
 - [Recipes](../../capabilities/recipes.md) for portable package composition, templates, validation, distribution, or eval declarations.
 - [Evals](../../capabilities/evals.md) for behavior discovery, trace analysis, measurement design, case approval, or judge calibration.
@@ -76,7 +75,7 @@ A template may be private. That is an access question rather than a capability q
 
 Catalog templates are licensed, so preserve their `LICENSE` and attribution. That holds for the starter too: every recipe begins as someone else's template, and starting from one is not the same as authoring the package.
 
-Do not treat an ordinary application repository as an existing agent. Load and follow the Migrate capability only when an agent implementation exists and the user wants its approved behavior preserved.
+Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
 Once the user has reached for a template, prefer a source they supplied. Otherwise let the Recipes capability resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
 

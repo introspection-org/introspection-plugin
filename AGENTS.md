@@ -85,13 +85,13 @@ Consequences for changes here:
   `introspection-docs` first so the published index has the key.
 - Adding a new *trigger* — a skill, or its `description` — does need a plugin
   release, because the routing surface cannot be fetched.
-- Keep `skills/` limited to the three public autocomplete entry points:
-  `create`, `deploy`, and `improve`. Supporting migration, Pi, Recipes, eval,
+- Keep `skills/` limited to the four public autocomplete entry points:
+  `create`, `migrate`, `deploy`, and `improve`. Supporting Pi, Recipes, eval,
   Harbor, and Introspection behavior belongs in `capabilities/` and is loaded
   progressively by those entry points.
 - Every public skill and capability module that cites the index must carry the
   reference-loading and degradation contract verbatim. `validate-references.mjs`
-  enforces both this and the three-skill discovery surface, so the copies cannot
+  enforces both this and the four-skill discovery surface, so the copies cannot
   drift.
 
 To validate a skill against an unpublished reference, serve the docs branch and

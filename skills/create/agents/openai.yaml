@@ -1,4 +1,4 @@
 interface:
   display_name: "Create"
-  short_description: "Create, migrate, and locally prove agents"
-  default_prompt: "Use $introspection:create to build or migrate an agent into a locally proven recipe."
+  short_description: "Build and locally prove a new agent"
+  default_prompt: "Use $introspection:create to build and locally prove a new agent recipe from scratch or a selected recipe template."

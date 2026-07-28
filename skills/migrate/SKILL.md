@@ -1,8 +1,13 @@
+---
+name: migrate
+description: Convert an existing agent into a locally proven Introspection recipe while preserving its approved behavior. Use when the user asks to migrate, port, or package an existing agent for Pi and Introspection.
+---
+
 # Migrate
 
 Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `$introspection:deploy`.
 
-Load and follow the [Pi](pi.md), [Recipes](recipes.md), and [Evals](evals.md) capabilities before proceeding.
+Load and follow the [Pi](../../capabilities/pi.md), [Recipes](../../capabilities/recipes.md), and [Evals](../../capabilities/evals.md) capabilities before proceeding.
 
 ## Load references
 
