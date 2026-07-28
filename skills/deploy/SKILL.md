@@ -41,7 +41,7 @@ Confirm local evidence in proportion to the agent's risk. For a newly created ag
 
 Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 
-Separate repository setup from GitHub App access. Local Git work, creating or reusing the remote repository, and pushing do not require the App. When the target repository is new to the intended Introspection project, direct the user to the organization Integrations page identified by the current connection documentation after the remote exists, and require confirmation that the App can access it only before first runtime registration. An existing runtime in that project backed by the same repository satisfies this requirement unless access is known to have changed or been revoked. Continue independent deployment work while waiting. Do not use `runtimes create` or another mutation as an authorization probe, inspect stored credentials, or call an undocumented API to manufacture a preflight. If the target repository changes before deployment, repeat the confirmation.
+Separate repository setup from GitHub App access. Local Git work, creating or reusing the remote repository, and pushing do not require the App. When the target repository is new to the intended Introspection project, give the user the direct organization Integrations URL identified by the current connection documentation or CLI output after the remote exists, and require confirmation that the App can access it only before first runtime registration. An existing runtime in that project backed by the same repository satisfies this requirement unless access is known to have changed or been revoked. Continue independent deployment work while waiting. Do not use `runtimes create` or another mutation as an authorization probe, inspect stored credentials, or call an undocumented API to manufacture a preflight. If the target repository changes before deployment, repeat the confirmation.
 
 Without changing anything, resolve CLI version and login identity, project and scopes, Git remote and status, recipe package root, `.introspection` manifest, and intended diff. Run the Introspection CLI's `check` verb, which is the single recipe validation surface. Identify missing or invalid configuration, but do not repair it yet.
 
@@ -79,7 +79,7 @@ Merging is the user's release decision, so do not merge to make production move.
 
 After the user merges, verify production the same way staging was verified: run a representative task through the stable runtime-group slug, confirm it resolves to the merged recipe commit, and inspect the complete conversation. A created production version is not a verified one.
 
-Report the deployed identity, active commit per environment, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform.
+Report the deployed identity, active commit per environment, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform. Include the resolved runtime dashboard URL and each task or conversation URL used as verification evidence.
 
 ## Firm boundaries
 

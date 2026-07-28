@@ -24,6 +24,10 @@ If a requested documented operation is absent from installed help, verify comman
 
 If a required platform operation is not available in the current CLI, report the gap and stop at the last supported step. Do not substitute another interface.
 
+## Return useful links
+
+Treat user-facing URLs as part of the result of every cloud operation. Preserve and present every actionable URL the CLI returns, especially dashboard pages for resources it created or inspected and settings pages that unblock the next action. When a runtime or task URL would help but the preceding command did not return one, resolve it with `introspection open --print`, using `--runtime` or `--task` as needed. Label each link by destination; never hand-build a dashboard URL or claim a link you did not resolve. If no supported direct URL is available, say so and include the relevant official documentation link when it helps. Sharing a dashboard link does not authorize operating the dashboard.
+
 ## Develop through the platform
 
 After a runtime exists, use `introspection dev` when the user wants to exercise uncommitted recipe changes through the platform's development chat. This complements local Pi proof; it does not replace it and does not create a deployable runtime version.
