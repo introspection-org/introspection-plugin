@@ -41,6 +41,8 @@ Confirm local evidence in proportion to the agent's risk. For a newly created ag
 
 Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 
+Separate repository setup from GitHub App access. Local Git work, creating or reusing the remote repository, and pushing do not require the App. When the target repository is new to the intended Introspection project, direct the user to the organization Integrations page identified by the current connection documentation after the remote exists, and require confirmation that the App can access it only before first runtime registration. An existing runtime in that project backed by the same repository satisfies this requirement unless access is known to have changed or been revoked. Continue independent deployment work while waiting. Do not use `runtimes create` or another mutation as an authorization probe, inspect stored credentials, or call an undocumented API to manufacture a preflight. If the target repository changes before deployment, repeat the confirmation.
+
 Without changing anything, resolve CLI version and login identity, project and scopes, Git remote and status, recipe package root, `.introspection` manifest, and intended diff. Run the Introspection CLI's `check` verb, which is the single recipe validation surface. Identify missing or invalid configuration, but do not repair it yet.
 
 ## Resolve runtime identity
@@ -51,17 +53,17 @@ If a runtime group already represents the recipe, use its candidate-version flow
 
 Treat first-runtime registration and environment readiness as separate milestones. Offer to create a new runtime even when a declared remote MCP server, endpoint, or credential is not ready, especially when the recipe and MCP server are being developed together. Record the missing bindings and explain that registration makes the runtime available for development but does not prove staging or production readiness. Do not require placeholder endpoints or credentials.
 
-Never create a GitHub repository for the user. If the repository, remote, or GitHub App access is missing, explain what the user must create or grant, then resume only after they select or confirm the repository.
+If no suitable remote exists, propose creating the GitHub repository as part of the deployment mutation, naming its owner, repository name, and visibility. Reuse an appropriate existing remote instead of creating a duplicate. A missing remote is setup work, not a reason to stop before alignment.
 
 ## Align with the user
 
 Explain the resolved target and provenance, local readiness, recipe-check result, proposed Git or configuration work, runtime lifecycle, environment effects, and verification plan. Make material side effects and uncertainty unmistakable, but choose the clearest natural presentation rather than a fixed deployment brief.
 
-Ask for explicit confirmation covering the complete proposed mutation: configuration edits, commit, push, runtime registration or candidate selection, the binding plan and any bindings being configured, and staging changes. When bindings are unresolved, name them, identify which environment lanes cannot yet be exercised, and offer the development-only bootstrap explicitly. Name what the first runtime or eventual merge will activate in production so that consequence is approved before it is reachable, not discovered afterward. Continue through the approved deployment without routine stops, but pause if the target, side effects, or scope changes materially.
+Ask for explicit confirmation covering the complete proposed mutation: configuration edits, repository creation with its owner, name, and visibility when needed, commit, push, runtime registration or candidate selection, the binding plan and any bindings being configured, and staging changes. When bindings are unresolved, name them, identify which environment lanes cannot yet be exercised, and offer the development-only bootstrap explicitly. Name what the first runtime or eventual merge will activate in production so that consequence is approved before it is reachable, not discovered afterward. Continue through the approved deployment without routine stops, but pause if the target, side effects, or scope changes materially.
 
 ## Deploy and verify
 
-Make approved manifest or configuration changes and rerun the recipe check. Do not create or update a runtime until the recipe is correctly configured and its applicable local proof still holds. Requery before first-runtime creation and prefer any supported idempotency or uniqueness mechanism.
+Make approved manifest or configuration changes and rerun the recipe check. Commit them, create the approved remote when needed, and push the intended commit. Do not create or update a runtime until the recipe is correctly configured, its applicable local proof still holds, and any required GitHub App confirmation is complete. Requery before first-runtime creation and prefer any supported idempotency or uniqueness mechanism.
 
 For a new runtime whose remote MCP binding is not ready, registration may be the approved stopping point for deployment. Hand development back to `introspection dev --mcp NAME=URL` so the declared MCP server can resolve to the local process while the command remains attached. Do not use `--check-bindings` as a prerequisite for this loop; it intentionally turns missing required bindings into a failing readiness check. Do not claim staging or production verification from development evidence.
 
@@ -88,5 +90,6 @@ Report the deployed identity, active commit per environment, runtime and task ev
 - Do not merge to production for the user; the merge is their release decision.
 - Do not make first-runtime registration depend on a remote MCP endpoint or credential when the user approves a development-only bootstrap. Keep every affected lane's readiness gap explicit.
 - Do not direct production traffic to, or claim production readiness for, a runtime with unresolved required production bindings. Configure them before a later merge activates a new version.
-- Do not create a GitHub repository for the user.
+- Do not create a GitHub repository without approval of its owner, name, and visibility, or when an appropriate remote already exists.
+- Do not register the first runtime from a repository new to the intended project until its GitHub App access is confirmed. This does not block local Git work, remote creation, commits, pushes, or independent binding setup.
 - Do not substitute another platform interface when a required operation is unavailable through the current CLI; expose the gap.
