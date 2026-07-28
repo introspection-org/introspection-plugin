@@ -21,7 +21,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 A first-time create should feel like a couple of prompts, not an interview. Two things must be true before scaffolding — a Node runtime at the Recipes toolchain's floor, and the Introspection CLI — and `$introspection:recipes` owns resolving both. Everything else the recipe needs, including Pi and the Recipes extension, is installed by `init` itself.
 
-When both are already satisfied, spend two lines saying so and move to the agent. Do not narrate the probes that established it, and do not print a dependency table whose every row reads "already fine" — a table is how you present a decision the user has to make, not a receipt for work they did not ask to watch. Report a discrete step only where something is actually unresolved: a runtime below the floor, a missing CLI, or an install that will touch machine-wide state. Those are the user's decisions and deserve their own visible step; the rest is noise that buries them.
+When both are already satisfied, spend two lines saying so and move to the agent. Do not narrate the probes that established it, and do not print a dependency table whose every row reads "already fine" — a table is how you present a decision the user has to make, not a receipt for work they did not ask to watch. Report a discrete step only where the user actually has to decide something: nothing installed meets the runtime floor, or setup failed. Installing the CLI is not such a case; install it and report the result in a line. Everything else is noise that buries the decisions that matter.
 
 Mention once, before scaffolding runs, that `init` installs Pi and the Recipes extension. That single sentence is what keeps a later install from reading as something going wrong.
 
@@ -33,13 +33,13 @@ Do not add tools, skills, subagents, or elaborate evaluation infrastructure beca
 
 ## Choose the starting point
 
-Ask for the **recipe** name first, and call it that. It is the one answer the workflow cannot proceed without, it is the argument `init` actually takes, and it is a question the user arrives already able to answer. Everything else about the starting point can be defaulted; this cannot.
+Open by asking what the user is trying to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Everything else about the starting point — the name, the mode, the destination — follows from that answer and is proposed rather than asked for. Never open with a numbered list of questions; a first run should read as a short exchange, not a form.
 
-Do not call it the agent name. A recipe is the package, and it holds one or more agents; scratch mode simply starts it with one. The two names are independent: the value given to `init` becomes the package name, the directory, and the manifest filename stem, while each agent is named by its own YAML, where the recipe spec's default is `agent`.
+Derive the **recipe** name from what they described instead of spending a prompt on it. Propose a slug and let the user correct it, saying in one sentence what it costs: it names the directory and the manifest now, it names the Git repository when scaffolding creates one, and it becomes the basis of the runtime identity at deploy, where it is reserved per project. Settle it before scaffolding runs, because that is the last point where changing it is free — but settle it inside the dialog you are already having, not as a question of its own.
 
-Take the name in the user's own words and derive a slug from it. Show the derived slug alongside the name you were given and let the user correct it, rather than silently reshaping what they typed or passing prose where a slug belongs.
+Put real effort into that proposal; a good name is the point, and a lazy one pushes the work back onto the user. Ask for a name outright only when the description genuinely does not yield one — too vague, or naming a domain rather than a job. That is the exception, not the opening move.
 
-Treat this as the most consequential cheap decision in the workflow, and say why when you ask. The slug does not stay inside the package: it names the recipe, the directory, and the manifest stem now, it names the Git repository when scaffolding creates one, and it becomes the basis of the runtime identity when the recipe is later deployed. Only the first of those is a local edit. By deploy the name has been reserved, so a placeholder chosen to get moving is not free to abandon later, and this prompt is the last point where changing it costs nothing. Get it right here rather than offering to fix it afterwards.
+Call it the recipe name, not the agent name. A recipe is the package, and it holds one or more agents; scratch mode simply starts it with one. The two names are independent: the value given to `init` becomes the package name, the directory, and the manifest filename stem, while each agent is named by its own YAML, where the recipe spec's default is `agent`.
 
 Then resolve the creation mode:
 
@@ -50,7 +50,9 @@ Catalog templates are named `template-<key>`, so the repository name and the tem
 
 When the request does not settle the mode, ask through the host's structured selection affordance, listing scratch first and marked as the default. Never pose this in prose on a host that has the affordance; a paragraph ending in two questions is the thing this instruction exists to prevent. Fall back to a short prose question only where no such affordance exists.
 
-Ask the mode and the destination in the same round, so the starting point is one dialog rather than a sequence of small ones. With the name, that is two prompts for a first run, which is the target. Give each option a hint that names what the choice causes — which command runs, where the recipe lands, whether a repository is created — because the label alone does not let anyone choose. Always leave a path for an answer you did not anticipate.
+Ask the mode and the destination in the same round, so the starting point is one dialog rather than a sequence of small ones. With the opening question, and the proposed slug carried alongside for correction, that is two prompts for a first run, which is the target. Give each option a hint that names what the choice causes — which command runs, where the recipe lands, whether a repository is created — because the label alone does not let anyone choose. Always leave a path for an answer you did not anticipate.
+
+Do not ask for a template source before the user has chosen template mode. When they choose it without naming one, that is the moment to ask for the source or to resolve candidates; asking earlier spends a prompt on a branch most first runs never take.
 
 Both modes now start from a catalog template, so they differ only in which one. How the template is obtained is a separate question, and `init --help` settles it rather than this skill:
 
