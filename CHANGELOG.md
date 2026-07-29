@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/introspection-org/introspection-plugin/compare/v0.2.1...v0.3.0) (2026-07-29)
+
+
+### Features
+
+* **release:** publish stable plugin channel version ([#23](https://github.com/introspection-org/introspection-plugin/issues/23)) ([1f5c7cf](https://github.com/introspection-org/introspection-plugin/commit/1f5c7cfa455ebf5fc2d26a01b22beeadd3b44dd0))
+* **skills:** streamline public workflows and runtime bootstrap ([#16](https://github.com/introspection-org/introspection-plugin/issues/16)) ([eb5ab05](https://github.com/introspection-org/introspection-plugin/commit/eb5ab0572381f0374446b67d0fad6fbce10a499b))
+
+
+### Bug Fixes
+
+* **skills:** share cloud resource links ([#20](https://github.com/introspection-org/introspection-plugin/issues/20)) ([c5062d9](https://github.com/introspection-org/introspection-plugin/commit/c5062d99a57b88b19da9967916ebf7ff41fa3034))
+
 ## [0.2.1](https://github.com/introspection-org/introspection-plugin/compare/v0.2.0...v0.2.1) (2026-07-28)
 
 
