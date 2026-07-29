@@ -6,7 +6,23 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 
 ## Install
 
-Each host has a native marketplace. Register the `stable` release channel, then install:
+Install the plugin for every supported host detected on your machine:
+
+```bash
+npx --yes @introspection-ai/cli@latest plugin install
+```
+
+To install for one host explicitly:
+
+```bash
+# Codex
+npx --yes @introspection-ai/cli@latest plugin install --target codex
+
+# Claude Code
+npx --yes @introspection-ai/cli@latest plugin install --target claude-code
+```
+
+The installer configures the plugin at user scope. If automatic installation or host detection fails, register the `stable` release channel and install with the host's native marketplace commands:
 
 ```bash
 # Claude Code
@@ -32,7 +48,7 @@ codex plugin marketplace upgrade introspection-org
 codex plugin add introspection@introspection-org
 ```
 
-Run `/reload-plugins` in Claude Code, or start a new Codex task, to apply the change.
+Start a new Codex task or Claude Code session to apply the change.
 
 Updates are the host's job. Claude Code tracks the `version` in `.claude-plugin/plugin.json` and can refresh automatically when marketplace auto-update is enabled; Codex refreshes its marketplace and reinstalls explicitly. The plugin never prompts for its own upgrade. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
