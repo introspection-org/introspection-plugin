@@ -37,11 +37,12 @@ must use the same clean SemVer version.
 
 ### After a release
 
-Release Please bumps `version` in `.claude-plugin/plugin.json` and
-`.codex-plugin/plugin.json`. That version *is* the release signal: Claude Code
-pins an installation to it and ships a new one only when it changes. Keep the
-two manifests and the marketplace entry in agreement — CI checks this with
-`claude plugin tag --dry-run`.
+Release Please bumps `version` in `.claude-plugin/plugin.json`,
+`.codex-plugin/plugin.json`, and `stable-channel.json`. That version *is* the release signal:
+Claude Code pins an installation to it and ships a new one only when it changes. Keep the two
+manifests, the stable-channel document, and the marketplace entry in agreement — CI checks the
+marketplace with `claude plugin tag --dry-run`, and the release workflow checks all three published
+versions before advancing `stable`.
 
 After Release Please creates `vX.Y.Z`, the release workflow creates Claude's
 immutable `introspection--vX.Y.Z` tag at the same commit and fast-forwards the

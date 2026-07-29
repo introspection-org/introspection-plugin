@@ -32,6 +32,10 @@ codex plugin marketplace upgrade introspection-org
 codex plugin add introspection@introspection-org
 ```
 
+The machine-readable [`stable-channel.json`](./stable-channel.json) travels with that branch and
+reports the released plugin version. Installers can use it to produce an accurate update plan
+before asking a host to refresh its marketplace.
+
 Run `/reload-plugins` in Claude Code, or start a new Codex task, to apply the change.
 
 Updates are the host's job. Claude Code tracks the `version` in `.claude-plugin/plugin.json` and can refresh automatically when marketplace auto-update is enabled; Codex refreshes its marketplace and reinstalls explicitly. The plugin never prompts for its own upgrade. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
