@@ -18,6 +18,8 @@ Inspect the target repository and nearby recipes before proposing structure. Rea
 
 Confirm changing mechanics with focused `introspection --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this module. Do not duplicate their schemas, flags, or examples here.
 
+Once the Introspection CLI is available, use `introspection doctor` as the canonical prerequisite preflight when that version exposes it. Otherwise read the Recipes toolchain's declared engine floor or use an exact incompatibility reported by `init` or `local`. Never claim compatibility from `node --version` without comparing it with the resolved floor. Treat a reported incompatibility as the next recovery action, then retry the command that exposed it.
+
 ## Establish two prerequisites, then let the scaffold do the rest
 
 Recipe work needs exactly two things in place:
@@ -41,11 +43,15 @@ Probe first and narrate second. Both prerequisites are usually already satisfied
    It is an ordinary global npm package, so run it and report the resolved path and version in one line.
 3. Use an existing installation when it already carries the verb the workflow needs.
 
-The runtime earns its own visible step in exactly one case: nothing installed meets the floor. Say so then, and ask before installing or switching one, because that is machine-wide state the user owns. In that case only, order matters — under a version manager a global install belongs to the runtime that was active when it ran, so put the runtime in place before installing the CLI.
+The runtime earns its own visible step in exactly one case: nothing installed meets the floor. Say so then, and ask before installing or switching one only when the user has not already authorized installing or upgrading the required local tooling. Existing authorization remains valid throughout the approved workflow; do not ask again or describe the same runtime change as unapproved.
+
+After authorization, prefer a detected existing runtime manager that can supply the required Node version, even when it does not own the Node currently resolved by the shell. Detect an installed manager even when its shell function is not loaded: inspect the resolved Node path and documented manager initialization scripts before concluding that none is available. Initialize the selected manager, install and select the minimum compatible major, and keep the runtime change ahead of any global CLI installation. Do not use a generic operating-system `nodejs` package unless its candidate version is known to meet the floor.
+
+Runtime activation may apply only to the current shell. Install, select, verify, and retry the blocked command in the same shell invocation, or explicitly reactivate the selected runtime in later invocations. Verify both `node --version` and the resolved Node executable before retrying.
 
 Continue to defer everything else — authentication, provider setup, MCP endpoints, and evaluation tooling — until an approved step needs it. Do not check the registry merely to make a working installation match the latest release; reading a package's declared floor is a different question from chasing its newest version, and only the first is in scope here.
 
-Do not silently switch package managers or installation methods. Stop if the required change needs elevated privileges, would replace an unrecognized development build, changes authentication or user configuration, or fails. Report the exact blocker instead of performing speculative setup.
+Do not silently switch runtime managers, package managers, or installation methods. An ineffective installation attempt does not cancel the user's authorization and is not by itself a blocker: diagnose why it did not select a compatible runtime and try the next safe recovery within the detected manager and approved scope. Stop when recovery requires unapproved elevation, a manager change, persistent user configuration, replacement of an unrecognized development build, an authentication change, or when all safe authorized methods fail. Report that exact blocker instead of performing speculative setup.
 
 ## Choose the entry path
 
@@ -97,7 +103,7 @@ Distribution is ordinary Git. A recipe travels by clone, fork, or copy, and ther
 
 - Build through recipe-owned agents, extensions, skills, prompts, scripts, tests, and eval references using supported interfaces. Treat Pi, Pi Recipes, Harbor, and Introspection as external platform dependencies; never edit their source repositories unless the user explicitly requests platform contribution work.
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command. The Introspection CLI is the sole exception: every entry path needs it, so resolve it up front.
-- Do not install, upgrade, or switch a runtime without asking first, and do not narrate a probe whose result required no decision from the user.
+- Install, upgrade, or switch a runtime only when the operation needs it and the user has authorized it. Reuse explicit prior authorization for required local tooling; ask again only when recovery introduces a materially new side effect.
 - Do not silently change provider, model, package manager, installation method, or authentication.
 - Do not encode host secrets in a recipe or infer undocumented `from:` merges, resource grammar, or CLI flags.
 - Do not claim readiness from a recipe check alone; prove representative behavior in a fresh Pi process.
