@@ -6,19 +6,14 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 
 ## Install
 
-Each host has a native marketplace. Register the `stable` release channel, then install:
+Install the Introspection CLI, then let it detect and configure every supported coding-agent host on your machine:
 
 ```bash
-# Claude Code
-claude plugin marketplace add https://github.com/introspection-org/introspection-plugin.git#stable
-claude plugin install introspection@introspection-org-introspection-plugin --scope user
+npm install -g @introspection-ai/cli
+introspection plugin install
 ```
 
-```bash
-# Codex
-codex plugin marketplace add introspection-org/introspection-plugin@stable
-codex plugin add introspection@introspection-org
-```
+The command currently supports Codex and Claude Code, installs at user scope, and pins the marketplace to the `stable` release channel. Use `--target codex` or `--target claude-code` to configure only one host.
 
 The `stable` branch advances only when Release Please creates a versioned release, so normal development on `main` cannot change an installed plugin. To update:
 
