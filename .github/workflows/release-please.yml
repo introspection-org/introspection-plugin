@@ -37,8 +37,14 @@ jobs:
 
           claude_version=$(node -p "require('./.claude-plugin/plugin.json').version")
           codex_version=$(node -p "require('./.codex-plugin/plugin.json').version")
-          if [[ "$claude_version" != "$codex_version" ]]; then
-            echo "Claude ($claude_version) and Codex ($codex_version) manifest versions differ"
+          channel_version=$(node -p "require('./stable-channel.json').version")
+          channel_ref=$(node -p "require('./stable-channel.json').ref")
+          if [[ "$claude_version" != "$codex_version" || "$claude_version" != "$channel_version" ]]; then
+            echo "Claude ($claude_version), Codex ($codex_version), and channel ($channel_version) versions differ"
+            exit 1
+          fi
+          if [[ "$channel_ref" != "stable" ]]; then
+            echo "Plugin channel ref must be stable, got $channel_ref"
             exit 1
           fi
 
