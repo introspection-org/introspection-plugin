@@ -6,20 +6,26 @@ The plugin helps turn an important workflow into a narrowly scoped agent with an
 
 ## Install
 
-Install the plugin for every supported host detected on your machine:
+Install the Introspection CLI once:
 
 ```bash
-npx --yes @introspection-ai/cli@latest plugin install
+npm install -g @introspection-ai/cli
+```
+
+Then install the plugin for every supported host detected on your machine:
+
+```bash
+introspection plugin install
 ```
 
 To install for one host explicitly:
 
 ```bash
 # Codex
-npx --yes @introspection-ai/cli@latest plugin install --target codex
+introspection plugin install --target codex
 
 # Claude Code
-npx --yes @introspection-ai/cli@latest plugin install --target claude-code
+introspection plugin install --target claude-code
 ```
 
 The installer configures the plugin at user scope. If automatic installation or host detection fails, register the `stable` release channel and install with the host's native marketplace commands:
@@ -36,21 +42,29 @@ codex plugin marketplace add introspection-org/introspection-plugin@stable
 codex plugin add introspection@introspection-org
 ```
 
-The `stable` branch advances only when Release Please creates a versioned release, so normal development on `main` cannot change an installed plugin. To update:
+The `stable` branch advances only when Release Please creates a versioned release, so normal development on `main` cannot change an installed plugin. The machine-readable [`stable-channel.json`](./stable-channel.json) travels with that branch and lets the CLI produce an accurate update plan before asking a host to refresh its marketplace.
+
+Update installed plugins with:
 
 ```bash
-# Claude Code
-claude plugin marketplace update introspection-org-introspection-plugin
-claude plugin update introspection@introspection-org-introspection-plugin --scope user
-
-# Codex
-codex plugin marketplace upgrade introspection-org
-codex plugin add introspection@introspection-org
+introspection plugin update --dry-run
+introspection plugin update
 ```
 
-Start a new Codex task or Claude Code session to apply the change.
+The broader upgrade command includes installed plugins on a best-effort basis alongside the CLI, Recipes, and Pi:
 
-Updates are the host's job. Claude Code tracks the `version` in `.claude-plugin/plugin.json` and can refresh automatically when marketplace auto-update is enabled; Codex refreshes its marketplace and reinstalls explicitly. The plugin never prompts for its own upgrade. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
+```bash
+introspection upgrade --dry-run
+introspection upgrade
+```
+
+To remove the user-scoped plugin while preserving its marketplace registration for an easy reinstall:
+
+```bash
+introspection plugin uninstall
+```
+
+Run `/reload-plugins` in Claude Code, or start a new Codex task, after an install, update, or uninstall. The CLI delegates installation and updates to each host's native plugin commands. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
 | Entry point | Owns |
 | --- | --- |

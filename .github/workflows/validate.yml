@@ -55,6 +55,17 @@ jobs:
         run: npx --yes @anthropic-ai/claude-code@latest plugin validate ./.claude-plugin/plugin.json --strict
       - name: Check plugin.json agrees with its marketplace entry
         run: npx --yes @anthropic-ai/claude-code@latest plugin tag --dry-run
+      - name: Check stable channel agrees with host manifests
+        run: |
+          node -e '
+            const claude = require("./.claude-plugin/plugin.json");
+            const codex = require("./.codex-plugin/plugin.json");
+            const channel = require("./stable-channel.json");
+            if (claude.version !== codex.version || claude.version !== channel.version) {
+              throw new Error(`Version mismatch: Claude ${claude.version}, Codex ${codex.version}, channel ${channel.version}`);
+            }
+            if (channel.ref !== "stable") throw new Error(`Channel ref must be stable, got ${channel.ref}`);
+          '
 
   discover:
     runs-on: ubuntu-latest
