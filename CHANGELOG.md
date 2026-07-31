@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1](https://github.com/introspection-org/introspection-plugin/compare/v0.3.0...v0.3.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* **skills:** align workflows with trajectory evidence ([#27](https://github.com/introspection-org/introspection-plugin/issues/27)) ([52ab49a](https://github.com/introspection-org/introspection-plugin/commit/52ab49aaef3095116ca44d8eac376e910cea04c0))
+* **skills:** recover incompatible Node runtimes ([#25](https://github.com/introspection-org/introspection-plugin/issues/25)) ([d2d9e46](https://github.com/introspection-org/introspection-plugin/commit/d2d9e46ae2652673a4b2436db82376525dce12b5))
+
 ## [0.3.0](https://github.com/introspection-org/introspection-plugin/compare/v0.2.1...v0.3.0) (2026-07-29)
 
 
