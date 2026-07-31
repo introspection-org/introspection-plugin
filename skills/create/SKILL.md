@@ -30,7 +30,9 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 Keep setup brief so the conversation can be about the agent. The Recipes capability owns making the Introspection CLI available and using its canonical setup workflow before scaffolding. Once the CLI is available, run `introspection setup --check` and treat the rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects.
 
-When the plan is already satisfied, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When the plan contains changes, show it once and obtain one confirmation for the complete mutation. Then run `introspection setup --yes`, wait for its terminal result, and continue only after it succeeds. Do not install or update Pi, Recipes, or host plugins piecemeal around setup.
+When the plan is already satisfied, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When the plan contains changes, show it once. If the request already explicitly authorizes automatic bootstrap or installation of required tooling, proceed without asking again; otherwise obtain one confirmation for the complete mutation. That authorization covers any required Node, CLI, Pi, Recipes, and detected-host plugin work in the reviewed setup path unless recovery introduces a materially new side effect.
+
+Run `introspection setup --yes` and follow the exact command to a terminal exit status. A returned session, process, cell, or job handle—or output that merely says installation began—is still in progress: poll the same handle until it exits. After exit zero, rerun `introspection setup --check` and continue only when it reports no required changes. Do not install or update Pi, Recipes, or host plugins piecemeal around setup.
 
 `introspection init` scaffolds a recipe after setup is ready. It is not a prerequisite installer or repair command.
 

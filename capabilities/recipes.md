@@ -27,9 +27,9 @@ Once a compatible Introspection CLI is available, use `introspection setup --che
 The CLI must be available before it can own setup. Resolve its documented Node requirement and installation method, using an exact launcher incompatibility as the recovery signal rather than guessing from unrelated package metadata. Once the CLI runs:
 
 1. Run `introspection setup --check` without changing the machine.
-2. If it reports changes, show the complete rendered plan and obtain one confirmation for that plan.
-3. Run `introspection setup --yes`, follow it to a terminal exit status, and continue only after success.
-4. If setup fails, preserve the exact invocation and failure, inspect the resulting read-only state, and change the diagnosis before retrying. Do not repeat the same mutation unchanged or repair Pi, Recipes, or plugins piecemeal around setup.
+2. If it reports changes, show the complete rendered plan. When the request already explicitly authorizes automatic bootstrap or installing required tooling, do not ask again; otherwise obtain one confirmation for that plan. Carry that authorization through any required Node, CLI, Pi, Recipes, and detected-host plugin work unless recovery introduces a materially new side effect.
+3. Run `introspection setup --yes`. A returned session, process, cell, or job handle—or output that only reports an installation has begun—is an in-progress command, not a result. Poll the same handle to a terminal exit status; never start dependent work or report completion from partial output.
+4. After exit zero, rerun `introspection setup --check` and continue only when it reports no required changes. If setup exits nonzero or the check remains unsatisfied, preserve the exact invocation and failure, inspect the resulting read-only state, and change the diagnosis before retrying. Do not repeat the same mutation unchanged or repair Pi, Recipes, or plugins piecemeal around setup.
 
 `introspection init` creates a recipe only after setup is ready. It is not a prerequisite installer or repair command.
 
