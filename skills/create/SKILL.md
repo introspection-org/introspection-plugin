@@ -28,11 +28,11 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 ## Keep the first run short
 
-Keep the setup invisible so the conversation can be about the agent. Two things must be true before scaffolding — a Node runtime at the Recipes toolchain's floor, and the Introspection CLI — and the Recipes capability owns resolving both. Everything else the recipe needs, including Pi and the Recipes extension, is installed by `init` itself.
+Keep setup brief so the conversation can be about the agent. The Recipes capability owns making the Introspection CLI available and using its canonical setup workflow before scaffolding. Once the CLI is available, run `introspection setup --check` and treat the rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects.
 
-When both are already satisfied, spend two lines saying so and move to the agent. Do not narrate the probes that established it, and do not print a dependency table whose every row reads "already fine" — a table is how you present a decision the user has to make, not a receipt for work they did not ask to watch. Report a discrete step only where the user actually has to decide something: nothing installed meets the runtime floor, or setup failed. Installing the CLI is not such a case; install it and report the result in a line. Everything else is noise that buries the decisions that matter.
+When the plan is already satisfied, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When the plan contains changes, show it once and obtain one confirmation for the complete mutation. Then run `introspection setup --yes`, wait for its terminal result, and continue only after it succeeds. Do not install or update Pi, Recipes, or host plugins piecemeal around setup.
 
-Mention once, before scaffolding runs, that `init` installs Pi and the Recipes extension. That single sentence is what keeps a later install from reading as something going wrong.
+`introspection init` scaffolds a recipe after setup is ready. It is not a prerequisite installer or repair command.
 
 ## Think like an agent builder
 
@@ -101,7 +101,8 @@ Ask for confirmation before changing project files or configuration. Treat confi
 
 Resolve the real package root and use the Introspection CLI to build the smallest recipe that satisfies the approved cases:
 
-- Scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. It also installs the Pi coding agent and the Recipes extension, so expect that install here rather than treating it as a prerequisite or a fault.
+- Treat a returned session, process, cell, or job identifier as an in-progress command, not a result. Follow that same handle until a terminal exit status is available before starting a dependent mutation or reporting success. Serialize commands that mutate the same installation, cache, recipe, or worktree. After a nonzero exit, preserve the exact invocation and working directory, inspect focused help or read-only state, and change the hypothesis before retrying; never repeat the same mutation unchanged.
+- Scaffold with the Introspection CLI's `init` verb rather than hand-authoring package files. It writes the recipe directory and its manifest as one unit, and initializes a Git repository when run outside one, which establishes the worktree that deployment later requires. Setup must already be ready; do not use `init` to install or repair prerequisites.
 - Pass the agreed recipe slug as the name argument. Running the verb bare makes it prompt interactively for a recipe name, which stalls a non-interactive shell and takes the naming decision out of the dialog where it was already settled. Confirm the argument order and the available template keys from `init --help` before running; the name is the package name, the directory, and the manifest filename stem, and a template key is a separate positional.
 - Expect the scaffolded agent to be named `agent`, the recipe spec's default, rather than named after the recipe. Confirm it from the generated agent YAML instead of assuming, since a recipe may hold more than one agent and any of them can be renamed. Rename it only if the user asks, and treat that as an ordinary edit to its YAML.
 - The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root.
@@ -112,7 +113,7 @@ Default to one agent. Put judgment in skills, deterministic behavior in scripts 
 
 Preserve the recipe composition model. Put instructions shared across the root agent and delegated subagents in `SYSTEM.md`; put specialized role instructions in each agent's `system_instructions`. Use `from:` when a variant or subagent genuinely inherits a base configuration, and make capability overrides explicit because `tools`, `skills`, and `subagents` arrays replace rather than merge. Keep reusable detailed judgment in skills selected by the agents that need it.
 
-Run representative cases in fresh Pi sessions. Keep the evidence needed to explain what worked, what failed, and why. Fix the owning layer rather than accumulating prompt instructions. Once repeatable checks are credible, offer the user the Pi TUI so they can try the agent and continue iterating with them until the local version is accepted or a concrete blocker remains.
+Prove one credible ordinary happy path first in a fresh Pi process. Only after the basic runtime works should you exercise the smallest additional approved cases needed to support the claimed behavior and important boundaries. Record unexecuted cases as planned coverage and never describe them as proven. Keep the evidence needed to explain what worked, what failed, and why. Fix the owning layer rather than accumulating prompt instructions. Once repeatable checks are credible, offer the user the Pi TUI so they can try the agent and continue iterating with them until the local version is accepted or a concrete blocker remains.
 
 ## Hand off
 
@@ -126,7 +127,7 @@ Deploy:
 <host invocation for introspection:deploy> <resolved-package-path>
 ```
 
-Give the local command as the CLI's own run verb rather than a raw Pi invocation. The verb resolves the local runtime manifest and launches Pi itself, so it keeps the single developer surface the user already has installed and does not require them to know a second command or where the package root sits. Confirm its flags from help before handing them over, note that it discovers the manifest by walking up from the working directory, and pass anything Pi-specific through the argument separator instead of switching to Pi directly.
+Give the local command as the CLI's own run verb rather than a raw Pi invocation. The verb resolves the local runtime manifest and launches Pi itself, so it keeps the single developer surface the user already has installed and does not require them to know a second command or where the package root sits. Confirm its flags from help before handing them over. Keep Introspection options before the argument separator and Pi arguments after it; do not invent a prompt flag. Resolve manifest discovery separately from process working directory: `--work-dir` changes where Introspection searches for manifests, while Pi inherits the directory from which the CLI was invoked.
 
 Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex. Omit `--agent` only for one unambiguous default agent. Omit the deploy invocation when the approved output is not inside a Git worktree, and explain that concrete boundary. Invite the user to request another iteration.
 

@@ -35,9 +35,11 @@ Keep extensions narrow. Register deterministic behavior in code and keep domain 
 
 ## Operate Pi locally
 
-Resolve the intended working directory, package or recipe path, selected agent, provider, and configuration scopes before launching. Use focused help for the intended mode and flags. Prefer a fresh process when proving extension loading or behavioral changes so prior sessions cannot hide state.
+Resolve the intended working directory, package or recipe path, selected agent, provider, and configuration scopes before launching. Use focused help for the intended mode and flags. Keep Introspection options before the argument separator and Pi arguments after it; do not invent a prompt flag. Resolve manifest-discovery location separately from process working directory: `--work-dir` changes where Introspection searches for manifests, while Pi inherits the directory from which the CLI was invoked. Prefer a fresh process when proving extension loading or behavioral changes so prior sessions cannot hide state.
 
-Never read, print, copy, or parse raw credential files or secret values. A configured provider or environment-variable name is not proof of authentication. Use a supported redacted status surface when one exists; otherwise let the first approved minimal model call establish authentication.
+Treat a returned asynchronous handle as still running until it reaches a terminal state. Follow that same handle to completion before launching dependent work or reporting success. Serialize mutations of the same installation, cache, recipe, or worktree. After a nonzero exit, preserve the exact invocation and working directory, inspect focused help or read-only state, and change the hypothesis before retrying; never repeat the same mutation unchanged.
+
+Never read, print, copy, or parse raw credential files or secret values. Resolve the selected agent's exact provider and model before a model-backed run, then verify that provider through a supported redacted status surface when one exists; a configured environment-variable name or credential for another provider is not proof of readiness. Otherwise let the first approved minimal model call establish authentication. Do not silently switch the recipe's provider or model to make a smoke test pass.
 
 Return the exact invocation that was used, the relevant loaded extension points, and any unresolved host-specific assumptions to the calling workflow.
 
