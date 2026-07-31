@@ -18,7 +18,9 @@ Inspect the target repository and nearby recipes before proposing structure. Rea
 
 Confirm changing mechanics with focused `introspection --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this module. Do not duplicate their schemas, flags, or examples here.
 
-Once the Introspection CLI is available, use `introspection setup --check` as the canonical prerequisite preflight. Treat its rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects. Do not reconstruct the same decision from independent shell probes or use `init` or `local` as an installer.
+This workflow requires Introspection CLI 0.19.0 or later, the first version with `setup`. Earlier versions are incompatible; do not fall back to piecemeal setup with `init`, `local`, or separate dependency and plugin installs.
+
+Once a compatible Introspection CLI is available, use `introspection setup --check` as the canonical prerequisite preflight. Treat its rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects. Do not reconstruct the same decision from independent shell probes.
 
 ## Establish the CLI, then use canonical setup
 
@@ -43,7 +45,7 @@ Probe first and narrate second. The CLI and its required runtime are usually alr
    ```
 
    It is an ordinary global npm package, so run it and report the resolved path and version in one line.
-3. Use an existing installation when it already carries the setup verb the workflow needs.
+3. Use an existing installation when it is version 0.19.0 or later. Upgrade a recognized older installation through its documented, detected installation method, verify the resolved version in a fresh process, and then continue. Do not replace an unrecognized development build without approval.
 
 The runtime earns its own visible step in exactly one case: nothing installed meets the floor. Say so then, and ask before installing or switching one only when the user has not already authorized installing or upgrading the required local tooling. Existing authorization remains valid throughout the approved workflow; do not ask again or describe the same runtime change as unapproved.
 
