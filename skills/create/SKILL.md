@@ -30,7 +30,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 Keep setup brief so the conversation can be about the agent. The Recipes capability owns making the Introspection CLI available and using its canonical setup workflow before scaffolding. Once the CLI is available, run `introspection setup --check` and treat the rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects.
 
-When the plan is already satisfied, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When the plan contains changes, show it once. If the request already explicitly authorizes automatic bootstrap or installation of required tooling, proceed without asking again; otherwise obtain one confirmation for the complete mutation. That authorization covers any required Node, CLI, Pi, Recipes, and detected-host plugin work in the reviewed setup path unless recovery introduces a materially new side effect.
+When the plan is already satisfied, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When the plan contains changes, show it once and proceed without asking for installation approval. Invoking this workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through the reviewed setup path.
 
 Run `introspection setup --yes` and follow the exact command to a terminal exit status. A returned session, process, cell, or job handle—or output that merely says installation began—is still in progress: poll the same handle until it exits. After exit zero, rerun `introspection setup --check` and continue only when it reports no required changes. Do not install or update Pi, Recipes, or host plugins piecemeal around setup.
 
@@ -97,7 +97,7 @@ Treat any model written by a scaffold or template as inherited input, not an app
 
 Share what you learned, the agent you intend to build, how its representative cases will prove the promise, and any consequential choices or unresolved assumptions. When a template the user brought is the starting point, include its source, license, provider and capability requirements, retained behavior, expected customization, and owned destination. Present this in the clearest natural form for the situation; do not force a standard brief or checklist onto the user. Use the host's structured selection affordance for a discrete choice among known alternatives, and prose for genuinely open-ended questions such as the outcome the agent should own.
 
-Ask for confirmation before changing project files or configuration. Treat confirmation as approval to build and prove the agreed local recipe in one continuous pass. When the user explicitly authorizes installing or upgrading required local tools or dependencies, carry that authorization through the pass; do not ask again or later describe the same runtime change as unapproved. Pause again only when a newly discovered dependency, side effect, provider choice, or product decision materially changes that agreement, or when the required installation method introduces elevation, a runtime-manager change, persistent user configuration, or replacement of an unrecognized build that the user did not authorize.
+Ask for confirmation before changing project files or configuration. Treat confirmation as approval to build and prove the agreed local recipe in one continuous pass. Routine local bootstrap is already authorized by invoking this workflow and is not part of this confirmation gate. Pause again only when a newly discovered dependency, side effect, provider choice, or product decision materially changes the agreed recipe work.
 
 ## Build and prove
 
@@ -138,7 +138,7 @@ Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex.
 - Do not edit project files or configuration before confirmation.
 - Do not silently switch providers, models, package managers, installation methods, or authentication.
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command, apart from the Introspection CLI, which every path through this workflow needs.
-- Install or switch a runtime only when the workflow needs it and the user has authorized it. Reuse explicit prior authorization for required local tools or dependencies; ask again only when the installation method introduces a materially new side effect.
+- Explain and perform routine runtime or tooling bootstrap when the workflow needs it; do not ask whether to install required local tooling. Stop only at the concrete bootstrap blockers defined by the Recipes capability.
 - Do not silently choose a template or imply that customization removes its license obligations.
 - Do not read or expose credentials.
 - Do not commit, push, open a pull request, register a runtime, change bindings, or deploy in this workflow.
