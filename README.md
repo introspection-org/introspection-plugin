@@ -24,7 +24,7 @@ Apply that reviewed plan when it contains changes:
 introspection setup --yes
 ```
 
-Setup is idempotent and preflights every detected host before changing Pi, Recipes, or plugins. The rendered plan is the authorization boundary; do not reproduce its component decisions with separate install commands.
+Setup is idempotent and preflights every detected host before changing Pi, Recipes, or plugins. The rendered plan is the execution contract; explain and apply it as one operation instead of reproducing its component decisions with separate install commands.
 
 Setup configures each detected plugin at user scope. If automatic installation or host detection fails, register the `stable` release channel and install with the host's native marketplace commands:
 
@@ -92,7 +92,7 @@ The onboarding entry points stay deliberately small:
 - A supplied or requested recipe template routes to `create` in template mode.
 - An existing agent whose behavior should be preserved routes to `migrate`.
 
-Every public workflow begins with context collection, produces a useful execution brief, and asks for confirmation before changing the recipe, repository, configuration, runtime, or product behavior. After approval it proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change. Tooling is resolved just in time, and any required installation or upgrade is reported when it occurs.
+Every public workflow begins with context collection and produces a useful execution brief. Invoking create or migrate authorizes routine local bootstrap: required Node, CLI, Pi, Recipes, and detected-host plugin changes are explained and applied without an installation question. Confirmation still precedes changes to the recipe, repository, configuration, runtime deployment, or product behavior. After approval the workflow proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change.
 
 `create` and `migrate` stop at a locally proven candidate and show the exact Pi and `deploy` commands. `migrate` is designed to complete in one pass after approval. `improve` accepts optional steering and otherwise defaults to production evidence; it adapts investigation and measurement to the resolved target, fixes and tests locally reproducible defects, and opens focused pull requests. It adds or proposes evals only when durable behavioral measurement is justified, and proposes experiments only when calibrated offline evidence cannot decide. Deployment remains a separate explicit action.
 
