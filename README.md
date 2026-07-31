@@ -12,23 +12,21 @@ Install the Introspection CLI once:
 npm install -g @introspection-ai/cli
 ```
 
-Then install the plugin for every supported host detected on your machine:
+Then inspect the complete setup plan for Pi, Recipes, and every supported coding-agent host detected on your machine:
 
 ```bash
-introspection plugin install
+introspection setup --check
 ```
 
-To install for one host explicitly:
+Apply that reviewed plan when it contains changes:
 
 ```bash
-# Codex
-introspection plugin install --target codex
-
-# Claude Code
-introspection plugin install --target claude-code
+introspection setup --yes
 ```
 
-The installer configures the plugin at user scope. If automatic installation or host detection fails, register the `stable` release channel and install with the host's native marketplace commands:
+Setup is idempotent and preflights every detected host before changing Pi, Recipes, or plugins. The rendered plan is the authorization boundary; do not reproduce its component decisions with separate install commands.
+
+Setup configures each detected plugin at user scope. If automatic installation or host detection fails, register the `stable` release channel and install with the host's native marketplace commands:
 
 ```bash
 # Claude Code

@@ -15,10 +15,10 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 1. Select only the workflow matching the request: connect, deploy, run, observe, judge, experiment, or ship.
 2. Open the `introspection-docs` source and read only the linked CLI workflow and concepts required for that operation.
 3. Inspect repository and task context and prepare the execution brief before installing, upgrading, authenticating, or configuring the CLI.
-4. Immediately before the first platform command the workflow needs, confirm `introspection` exists and inspect focused help for the exact operation.
+4. Before the first invocation of an uncertain or version-sensitive command surface, confirm `introspection` exists, then run and read that command's narrow help as a separate read-only operation. Only after interpreting the result may you construct or execute the platform operation; never batch help and a speculative mutation together.
 5. Use the installed CLI when it supports the required command and flags. Install it only when missing; upgrade a recognized installation only when an actual incompatibility blocks the operation. Use the documented command for its detected installation method, verify in a fresh process, and retry the blocked operation.
 
-Current docs and compatible installed CLI output are authoritative. Do not repeat schemas or command catalogs in this module. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
+Current docs and compatible installed CLI output are authoritative. Do not repeat schemas or command catalogs in this module. Preserve runtime-group slugs, runtime IDs, runtime-version IDs, task IDs, and conversation IDs as distinct identifier types. Carry the canonical value returned by inventory or creation into later commands and never substitute a readable slug where focused help requires an ID. Do not configure host-side servers, host tools, or direct endpoints. Speak in terms of integrations, bindings, capabilities, recipes, runtimes, tasks, conversations, observations, patterns, judges, and experiments.
 
 If a requested documented operation is absent from installed help, verify command resolution and compare the installed version with the official CLI package named by current Introspection documentation before declaring the operation unsupported. Resolve that package through its documented installation source; do not probe similarly named packages, unrelated package managers, repository release APIs, or source checkouts. That missing operation is an actual incompatibility, not a reason to stop at the older surface. Upgrade through the detected installation method, or use an isolated transient invocation of the exact official version when the approved workflow explicitly forbids changing the global installation. Recheck focused help in the resulting fresh process. Do not guess at flags from another source checkout.
 
@@ -49,7 +49,7 @@ Prove the loop with a visible recipe-specific change in a development conversati
 - Retrieve the conversation associated with that task and inspect its complete evidence bundle, not only task status.
 - Join the resolved runtime to its recipe pin and verify the intended Git commit.
 
-A successful deployment is a proven user workflow, not merely a created runtime.
+A successful deployment is a proven user workflow, not merely a created runtime. Keep **created**, **active**, **deployed**, and **verified** as distinct claims. Verification requires a representative task through the environment under test, inspection of its exact complete conversation, and proof that intended pushed Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical. If any evidence is unavailable, report the environment as active or deployed but unverified and name the gap.
 
 A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results. Live judge enablement and production sampling may not be supported by the CLI; report that boundary when encountered and do not silently switch interfaces.
 

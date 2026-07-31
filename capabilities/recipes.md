@@ -18,20 +18,24 @@ Inspect the target repository and nearby recipes before proposing structure. Rea
 
 Confirm changing mechanics with focused `introspection --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this module. Do not duplicate their schemas, flags, or examples here.
 
-Once the Introspection CLI is available, use `introspection doctor` as the canonical prerequisite preflight when that version exposes it. Otherwise read the Recipes toolchain's declared engine floor or use an exact incompatibility reported by `init` or `local`. Never claim compatibility from `node --version` without comparing it with the resolved floor. Treat a reported incompatibility as the next recovery action, then retry the command that exposed it.
+This workflow requires Introspection CLI 0.19.0 or later, the first version with `setup`. Earlier versions are incompatible; do not fall back to piecemeal setup with `init`, `local`, or separate dependency and plugin installs.
 
-## Establish two prerequisites, then let the scaffold do the rest
+Once a compatible Introspection CLI is available, use `introspection setup --check` as the canonical prerequisite preflight. Treat its rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects. Do not reconstruct the same decision from independent shell probes.
 
-Recipe work needs exactly two things in place:
+## Establish the CLI, then use canonical setup
 
-- **Node** at the Recipes toolchain's declared floor. Read that floor from the toolchain's `engines` rather than trusting a number written here, since a published floor can move. The CLI's own floor is more permissive, so the two disagree and only the higher one governs.
-- **The Introspection CLI**, the single developer surface for recipes: it scaffolds them, validates them, and runs them locally. There is no second recipe binary, and the local path needs no account or login.
+The CLI must be available before it can own setup. Resolve its documented Node requirement and installation method, using an exact launcher incompatibility as the recovery signal rather than guessing from unrelated package metadata. Once the CLI runs:
 
-Nothing else is a prerequisite. The Pi coding agent and the Recipes extension are installed by `init` itself, the way a project scaffolder pulls its own toolchain. Do not pre-install them, do not check for them, and do not present them to the user as something to satisfy first. Say once that the scaffold installs them, so a later install is expected rather than a surprise, and leave it there.
+1. Run `introspection setup --check` without changing the machine.
+2. If it reports changes, show the complete rendered plan and obtain one confirmation for that plan.
+3. Run `introspection setup --yes`, follow it to a terminal exit status, and continue only after success.
+4. If setup fails, preserve the exact invocation and failure, inspect the resulting read-only state, and change the diagnosis before retrying. Do not repeat the same mutation unchanged or repair Pi, Recipes, or plugins piecemeal around setup.
 
-## Resolve both, then get out of the way
+`introspection init` creates a recipe only after setup is ready. It is not a prerequisite installer or repair command.
 
-Probe first and narrate second. Both prerequisites are usually already satisfied, so a requirements briefing delivered ahead of the probe inflates a two-line result into a wall of text nobody asked for. Report what you found, not how you looked for it.
+## Resolve the CLI, then get out of the way
+
+Probe first and narrate second. The CLI and its required runtime are usually already satisfied, so a requirements briefing delivered ahead of the probe inflates a two-line result into a wall of text nobody asked for. Report what you found, not how you looked for it.
 
 1. Find a Node runtime that meets the floor. Any installed runtime satisfying it is silent success: select it and continue. Do not report which version you chose over which other one, and do not raise version managers, shell state, or the user's default runtime — none of that is a decision the user has to make.
 2. Install the CLI when it is missing, directly rather than staged as a decision:
@@ -41,7 +45,7 @@ Probe first and narrate second. Both prerequisites are usually already satisfied
    ```
 
    It is an ordinary global npm package, so run it and report the resolved path and version in one line.
-3. Use an existing installation when it already carries the verb the workflow needs.
+3. Use an existing installation when it is version 0.19.0 or later. Upgrade a recognized older installation through its documented, detected installation method, verify the resolved version in a fresh process, and then continue. Do not replace an unrecognized development build without approval.
 
 The runtime earns its own visible step in exactly one case: nothing installed meets the floor. Say so then, and ask before installing or switching one only when the user has not already authorized installing or upgrading the required local tooling. Existing authorization remains valid throughout the approved workflow; do not ask again or describe the same runtime change as unapproved.
 
@@ -75,11 +79,13 @@ Use the smallest structure required by the calling workflow's approved cases. Lo
 - Use `from:` to derive a complete agent definition and then apply documented field-specific overrides. Omission inherits, capability arrays replace, explicit `[]` clears, and model, extension, and MCP objects merge by their documented keys. Do not treat inheritance as text concatenation.
 - Put reusable domain judgment in recipe skills and deterministic operations in scripts or extensions.
 - Add a child agent only for an independent context boundary with a clear input, output, and completion path.
-- Declare only the external capabilities the agent needs. Keep endpoint details, credentials, local bindings, and generated runtime state outside the portable package.
+- Declare only the external capabilities the agent needs. Keep endpoint details, credentials, `.pi/mcp.local.json`, other local bindings, and generated runtime state outside the portable package. A committed `.pi/mcp.local.example.json` may document the required shape without carrying a live endpoint or credential.
 - Treat host-specific connectors, policies, deployment manifests, eval pins, and judges as conditional resources rather than default scaffolding.
 - Keep an approved judge calibration dataset beside its judge definition under `judges/`. Never use a temporary directory as the retained dataset location.
 
 Load the Pi capability when the work requires exact Pi extension, skill-discovery, package, provider, settings, setup, or invocation behavior. Never modify Pi core to make a recipe work.
+
+Validate the portable recipe with no local binding inside it. Attach local connectivity only through a supported external configuration scope documented for the installed toolchain, run the real recipe, then confirm that no endpoint, credential, or local binding entered the artifact. Never guess an undocumented environment variable or temporarily place rejected local configuration inside the recipe to make a run pass.
 
 ## Check structure and prove behavior
 
