@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/introspection-org/introspection-plugin/compare/v0.3.1...v0.3.2) (2026-07-31)
+
+
+### Bug Fixes
+
+* **skills:** bootstrap without confirmation ([#28](https://github.com/introspection-org/introspection-plugin/issues/28)) ([934492b](https://github.com/introspection-org/introspection-plugin/commit/934492b064fa925be98208f5e381e105aaa0c36a))
+
 ## [0.3.1](https://github.com/introspection-org/introspection-plugin/compare/v0.3.0...v0.3.1) (2026-07-31)
 
 
