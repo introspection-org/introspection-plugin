@@ -57,7 +57,9 @@ A terminal status is not a result. Read the whole task row rather than its statu
 
 A successful deployment is a proven user workflow, not merely a created runtime. Keep **created**, **active**, **deployed**, and **verified** as distinct claims. Verification requires a representative task through the environment under test, inspection of its exact complete conversation, and proof that intended pushed Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical. If any evidence is unavailable, report the environment as active or deployed but unverified and name the gap.
 
-A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results. Live judge enablement and production sampling may not be supported by the CLI; report that boundary when encountered and do not silently switch interfaces.
+A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results.
+
+The boundary runs between the definition and the operational state, not between the CLI and something else. A judge's definition is Git-owned and changes only through the normal release path; its live state — whether it is on, and how much production traffic it grades — is platform-owned and the CLI is the surface for it. Enabling, disabling, and sampling are ordinary operator actions, so do not report them as an unsupported boundary or reach for another interface. Confirm the exact flags from focused help, and treat a sampling change as production-affecting: it changes what is measured and what it costs.
 
 ## Recover a bad version
 

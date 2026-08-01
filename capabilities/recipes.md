@@ -104,7 +104,7 @@ Validate the portable recipe with no local binding inside it. Attach local conne
 
 Resolve any provider or model choice that changes the recipe before writing it. A scaffold's default model is inherited input, not an approved choice. Do not silently retain it when the user, source agent, or approved execution brief has not selected that provider and model.
 
-Resolve the actual recipe root and run the Introspection CLI's `check` verb against that path using the profile appropriate to the workflow, since it is the single recipe validation surface. Fix structural diagnostics at their owning layer. A successful check proves the authored package contract, not useful behavior.
+Resolve the actual recipe root and run the Introspection CLI's `check` verb against that path, since it is the single recipe validation surface. It takes no profile or mode selector; it runs the same validation the platform runs when a version is built, so a clean local check is the same answer the push will get. Fix structural diagnostics at their owning layer. A successful check proves the authored package contract, not useful behavior.
 
 Run the selected agent directly from its recipe path in a fresh Pi process. Load the Pi capability for setup, invocation, and host preflight. Defer authentication and capability setup until the first approved behavior run needs them. Prefer a supported redacted status check; if none exists, use the first minimal model call as authentication proof. Never read, print, copy, or parse raw credential files or secret values.
 
