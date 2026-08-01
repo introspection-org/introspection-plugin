@@ -74,21 +74,23 @@ Run `/reload-plugins` in Claude Code, or start a new Codex task, after an instal
 
 The five split by what a request ends in: a new recipe (`create`), an existing agent ported into one (`migrate`), changed agent behavior landed through the repository (`improve`), a change to what an environment resolves to (`deploy`), and an answer or a changed live resource that leaves the recipe alone (`operate`).
 
-Only these five workflow skills appear in Claude and Codex autocomplete. They progressively load five packaged capability modules when needed: Pi, Recipes, evals, Harbor, and Introspection CLI operations. Focused supporting questions route through the closest entry point without forcing its end-to-end workflow.
+Only these five workflow skills are exposed to the host; everything else is progressively loaded. They pull in five packaged capability modules when needed: Pi, Recipes, evals, Harbor, and Introspection CLI operations. Focused supporting questions route through the closest entry point without forcing its end-to-end workflow.
 
 Offline evals and online judges have different contracts. Every eval case and expected answer must be shown to the domain owner before implementation or execution. Every judge calibration label must likewise be human-approved before calibration. Harbor implements accepted offline environment-level evals; Recipes pins their exact versions while declaring online judges separately. Judge calibration data lives beside its definition as `judges/<judge-name>.calibration.jsonl` and is committed with the judge YAML rather than retained in a temporary directory.
 
 All workflow skills and supporting capability modules ship in this plugin. Pi Recipes remains the lightweight, open implementation and canonical specification for portable recipe behavior; the plugin adds the forward-deployed engineering workflow across Pi, recipes, Introspection, evals, and Harbor.
 
-## Commands
+## Workflows
 
-- `/introspection:create` builds from scratch or a selected recipe template and proves the result locally with Pi.
-- `/introspection:migrate` converts an existing agent and proves approved behavioral parity locally.
-- `/introspection:improve [focus]` turns production evidence or an optional prompt, skill, tool, configuration, eval, failure pattern, or goal into approved fixes, tests, and focused pull requests.
-- `/introspection:deploy` publishes a proven recipe, verifies its resolved runtime, task, conversation, and Git commit, and recovers a version that is causing harm.
-- `/introspection:operate` inspects a live project — tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys — explains what it finds, and changes live state such as judge enablement, sampling, experiments, and credentials.
+Nobody names a workflow. A request in ordinary language selects one, and the plugin says which it picked and why:
 
-In Codex, invoke the same workflows with `$introspection:create`, `$introspection:migrate`, `$introspection:improve`, `$introspection:deploy`, and `$introspection:operate`. Codex surfaces enabled skills in its slash menu and inserts them using the plugin-and-skill mention syntax.
+- `create` builds from scratch or a selected recipe template and proves the result locally with Pi.
+- `migrate` converts an existing agent and proves approved behavioral parity locally.
+- `improve` turns production evidence or an optional prompt, skill, tool, configuration, eval, failure pattern, or goal into approved fixes, tests, and focused pull requests.
+- `deploy` publishes a proven recipe, verifies its resolved runtime, task, conversation, and Git commit, and recovers a version that is causing harm.
+- `operate` inspects a live project — tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys — explains what it finds, and changes live state such as judge enablement, sampling, experiments, and credentials.
+
+A workflow that reaches another workflow's boundary hands over in the same session rather than asking the user to restart with a different one.
 
 The onboarding entry points stay deliberately small:
 
@@ -96,9 +98,9 @@ The onboarding entry points stay deliberately small:
 - A supplied or requested recipe template routes to `create` in template mode.
 - An existing agent whose behavior should be preserved routes to `migrate`.
 
-Every public workflow begins with context collection and produces a useful execution brief. Invoking create or migrate authorizes routine local bootstrap: required Node, CLI, Pi, Recipes, and detected-host plugin changes are explained and applied without an installation question. Confirmation still precedes changes to the recipe, repository, configuration, runtime deployment, or product behavior. After approval the workflow proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change.
+Every public workflow begins with context collection and produces a useful execution brief. Entering create or migrate authorizes routine local bootstrap: required Node, CLI, Pi, Recipes, and detected-host plugin changes are explained and applied without an installation question. Confirmation still precedes changes to the recipe, repository, configuration, runtime deployment, or product behavior. After approval the workflow proceeds continuously inside that scope and pauses again only for a material target, side-effect, or product-decision change.
 
-`create` and `migrate` stop at a locally proven candidate and show the exact Pi and `deploy` commands. `migrate` is designed to complete in one pass after approval. `improve` accepts optional steering and otherwise defaults to production evidence; it adapts investigation and measurement to the resolved target, fixes and tests locally reproducible defects, and opens focused pull requests. It adds or proposes evals only when durable behavioral measurement is justified, and proposes experiments only when calibrated offline evidence cannot decide. Deployment remains a separate explicit action.
+`create` and `migrate` stop at a locally proven candidate, show the exact local run command, and leave publishing to `deploy`. `migrate` is designed to complete in one pass after approval. `improve` accepts optional steering and otherwise defaults to production evidence; it adapts investigation and measurement to the resolved target, fixes and tests locally reproducible defects, and opens focused pull requests. It adds or proposes evals only when durable behavioral measurement is justified, and proposes experiments only when calibrated offline evidence cannot decide. Deployment remains a separate explicit action.
 
 Build in readiness stages:
 

@@ -30,10 +30,10 @@
     ],
     "websiteURL": "https://docs.introspection.dev",
     "defaultPrompt": [
-      "Use $introspection:create for a new agent, or $introspection:migrate to preserve an existing agent.",
-      "Use $introspection:improve with an optional focus, or omit it to start from production evidence.",
-      "Use $introspection:deploy to publish and verify a proven recipe.",
-      "Use $introspection:operate to inspect a live project, explain a task, or change platform state."
+      "Describe the outcome you want and the right workflow is selected for you.",
+      "Build me an agent that ... , or port an existing agent while preserving its behavior.",
+      "Fix what production evidence shows is going wrong, then publish and verify the proven recipe.",
+      "Ask what a task, status, or cost means, or change live platform state."
     ]
   }
 }

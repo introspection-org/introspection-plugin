@@ -108,13 +108,15 @@ Merging is the user's release decision, so do not merge to make production move.
 
 After the user merges, verify production the same way staging was verified: run a representative task through the stable runtime-group slug, confirm that the merged Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical, and inspect the complete conversation. A created or active production version is not a verified one.
 
-Report the deployed identity, active commit per environment, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform. Include the resolved runtime dashboard URL and each task or conversation URL used as verification evidence.
-
 ## Recover when a version goes wrong
 
 This workflow owns recovery for any deployed version, not only one it deployed itself. An incident that arrives cold — no prior deployment in this session — is in scope, and so is one handed over mid-investigation by `improve`. Resolve the runtime identity the same way any deployment does, then load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
 
 Confirm the version is the cause before withdrawing it, and never delete one while an incident is open. Recovery restores service without fixing the recipe — the commit that produced the version is still on the branch — so report the environment as recovered but not yet fixed until a corrected version is verified the way any deployment is.
+
+## Hand off
+
+Report the deployed identity, active commit per environment, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform. Include the resolved runtime dashboard URL and each task or conversation URL used as verification evidence. After a recovery, say which environment is serving what now and what remains unfixed.
 
 ## Firm boundaries
 

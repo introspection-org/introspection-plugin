@@ -122,7 +122,7 @@ Distribution is ordinary Git. A recipe travels by clone, fork, or copy, and ther
 
 - Build through recipe-owned agents, extensions, skills, prompts, scripts, tests, and eval references using supported interfaces. Treat Pi, Pi Recipes, Harbor, and Introspection as external platform dependencies; never edit their source repositories unless the user explicitly requests platform contribution work.
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command. The Introspection CLI is the sole exception: every entry path needs it, so resolve it up front.
-- Treat invocation of the calling create, migrate, or onboarding workflow as authorization for routine local bootstrap. Explain required runtime and tooling changes, but do not ask whether to install them. Stop only for a concrete unsupported path, failed command, host permission gate, or recovery that would replace an unrecognized development build.
+- Treat entry into the calling create, migrate, or onboarding workflow as authorization for routine local bootstrap. Explain required runtime and tooling changes, but do not ask whether to install them. Stop only for a concrete unsupported path, failed command, host permission gate, or recovery that would replace an unrecognized development build.
 - Do not silently change provider, model, package manager, installation method, or authentication.
 - Do not encode host secrets in a recipe or infer undocumented `from:` merges, resource grammar, or CLI flags.
 - Do not claim readiness from a recipe check alone; prove representative behavior in a fresh Pi process.
