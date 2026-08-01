@@ -44,6 +44,8 @@ When a declared MCP server is still local, pass `--mcp NAME=URL`; the name must 
 
 Prove the loop with a visible recipe-specific change in a development conversation. Stopping the command ends the preview attachment; publishing still follows the normal Git and deployment flow.
 
+When an edit does not appear, the cause is usually which file changed rather than a broken attachment. Only some edits reach the current chat: a skill body or a script lands on the next turn, while a system prompt, agent YAML, prompt, extension, or MCP declaration needs a new chat, dependencies need a new chat that reinstalls them, and a `.introspection` manifest change needs a whole new runtime version. Re-asking in the same chat is the common wrong move. Read the `development-lifecycle` page of the `introspection-docs` source before diagnosing further.
+
 ## Connect and deploy
 
 - Validate the recipe locally first.
