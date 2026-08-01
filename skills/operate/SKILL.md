@@ -46,6 +46,8 @@ Resolve the project and the exact resource before acting on it. Preserve runtime
 
 Confirm which project a command acts on rather than assuming the one selected at login. Read-only inspection needs no approval; gather it before asking anything.
 
+When the question is who changed something, or what changed and when, that is the audit log rather than the resource's own row: it records the actor, the action, the resource, and the timestamp across projects, members, keys, integrations, and deployments. Read it for attribution and for compliance evidence, and pair it with the resource's own lineage when you need both who and what.
+
 ## Diagnose from the task row outward
 
 A task is a durable execution, not a blocking call. Start every task question at the task row itself, not at the conversation:
