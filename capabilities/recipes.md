@@ -14,44 +14,28 @@ Inspect the target repository and nearby recipes before proposing structure. Rea
 
 Confirm changing mechanics with focused `introspection --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this module. Do not duplicate their schemas, flags, or examples here.
 
-Once a compatible Introspection CLI is available, use `introspection setup --check` as the canonical prerequisite preflight. Treat its rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects. Do not reconstruct the same decision from independent shell probes.
+## Get a working CLI first
 
-## Get a compatible CLI
+Recipe work needs a compatible Introspection CLI, and this module owns getting
+one. The CLI's own `setup --check` renders the plan to reach a ready machine and
+that rendered plan is authoritative — explain and apply it as one operation
+rather than reconstructing its component decisions from independent shell probes
+or piecemeal installs. `doctor` is the read-only diagnosis of the current
+machine and is safe before any approval.
 
-Probe first and narrate second. The CLI and its required runtime are usually already satisfied, so a requirements briefing delivered ahead of the probe inflates a two-line result into a wall of text nobody asked for. Report what you found, not how you looked for it.
+Entering the calling create, migrate, or onboarding workflow authorizes routine
+bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host
+plugin through that reviewed setup path. Do not stage it as a separate approval
+question.
 
-This workflow requires Introspection CLI 0.19.0 or later, the first version with `setup`. Earlier versions are incompatible; do not fall back to piecemeal setup with `init`, `local`, or separate dependency and plugin installs. Resolve the CLI's documented Node requirement and installation method, using an exact launcher incompatibility as the recovery signal rather than guessing from unrelated package metadata.
+Stop and report the exact blocker, rather than continuing, when recovery would
+require elevation, a different runtime manager, persistent user configuration,
+replacing an unrecognized development build, or an authentication change.
 
-1. Find a Node runtime that meets the floor. Any installed runtime satisfying it is silent success: select it and continue. Do not report which version you chose over which other one, and do not raise version managers, shell state, or the user's default runtime — none of that is a decision the user has to make.
-2. Install the CLI when it is missing, directly rather than staged as a decision:
-
-   ```bash
-   npm install -g @introspection-ai/cli
-   ```
-
-   It is an ordinary global npm package, so run it and report the resolved path and version in one line.
-3. Use an existing installation when it is version 0.19.0 or later. Upgrade a recognized older installation through its documented, detected installation method, verify the resolved version in a fresh process, and then continue. Do not replace an unrecognized development build without approval.
-
-The runtime earns its own visible step in exactly one case: nothing installed meets the floor. Explain the required runtime change and proceed through the supported bootstrap path without asking for installation approval.
-
-When a runtime change is required, prefer a detected existing runtime manager that can supply the required Node version, even when it does not own the Node currently resolved by the shell. Detect an installed manager even when its shell function is not loaded: inspect the resolved Node path and documented manager initialization scripts before concluding that none is available. Initialize the selected manager, install and select the minimum compatible major, and keep the runtime change ahead of any global CLI installation. Do not use a generic operating-system `nodejs` package unless its candidate version is known to meet the floor.
-
-Runtime activation may apply only to the current shell. Install, select, verify, and retry the blocked command in the same shell invocation, or explicitly reactivate the selected runtime in later invocations. Verify both `node --version` and the resolved Node executable before retrying.
-
-Continue to defer everything else — authentication, provider setup, MCP endpoints, and evaluation tooling — until an approved step needs it. Do not check the registry merely to make a working installation match the latest release; reading a package's declared floor is a different question from chasing its newest version, and only the first is in scope here.
-
-Do not silently switch runtime managers, package managers, or installation methods. An ineffective installation attempt is not by itself a blocker: diagnose why it did not select a compatible runtime and try the next safe recovery within the detected manager. Stop when recovery requires elevation, introducing a different runtime manager, persistent user configuration, replacement of an unrecognized development build, an authentication change, or when all safe supported methods fail. Report that exact blocker instead of asking a speculative installation question.
-
-## Run canonical setup
-
-Once the CLI runs, its `doctor` verb is the supported read-only diagnosis of CLI, Recipes, Pi, Node, and local recipe readiness. Prefer it over hand-rolled shell probes when something is already wrong or a toolchain claim needs evidence; it changes nothing, so it is safe before any approval. Use `setup --check` for the plan to reach a ready machine and `doctor` for the state of the current one, and do not reconstruct either from independent probes.
-
-1. Run `introspection setup --check` without changing the machine.
-2. If it reports changes, show the complete rendered plan and proceed without asking for installation approval. Invoking the calling create, migrate, or onboarding workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through this reviewed setup path.
-3. Run `introspection setup --yes`. A returned session, process, cell, or job handle—or output that only reports an installation has begun—is an in-progress command, not a result. Poll the same handle to a terminal exit status; never start dependent work or report completion from partial output.
-4. After exit zero, rerun `introspection setup --check` and continue only when it reports no required changes. If setup exits nonzero or the check remains unsatisfied, preserve the exact invocation and failure, inspect the resulting read-only state, and change the diagnosis before retrying. Do not repeat the same mutation unchanged or repair Pi, Recipes, or plugins piecemeal around setup.
-
-`introspection init` creates a recipe only after setup is ready. It is not a prerequisite installer or repair command.
+The procedure itself — version floor, install versus upgrade, runtime changes,
+the shell-activation trap, and failure recovery — is carried by the index under
+the entry describing how to get a working CLI. It moves on the CLI's cadence
+rather than this plugin's, so read it there instead of from memory.
 
 ## Choose the entry path
 
