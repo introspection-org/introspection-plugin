@@ -84,7 +84,7 @@ Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks,
 
 ```text
 Try locally:
-introspection local --agent <agent>
+introspection local
 ```
 
 Use the deploy skill to ship it. A merged pull request does not move production on its own; the change reaches users only once a version carrying that commit is deployed and verified.
