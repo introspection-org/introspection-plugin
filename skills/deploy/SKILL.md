@@ -43,6 +43,8 @@ Reuse the existing runtime lifecycle. A matching runtime group is not a reason t
 
 Confirm local evidence in proportion to the agent's risk. For a newly created agent, use its approved acceptance set and retained local proof. For a migrated or improved agent, use the parity or comparison evidence from that workflow. Do not invent an eval, Harbor task, or calibrated judge when the job does not require one.
 
+A request to deploy does not guarantee there is anything to deploy. When no recipe exists yet, the work ahead is `create` from the user's outcome or `migrate` from an existing implementation, and deployment resumes once that produces a locally proven package. Say so and continue there rather than scaffolding a recipe under a deployment brief that never proposed one.
+
 Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 
 Separate repository setup from login and repository access. Local Git work, creating or reusing the remote repository, and pushing do not require Introspection login. When the CLI reports a valid logged-in identity with the required project scopes, continue without asking the user to inspect or confirm GitHub App state. Use the documented browser or device authorization handoff only when the user is logged out or login explicitly requires it. If a supported repository operation returns an access error, report that concrete failure and its documented recovery path; do not manufacture a speculative preflight, use a mutation as an authorization probe, inspect stored credentials, or call an undocumented API.
@@ -117,6 +119,8 @@ Confirm the version is the cause before withdrawing it, and never delete one whi
 ## Hand off
 
 Report the deployed identity, active commit per environment, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform. Include the resolved runtime dashboard URL and each task or conversation URL used as verification evidence. After a recovery, say which environment is serving what now and what remains unfixed.
+
+A verified deployment is where the agent starts producing evidence rather than where the work ends. From here, live tasks, conversations, and costs are read through `operate`, and what that evidence shows about the agent's behavior is acted on through `improve`, which lands the next version back through this workflow.
 
 ## Firm boundaries
 

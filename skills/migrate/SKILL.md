@@ -35,6 +35,8 @@ The source architecture is evidence, not the target design. Preserve the outcome
 
 Prefer the smallest faithful translation. Recipes are not valuable merely because every source component has a counterpart.
 
+Confirm there is a migration to perform before translating anything. An agent that is already an Introspection recipe has nothing to port, so a request to change how it behaves is `improve`; an outcome the user describes with no implementation behind it is `create`. Preserved behavior is the test — when the user cannot point at something whose behavior must survive, this is not the workflow.
+
 ## Understand the source
 
 Locate the real instructions, tools, skills, model configuration, runtime assumptions, authentication, side effects, tests, traces, and representative inputs. Use safe existing evidence and run the source during discovery only when doing so is read-only and cannot trigger an external side effect.

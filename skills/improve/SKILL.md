@@ -50,6 +50,8 @@ Fix deterministic failures deterministically. Use an ordinary test when it faith
 
 For a deployed agent, use the current Introspection CLI and documentation to resolve the project, runtime group, active version, recipe repository, and deployed Git commit. For a local agent, resolve the package root, selected agent, worktree, and available tests or evals. Confirm that the evidence and local code describe the same target before drawing conclusions.
 
+An agent the user wants improved is not always a recipe yet. When the target turns out to be an implementation on another framework or host, the change lands through `migrate` first, since there is no recipe to change; carry the observed defect into that translation instead of restating it later.
+
 Adapt the evidence plan to the focus:
 
 - With no narrower direction, start from recurring `introspection.pattern` events, then inspect supporting observations and the exact conversations. Include relevant feedback and judgement events and a control sample of ordinary conversations. A zero pattern count is not proof that no issue exists; verify analysis status and raw evidence.
@@ -78,7 +80,14 @@ Add an approved eval alongside or before the fix so baseline and candidate compa
 
 ## Hand off
 
-Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local invocation. Use the deploy skill to ship it.
+Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local command:
+
+```text
+Try locally:
+introspection local --agent <agent>
+```
+
+Use the deploy skill to ship it. A merged pull request does not move production on its own; the change reaches users only once a version carrying that commit is deployed and verified.
 
 ## Firm boundaries
 
