@@ -31,6 +31,8 @@ Use the smallest supported extension point that owns the requirement:
 
 Do not edit or fork Pi core to implement an agent. Modify the harness only when the user explicitly asks to contribute an upstream Pi change and the requirement cannot be expressed through a supported extension point.
 
+Read the `pi-extension` page of the `pi-recipes-docs` source before writing one: it owns the registration API, how a registered tool becomes selectable by an agent, and session materialization. Nothing validates an extension's code at author time, so a guessed API passes every check and fails only when the agent runs.
+
 Keep extensions narrow. Register deterministic behavior in code and keep domain judgment in instructions or skills. Avoid global state when project-local configuration or package resources can express the behavior. Treat settings, extensions, skills, and packages as distinct scopes; confirm precedence and discovery from the current documentation instead of guessing.
 
 ## Operate Pi locally

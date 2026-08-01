@@ -6,7 +6,7 @@ That rule covers work inside a project, which is everything above. Organization 
 
 That rule governs operating the platform, not building on it. Application code that runs tasks for end users is an SDK integration, and shelling out to the operator CLI from a product is the mirror-image mistake. When work crosses from managing a runtime to writing code that calls one, load the `integration-surface` reference; it also owns durable files, shares, conversation forks, and end-user memory. Never treat the CLI-only rule as a reason to refuse an integration.
 
-Keep recipe design in the [Recipes capability](recipes.md) and evaluation reasoning in the [Evals capability](evals.md). Route the work itself by what the request ends in: a change to the recipe belongs to `$introspection:improve`, a change to what an environment resolves to belongs to `$introspection:deploy`, and an answer about live state or a change to a live resource belongs to `$introspection:operate`.
+Keep recipe design in the [Recipes capability](recipes.md) and evaluation reasoning in the [Evals capability](evals.md). Route the work itself by what the request ends in: a change to the recipe belongs to `improve`, a change to what an environment resolves to belongs to `deploy`, and an answer about live state or a change to a live resource belongs to `operate`.
 
 ## Load references
 
@@ -57,11 +57,9 @@ When an edit does not appear, the cause is usually which file changed rather tha
 - Retrieve the conversation associated with that task and inspect its complete evidence bundle, not only task status.
 - Join the resolved runtime to its recipe pin and verify the intended Git commit.
 
-A task is a durable execution, not a blocking call: it can be streamed, cancelled, and resumed when the agent asks the caller something. Treat one awaiting input as live work, and never abandon a task you started without cancelling it. A task queued on organization concurrency is waiting, not wedged — it proceeds, is cancelled, or is collected once it exceeds the queue-wait budget, so retrying only lengthens the queue.
+A task is a durable execution, not a blocking call. A terminal status is therefore not a result: never claim a smoke test or verification passed from a completed status alone, and never abandon a task you started without cancelling it. The lifecycle itself — what each status means, why a task queues, what a completion or failure reason tells you — is the `tasks-and-runs` page of the `introspection-docs` source; `operate` owns diagnosis.
 
-A terminal status is not a result. Read the whole task row: a completed task reports why it ended, and one torn down by the idle window completes having produced nothing. A failed task carries its reason too, including failures that happen before the agent runs. Never claim a smoke test or verification passed from a completed status alone.
-
-A successful deployment is a proven user workflow, not merely a created runtime. Keep **created**, **active**, **deployed**, and **verified** as distinct claims. Verification requires a representative task through the environment under test, inspection of its exact complete conversation, and proof that intended pushed Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical. If any evidence is unavailable, report the environment as active or deployed but unverified and name the gap.
+A successful deployment is a proven user workflow, not merely a created runtime, so keep **created**, **active**, **deployed**, and **verified** as distinct claims. `deploy` defines what each one requires. If the evidence for the strongest claim is unavailable, make the weaker one and name the gap.
 
 ## Recover a bad version
 
@@ -96,15 +94,12 @@ A judge is an online measurement instrument, distinct from an offline eval suite
 
 The boundary runs between definition and operational state, not between the CLI and something else. A judge's definition is Git-owned and changes through the normal release path; its live state — whether it is on, and how much production traffic it grades — is platform-owned, and the CLI is the surface for it. Enabling, disabling, and sampling are ordinary operator actions, so never report them as an unsupported boundary. Treat a sampling change as production-affecting: it changes what is measured and what it costs.
 
-Calibrating a judge definition is separate work from changing its live state:
+Calibrating a definition is separate work from changing live state, and it belongs to `improve`. The `eval-design` reference owns the method and the `recipe-judges` page of the `introspection-docs` source owns the file contract, so do not reconstruct either here. Three constraints hold regardless of how the calibration is run:
 
-- Resolve the owning recipe Git worktree and judge name. Export representative fixtures, including positives, negatives, edge cases, and random controls, then persist them at `judges/<judge-name>.calibration.jsonl` beside `judges/<judge-name>.yaml`. Use temporary output only while assembling the review draft; never calibrate from a temp file that remains the sole retained copy.
-- Show every fixture with its proposed label, rationale, provenance, and split to the domain owner. Pause until every label is approved or corrected; a model may propose labels but cannot establish its own ground truth.
-- Confirm the fixture data is authorized for repository storage and contains no secrets. If a source conversation cannot be committed, replay an authorized sanitized conversation and export a fresh valid fixture; do not rewrite the export's protected provenance fields.
-- Calibrate the exact judge definition on the human-approved development data and verify it on human-approved held-out data, passing the repository-owned calibration JSONL to `--dataset`.
-- Stage the judge YAML and calibration JSONL together, inspect the Git diff, and commit both files as one focused change. If Git mutation is not authorized, request approval and stop before claiming completion.
-- Promote the versioned judge and calibration data through the normal Git release path, then inspect both aggregate movement and individual disagreements.
-- Prefer sequential release comparison when traffic is comparable.
-- Use a live experiment only when simultaneous traffic allocation is necessary for a bounded question.
+- **A model may propose labels but cannot establish its own ground truth.** Every fixture goes to the domain owner with its rationale and provenance, and calibration pauses until each label is approved or corrected.
+- **Fixtures are repository data, so they must be authorized to live there and free of secrets.** When a source conversation cannot be committed, replay an authorized sanitized one rather than editing an export's provenance.
+- **The definition and its calibration data are one change.** They ship together through the normal Git release path; if Git mutation is not authorized, stop and ask rather than claiming completion.
+
+After promotion, inspect aggregate movement and individual disagreements together. Prefer sequential release comparison when traffic is comparable, and reach for a live experiment only when simultaneous allocation is genuinely necessary for a bounded question.
 
 Ending an experiment does not ship its winner. Promotion happens through the repository's normal main-branch release path. After promotion, verify the active commit with a fresh task, conversation inspection, and judgement trend.

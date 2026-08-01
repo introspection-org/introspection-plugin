@@ -1,11 +1,11 @@
 ---
 name: migrate
-description: Convert an existing agent into a locally proven Introspection recipe while preserving its approved behavior. Use when the user asks to migrate, port, or package an existing agent for Pi and Introspection.
+description: Convert an existing agent into a locally proven Introspection recipe while preserving its approved behavior. Use when the user asks to migrate, port, or package an existing agent for Pi and Introspection, or points at an agent implementation built on another framework or host and wants it to run here. An outcome with no existing implementation is create; an agent that is already a recipe and needs to behave differently is improve; publishing the result is deploy.
 ---
 
 # Migrate
 
-Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `$introspection:deploy`.
+Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `deploy`.
 
 ## Load capabilities
 
@@ -18,6 +18,8 @@ Load only the local capability modules the migration reaches:
 - [Harbor](../../capabilities/harbor.md) only when the Evals capability selects an environment-level suite as the parity evidence.
 
 When one module routes to another, load the named module before acting at that boundary. Resolve each CLI only when an approved migration step first needs it.
+
+Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including what a clean validator run does and does not prove.
 
 ## Load references
 
@@ -32,6 +34,8 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 The source architecture is evidence, not the target design. Preserve the outcomes, judgment, side effects, and failure boundaries users rely on. Do not preserve known bugs, dead abstractions, hidden global state, or complexity that exists only because of the old host. Keep every intentional difference explicit and prove that it is acceptable.
 
 Prefer the smallest faithful translation. Recipes are not valuable merely because every source component has a counterpart.
+
+Confirm there is a migration to perform before translating anything. An agent that is already an Introspection recipe has nothing to port, so a request to change how it behaves is `improve`; an outcome the user describes with no implementation behind it is `create`. Preserved behavior is the test — when the user cannot point at something whose behavior must survive, this is not the workflow.
 
 ## Understand the source
 
@@ -53,19 +57,16 @@ Build a small varied parity set from real usage. Where practical, run the same i
 
 ## Hand off
 
-Explain what was preserved, what intentionally changed, the parity evidence, known limits, and the resolved package path and agent name. Give the actual local command and the appropriate deploy invocation for the current host:
+Explain what was preserved, what intentionally changed, the parity evidence, known limits, and the resolved package path and agent name. Give the actual local command:
 
 ```text
 Try locally:
-introspection local --agent <agent>
-
-Deploy:
-<host invocation for introspection:deploy> <resolved-package-path>
+introspection local
 ```
 
-Give the local command as the CLI's run verb, matching `$introspection:create`. Scaffolding writes the manifest the verb resolves, and the verb preflights Pi and the recipe instead of surfacing a missing Recipes extension as a bare Pi argument error. Fall back to a direct Pi invocation only when the package deliberately has no manifest, and say why.
+Give the local command as the CLI's run verb, matching `create`. Scaffolding writes the manifest the verb resolves, and the verb preflights Pi and the recipe instead of surfacing a missing Recipes extension as a bare Pi argument error. Fall back to a direct Pi invocation only when the package deliberately has no manifest, and say why.
 
-Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex. Omit `--agent` only for one unambiguous default agent. Invite the user to request another iteration.
+Use the deploy skill to publish it. Invite the user to request another iteration.
 
 ## Firm boundaries
 

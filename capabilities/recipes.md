@@ -77,7 +77,7 @@ Use the smallest structure required by the calling workflow's approved cases. Lo
 - Use agent YAML for specialized instructions, model configuration, tools, skills, subagents, and capability narrowing.
 - Use `system_instructions.append` to specialize the shared recipe prompt and `replace` only when the agent intentionally replaces it.
 - Use `from:` to derive a complete agent definition and then apply documented field-specific overrides. Omission inherits, capability arrays replace, explicit `[]` clears, and model, extension, and MCP objects merge by their documented keys. Do not treat inheritance as text concatenation.
-- Put reusable domain judgment in recipe skills and deterministic operations in scripts or extensions.
+- Put reusable domain judgment in recipe skills and deterministic operations in scripts or extensions. Turning existing code into an extension is where a migration actually lands, so load the Pi capability for the registration contract rather than inferring it from a recipe you have seen.
 - Add a child agent only for an independent context boundary with a clear input, output, and completion path.
 - Declare only the external capabilities the agent needs. Keep endpoint details, credentials, `.pi/mcp.local.json`, other local bindings, and generated runtime state outside the portable package. A committed `.pi/mcp.local.example.json` may document the required shape without carrying a live endpoint or credential.
 - Treat host-specific connectors, policies, deployment manifests, and judges as conditional resources rather than default scaffolding. An offline eval suite is not among them: it is repository content, not a declared resource.
@@ -110,7 +110,7 @@ Run the selected agent directly from its recipe path in a fresh Pi process. Load
 
 Exercise the calling workflow's representative cases, retain meaningful output and tool evidence, and distinguish configuration, authentication, deterministic implementation, and agent-judgment failures. Use Harbor suites or portable judges only when the Evals capability establishes that the risk merits durable behavioral measurement and the human has approved every case or calibration label. An accepted suite is versioned by its Git revision rather than by a manifest declaration, so record the revision that produced a result and change the suite in its own commit, separately from agent behavior. Never reuse machine-proposed labels as judge ground truth, and never treat an offline suite as a judge: a judge is declared, validated, and deployed, while a suite is repository content Harbor runs.
 
-For judge calibration, resolve the real recipe root before exporting fixtures. Persist the authorized dataset at `judges/<judge-name>.calibration.jsonl`, calibrate from that path, and stage it with `judges/<judge-name>.yaml`. Inspect the Git diff and commit both files together through the calling workflow. Do not claim a judge is recipe-owned, calibrated, or promotion-ready while its approved labels exist only in a temporary or untracked file.
+Judge calibration is the Evals capability's to direct, and the `recipe-judges` page of the `introspection-docs` source owns where the definition and its dataset live. The recipe-side rule is only this: a judge is not recipe-owned, calibrated, or promotion-ready while its approved labels exist anywhere but the repository.
 
 ## Keep distribution portable
 
@@ -122,7 +122,7 @@ Distribution is ordinary Git. A recipe travels by clone, fork, or copy, and ther
 
 - Build through recipe-owned agents, extensions, skills, prompts, scripts, tests, and eval references using supported interfaces. Treat Pi, Pi Recipes, Harbor, and Introspection as external platform dependencies; never edit their source repositories unless the user explicitly requests platform contribution work.
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command. The Introspection CLI is the sole exception: every entry path needs it, so resolve it up front.
-- Treat invocation of the calling create, migrate, or onboarding workflow as authorization for routine local bootstrap. Explain required runtime and tooling changes, but do not ask whether to install them. Stop only for a concrete unsupported path, failed command, host permission gate, or recovery that would replace an unrecognized development build.
+- Treat entry into the calling create, migrate, or onboarding workflow as authorization for routine local bootstrap. Explain required runtime and tooling changes, but do not ask whether to install them. Stop only for a concrete unsupported path, failed command, host permission gate, or recovery that would replace an unrecognized development build.
 - Do not silently change provider, model, package manager, installation method, or authentication.
 - Do not encode host secrets in a recipe or infer undocumented `from:` merges, resource grammar, or CLI flags.
 - Do not claim readiness from a recipe check alone; prove representative behavior in a fresh Pi process.

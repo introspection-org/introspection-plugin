@@ -1,6 +1,6 @@
 ---
 name: operate
-description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not a recipe change, including judge enablement and sampling, experiments, credentials, bindings on an already-serving runtime, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource. Also use for organization-level work the CLI does not own, where the job is to guide the user through the dashboard — adding or removing a teammate, changing a role, connecting GitHub, Linear, or Slack, or checking plan, usage, and billing.
+description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not a recipe change, including judge enablement and sampling, experiments, credentials, bindings on an already-serving runtime, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource. Also use for organization-level work the CLI does not own, where the job is to guide the user through the dashboard — adding or removing a teammate, changing a role, connecting GitHub, Linear, or Slack, or checking plan, usage, and billing. A task that is queued, cancelled, or failing mechanically belongs here; an agent whose answers are poor is improve.
 ---
 
 # Operate
@@ -17,6 +17,8 @@ Load only the local capability modules the request reaches:
 
 When one module routes to another, load the named module before acting at that boundary. Resolve the CLI only when the first read or change needs it.
 
+Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including the several ways a conversation can look successful while it was not.
+
 ## Load references
 
 Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
@@ -30,15 +32,15 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 The test is what the request ends in:
 
 - An answer, or a live resource that changed without the recipe changing — **this workflow**.
-- A change to which version an environment resolves to, including rollback, repinning, withdrawal, and restoration — `$introspection:deploy`.
-- A change to how the agent behaves, landed through the repository — `$introspection:improve`.
-- A new recipe, or an existing agent ported into one — `$introspection:create` and `$introspection:migrate`.
+- A change to which version an environment resolves to, including rollback, repinning, withdrawal, and restoration — `deploy`.
+- A change to how the agent behaves, landed through the repository — `improve`.
+- A new recipe, or an existing agent ported into one — `create` and `migrate`.
 
-Bindings are the one resource both this workflow and `$introspection:deploy` touch, and the same test settles it: configuring bindings so a version can serve an environment is part of deploying, while inspecting or correcting a binding on a runtime that is already serving is ordinary operation.
+Bindings are the one resource both this workflow and `deploy` touch, and the same test settles it: configuring bindings so a version can serve an environment is part of deploying, while inspecting or correcting a binding on a runtime that is already serving is ordinary operation.
 
-Route rather than refuse, and say which workflow you are handing to. An investigation that starts here and turns out to need a behavior change is an ordinary handoff to `$introspection:improve`, not a failure of this one. When live traffic is affected and the remedy is moving what an environment resolves to, hand to `$introspection:deploy` before continuing.
+Route rather than refuse, and say which workflow you are handing to. An investigation that starts here and turns out to need a behavior change is an ordinary handoff to `improve`, not a failure of this one. When live traffic is affected and the remedy is moving what an environment resolves to, hand to `deploy` before continuing.
 
-Judge definition and calibration are repository work owned by `$introspection:improve`; a judge's live state — on or off, and how much traffic it grades — is owned here. Do not report an operational judge change as an unsupported boundary.
+Judge definition and calibration are repository work owned by `improve`; a judge's live state — on or off, and how much traffic it grades — is owned here. Do not report an operational judge change as an unsupported boundary.
 
 ## Read before you change
 
@@ -46,11 +48,11 @@ Resolve the project and the exact resource before acting on it. Preserve runtime
 
 Confirm which project a command acts on rather than assuming the one selected at login. Read-only inspection needs no approval; gather it before asking anything.
 
-When the question is who changed something, or what changed and when, that is the audit log rather than the resource's own row: it records the actor, the action, the resource, and the timestamp across projects, members, keys, integrations, and deployments. Read it for attribution and for compliance evidence, and pair it with the resource's own lineage when you need both who and what.
+When the question is who changed something, or what changed and when, the answer is the audit log rather than the resource's own row — read the `security` page of the `introspection-docs` source. Pair it with the resource's own lineage when you need both who and what.
 
 ## Diagnose from the task row outward
 
-A task is a durable execution, not a blocking call. Start every task question at the task row itself, not at the conversation:
+A task is a durable execution, not a blocking call. Start every task question at the task row itself, not at the conversation. The `tasks-and-runs` page of the `introspection-docs` source carries the full lifecycle — every status, the queue's exits, and the completion and failure reasons — and `conversations` carries what the record does and does not contain. Read them rather than inferring a status's meaning. Four things decide where to look:
 
 - A terminal status is not a result. Read why the task ended: a completed task reports its completion reason, and one torn down by the idle window completes having produced nothing.
 - A failed task carries its reason too, including failures that happen before the agent ever runs — an unresolved binding, an expired or missing credential, or a runtime that cannot serve.
@@ -58,6 +60,8 @@ A task is a durable execution, not a blocking call. Start every task question at
 - A task queued on organization concurrency is waiting, not wedged. It proceeds, is cancelled, or is collected once it exceeds the queue-wait budget. Retrying only lengthens the queue.
 
 Only once the task row is exhausted does conversation evidence become the right place to look. Never abandon a task you started without cancelling it, and treat one awaiting input as live work.
+
+A conversation reports failure in more than one way, and the surfaces disagree: a conversation whose model calls all succeeded but whose tool calls did not still reads as successful in a list. Load the `conversation-evidence` reference before concluding a conversation went well, and before selecting conversations as calibration fixtures.
 
 ## Answer prevalence with the aggregate surface
 
@@ -73,9 +77,9 @@ A read is free; a change to live state is not. Before changing anything, state t
 
 Treat these as production-affecting and name the effect before acting:
 
-- Judge enablement and sampling change what is measured and what it costs.
-- Starting or stopping an experiment changes what live traffic receives.
-- Rotating or revoking a credential can break a caller that is still using it. Rotation is not revocation; establish which one the user means.
+- Judge enablement and sampling change what is measured and what it costs — the `judges` page of the `introspection-docs` source carries the split between the Git-owned definition and these platform-owned settings.
+- Starting or stopping an experiment changes what live traffic receives, and ending one does not ship its winner. Read the `experiments` page before starting or ending one.
+- Rotating or revoking a credential can break a caller that is still using it. Rotation is not revocation; establish which one the user means. The `bindings` page owns how credentials and endpoints resolve.
 - Cancelling ends the active turn and leaves the task warm and idle rather than terminating it, and work in flight may be partially complete. The CLI aborts; draining instead, so the turn finishes and the sandbox tears down, is an API-level choice with no CLI flag.
 
 Ask for confirmation before a change whose blast radius the user has not already accepted. An explicit instruction to make a specific change is that acceptance; a question about state is not.
@@ -98,14 +102,12 @@ Shelling out to the operator CLI from product code is the mirror image of operat
 
 Report what you inspected, what it means, and what changed, with the identifiers and evidence behind each claim. Preserve and present every actionable URL the CLI returned, labelled by destination. Name anything you could not determine and what evidence would settle it.
 
-When the finding calls for another workflow, say which one and why. Use `/introspection:` in Claude Code and `$introspection:` in Codex.
-
 ## Firm boundaries
 
 - Do not change a live resource before resolving its exact identity and current state.
 - Do not treat a terminal task status as a result, or report a smoke test or verification as passing from status alone.
 - Do not fabricate evidence, counts, statuses, or causes when access is unavailable. State what remains unverified and what you would gather.
-- Do not edit recipe files, commit, push, or open a pull request in this workflow; hand behavior changes to `$introspection:improve`.
-- Do not create runtimes or runtime versions, change what an environment resolves to, or withdraw, restore, or delete a version; hand those to `$introspection:deploy`.
+- Do not edit recipe files, commit, push, or open a pull request in this workflow; hand behavior changes to `improve`.
+- Do not create runtimes or runtime versions, change what an environment resolves to, or withdraw, restore, or delete a version; hand those to `deploy`.
 - Do not read or expose credential contents. Operate on credentials by reference.
 - Do not substitute the dashboard, browser automation, a direct API call, or database access for an operator action the CLI owns; expose the gap instead.

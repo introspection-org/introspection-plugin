@@ -17,14 +17,16 @@ Load only the local capability modules the investigation reaches:
 - [Recipes](../../capabilities/recipes.md) for package composition, checks, capability declarations, or durable eval and judge resources.
 - [Harbor](../../capabilities/harbor.md) only when the Evals capability selects a new environment-level evaluation or existing Harbor evidence must be interpreted.
 
-For a focused supporting question about an existing agent, load and follow the matching module without forcing an end-to-end production investigation. When one module routes to another, load the named module before acting at that boundary. Leave deployment to `$introspection:deploy`.
+For a focused supporting question about an existing agent, load and follow the matching module without forcing an end-to-end production investigation. When one module routes to another, load the named module before acting at that boundary. Leave deployment to `deploy`.
 
 This workflow ends in a change to the recipe. Two neighbors own what it does not, and reaching either is an ordinary handoff rather than a refusal:
 
-- `$introspection:deploy` moves what an environment resolves to. When live traffic is affected and the remedy is repinning, withdrawing, or restoring a version, hand recovery over first and continue the investigation afterward.
-- `$introspection:operate` reads and changes live platform state that leaves the recipe alone — task and conversation inspection, aggregate telemetry, judge enablement and sampling, experiments, bindings, and credentials.
+- `deploy` moves what an environment resolves to. When live traffic is affected and the remedy is repinning, withdrawing, or restoring a version, hand recovery over first and continue the investigation afterward.
+- `operate` reads and changes live platform state that leaves the recipe alone — task and conversation inspection, aggregate telemetry, judge enablement and sampling, experiments, bindings, and credentials.
 
 Name the workflow you are handing to. Never stop at this skill's mutation boundary without one.
+
+Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including which edits reach an open chat and which need a new one.
 
 ## Load references
 
@@ -47,6 +49,8 @@ Fix deterministic failures deterministically. Use an ordinary test when it faith
 ## Resolve the target and evidence
 
 For a deployed agent, use the current Introspection CLI and documentation to resolve the project, runtime group, active version, recipe repository, and deployed Git commit. For a local agent, resolve the package root, selected agent, worktree, and available tests or evals. Confirm that the evidence and local code describe the same target before drawing conclusions.
+
+An agent the user wants improved is not always a recipe yet. When the target turns out to be an implementation on another framework or host, the change lands through `migrate` first, since there is no recipe to change; carry the observed defect into that translation instead of restating it later.
 
 Adapt the evidence plan to the focus:
 
@@ -76,7 +80,14 @@ Add an approved eval alongside or before the fix so baseline and candidate compa
 
 ## Hand off
 
-Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local and deploy invocations for the current host. Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex.
+Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local command:
+
+```text
+Try locally:
+introspection local
+```
+
+Use the deploy skill to ship it. A merged pull request does not move production on its own; the change reaches users only once a version carrying that commit is deployed and verified.
 
 ## Firm boundaries
 
@@ -86,4 +97,4 @@ Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks,
 - Do not treat a user hypothesis, aggregate score, or pattern label as root-cause proof.
 - Do not create evals or experiments by default; make them earn their permanent cost.
 - Do not silently switch providers, models, authentication, or target identity.
-- Do not mutate runtimes, bindings, judges, experiments, or deployments in this workflow. Hand version and environment changes to `$introspection:deploy` and other live-state changes to `$introspection:operate`; do not report them as unsupported.
+- Do not mutate runtimes, bindings, judges, experiments, or deployments in this workflow. Hand version and environment changes to `deploy` and other live-state changes to `operate`; do not report them as unsupported.

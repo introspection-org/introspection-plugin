@@ -1,11 +1,11 @@
 ---
 name: create
-description: Create a focused agent from scratch or a recipe template, ending with a locally proven Introspection recipe, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, Pi, recipe, eval, or Harbor requests that are not migration, production improvement, or deployment. Keep migration and deployment separate.
+description: Create a focused agent from scratch or a recipe template, ending with a locally proven Introspection recipe, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, Pi, recipe, eval, or Harbor requests that are not migration, production improvement, or deployment. Keep migration and deployment separate. Adding a tool, skill, capability, or MCP server to an agent that already exists is improve rather than create, even when the request is phrased as building something new, and an existing agent implementation to be ported is migrate.
 ---
 
 # Create
 
-Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `$introspection:migrate` and platform deployment to `$introspection:deploy`.
+Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `migrate` and platform deployment to `deploy`.
 
 ## Load capabilities
 
@@ -19,6 +19,8 @@ Load only the local capability modules the request reaches:
 
 For a focused supporting question, load and follow the matching module without forcing the full creation workflow. When one module routes to another, load the named module before acting at that boundary.
 
+Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including what a clean validator run does and does not prove.
+
 ## Load references
 
 Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
@@ -31,7 +33,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 Keep setup brief so the conversation can be about the agent. The Recipes capability owns making the Introspection CLI available and using its canonical setup workflow before scaffolding. Once the CLI is available, run `introspection setup --check` and treat the rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects.
 
-When the plan is already satisfied, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When the plan contains changes, show it once and proceed without asking for installation approval. Invoking this workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through the reviewed setup path.
+When the plan is already satisfied, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When the plan contains changes, show it once and proceed without asking for installation approval. Entering this workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through the reviewed setup path.
 
 Run `introspection setup --yes` and follow the exact command to a terminal exit status. A returned session, process, cell, or job handle—or output that merely says installation began—is still in progress: poll the same handle until it exits. After exit zero, rerun `introspection setup --check` and continue only when it reports no required changes. Do not install or update Pi, Recipes, or host plugins piecemeal around setup.
 
@@ -82,11 +84,11 @@ A template may be private. That is an access question rather than a capability q
 
 Catalog templates are licensed, so preserve their `LICENSE` and attribution. That holds for the starter too: every recipe begins as someone else's template, and starting from one is not the same as authoring the package.
 
-Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
+Do not treat an ordinary application repository as an existing agent. Route to `migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
-This skill owns an agent up to its first locally proven version. Changing one that already exists — adding a tool, skill, capability, or MCP server to it, or altering how it behaves — is `$introspection:improve`, even when the request is phrased as building something new. Resolve which case you are in before scaffolding.
+This skill owns an agent up to its first locally proven version. Changing one that already exists — adding a tool, skill, capability, or MCP server to it, or altering how it behaves — is `improve`, even when the request is phrased as building something new. Resolve which case you are in before scaffolding.
 
-Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, route to `$introspection:operate`, which owns that boundary, rather than scaffolding a recipe.
+Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, route to `operate`, which owns that boundary, rather than scaffolding a recipe.
 
 Once the user has reached for a template, prefer a source they supplied. Otherwise let the Recipes capability resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
 
@@ -128,19 +130,16 @@ Prove one credible ordinary happy path first in a fresh Pi process. Only after t
 
 ## Hand off
 
-Explain what the agent now does, the evidence behind it, known limits, and the resolved package path and agent name. Give the actual local command and the appropriate deploy invocation for the current host:
+Explain what the agent now does, the evidence behind it, known limits, and the resolved package path and agent name. Give the actual local command:
 
 ```text
 Try locally:
-introspection local --agent <agent>
-
-Deploy:
-<host invocation for introspection:deploy> <resolved-package-path>
+introspection local
 ```
 
 Give the local command as the CLI's own run verb rather than a raw Pi invocation. The verb resolves the local runtime manifest and launches Pi itself, so it keeps the single developer surface the user already has installed and does not require them to know a second command or where the package root sits. Confirm its flags from help before handing them over. Keep Introspection options before the argument separator and Pi arguments after it; do not invent a prompt flag. Resolve manifest discovery separately from process working directory: `--work-dir` changes where Introspection searches for manifests, while Pi inherits the directory from which the CLI was invoked.
 
-Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex. Omit `--agent` only for one unambiguous default agent. Omit the deploy invocation when the approved output is not inside a Git worktree, and explain that concrete boundary. Invite the user to request another iteration.
+Use the deploy skill to publish it. Do not deploy when the approved output is not inside a Git worktree, and explain that boundary. Invite the user to request another iteration.
 
 ## Firm boundaries
 
