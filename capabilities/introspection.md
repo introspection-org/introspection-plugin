@@ -50,6 +50,8 @@ Prove the loop with a visible recipe-specific change in a development conversati
 - For a new runtime, allow registration with unresolved remote MCP bindings when the user chooses a development-only bootstrap; record the affected lane readiness instead of inventing placeholder values.
 - Configure required staging bindings before selecting and exercising the candidate through staging.
 - Start a representative task through staging runtime-group resolution, follow it to completion, and confirm which exact version answered. A task is a durable execution, not a single blocking call: it can be streamed while it runs, cancelled, and — when the agent asks the caller something — resumed with an answer. Treat a task awaiting input as live work rather than a stall, and never abandon a task you started without cancelling it.
+
+A terminal status is not a result. Read the whole task row rather than its status alone: a completed task reports why it ended, and one torn down by the idle window completes without having produced anything. Never claim a smoke test or verification passed from a completed status; confirm the reason it ended and inspect the conversation. A failed task likewise carries its own reason, including failures that happen before the agent runs, and a task waiting on organization concurrency is queued rather than wedged — it proceeds, is cancelled, or is collected once it exceeds the queue-wait budget, so retrying only lengthens the queue.
 - Retrieve the conversation associated with that task and inspect its complete evidence bundle, not only task status.
 - Join the resolved runtime to its recipe pin and verify the intended Git commit.
 
