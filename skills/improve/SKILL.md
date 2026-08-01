@@ -1,6 +1,6 @@
 ---
 name: improve
-description: Improve an existing agent with human approval, using production evidence by default or adapting to a user-directed prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Fix supported problems, publish focused pull requests, add evals only for durable behavioral risk, and propose experiments only when trustworthy offline evidence cannot decide.
+description: Improve a deployed or local Introspection agent with human approval, using production evidence by default or adapting to a user-directed prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Use when the user asks to fix, change, or investigate why an Introspection agent behaves as it does and the remedy is expected to land as a change to the recipe. Fix supported problems, publish focused pull requests, add evals only for durable behavioral risk, and propose experiments only when trustworthy offline evidence cannot decide. To read live platform state, explain a task or completion reason, or change a judge, experiment, binding, or credential, use operate instead.
 ---
 
 # Improve
@@ -18,6 +18,13 @@ Load only the local capability modules the investigation reaches:
 - [Harbor](../../capabilities/harbor.md) only when the Evals capability selects a new environment-level evaluation or existing Harbor evidence must be interpreted.
 
 For a focused supporting question about an existing agent, load and follow the matching module without forcing an end-to-end production investigation. When one module routes to another, load the named module before acting at that boundary. Leave deployment to `$introspection:deploy`.
+
+This workflow ends in a change to the recipe. Two neighbors own what it does not, and reaching either is an ordinary handoff rather than a refusal:
+
+- `$introspection:deploy` moves what an environment resolves to. When live traffic is affected and the remedy is repinning, withdrawing, or restoring a version, hand recovery over first and continue the investigation afterward.
+- `$introspection:operate` reads and changes live platform state that leaves the recipe alone — task and conversation inspection, aggregate telemetry, judge enablement and sampling, experiments, bindings, and credentials.
+
+Name the workflow you are handing to. Never stop at this skill's mutation boundary without one.
 
 ## Load references
 
@@ -69,7 +76,7 @@ Add an approved eval alongside or before the fix so baseline and candidate compa
 
 ## Hand off
 
-Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local and deploy invocations for the current host.
+Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local and deploy invocations for the current host. Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex.
 
 ## Firm boundaries
 
@@ -79,4 +86,4 @@ Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks,
 - Do not treat a user hypothesis, aggregate score, or pattern label as root-cause proof.
 - Do not create evals or experiments by default; make them earn their permanent cost.
 - Do not silently switch providers, models, authentication, or target identity.
-- Do not mutate runtimes, bindings, judges, experiments, or deployments in this workflow.
+- Do not mutate runtimes, bindings, judges, experiments, or deployments in this workflow. Hand version and environment changes to `$introspection:deploy` and other live-state changes to `$introspection:operate`; do not report them as unsupported.

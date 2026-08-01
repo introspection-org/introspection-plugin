@@ -18,26 +18,13 @@ Inspect the target repository and nearby recipes before proposing structure. Rea
 
 Confirm changing mechanics with focused `introspection --help` and command-specific help only when the corresponding operation is about to run. Current documentation, compatible installed help, and repository schemas override this module. Do not duplicate their schemas, flags, or examples here.
 
-This workflow requires Introspection CLI 0.19.0 or later, the first version with `setup`. Earlier versions are incompatible; do not fall back to piecemeal setup with `init`, `local`, or separate dependency and plugin installs.
-
 Once a compatible Introspection CLI is available, use `introspection setup --check` as the canonical prerequisite preflight. Treat its rendered plan as authoritative for Pi, Recipes, and every supported coding-agent host the CLI detects. Do not reconstruct the same decision from independent shell probes.
 
-## Establish the CLI, then use canonical setup
-
-The CLI must be available before it can own setup. Resolve its documented Node requirement and installation method, using an exact launcher incompatibility as the recovery signal rather than guessing from unrelated package metadata. Once the CLI runs:
-
-1. Run `introspection setup --check` without changing the machine.
-2. If it reports changes, show the complete rendered plan and proceed without asking for installation approval. Invoking the calling create, migrate, or onboarding workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through this reviewed setup path.
-3. Run `introspection setup --yes`. A returned session, process, cell, or job handle—or output that only reports an installation has begun—is an in-progress command, not a result. Poll the same handle to a terminal exit status; never start dependent work or report completion from partial output.
-4. After exit zero, rerun `introspection setup --check` and continue only when it reports no required changes. If setup exits nonzero or the check remains unsatisfied, preserve the exact invocation and failure, inspect the resulting read-only state, and change the diagnosis before retrying. Do not repeat the same mutation unchanged or repair Pi, Recipes, or plugins piecemeal around setup.
-
-`introspection init` creates a recipe only after setup is ready. It is not a prerequisite installer or repair command.
-
-## Resolve the CLI, then get out of the way
+## Get a compatible CLI
 
 Probe first and narrate second. The CLI and its required runtime are usually already satisfied, so a requirements briefing delivered ahead of the probe inflates a two-line result into a wall of text nobody asked for. Report what you found, not how you looked for it.
 
-Once the CLI runs, its `doctor` verb is the supported read-only diagnosis of CLI, Recipes, Pi, Node, and local recipe readiness. Prefer it over hand-rolled shell probes when something is already wrong or a toolchain claim needs evidence; it changes nothing, so it is safe before any approval. Use `setup --check` for the plan to reach a ready machine and `doctor` for the state of the current one, and do not reconstruct either from independent probes.
+This workflow requires Introspection CLI 0.19.0 or later, the first version with `setup`. Earlier versions are incompatible; do not fall back to piecemeal setup with `init`, `local`, or separate dependency and plugin installs. Resolve the CLI's documented Node requirement and installation method, using an exact launcher incompatibility as the recovery signal rather than guessing from unrelated package metadata.
 
 1. Find a Node runtime that meets the floor. Any installed runtime satisfying it is silent success: select it and continue. Do not report which version you chose over which other one, and do not raise version managers, shell state, or the user's default runtime — none of that is a decision the user has to make.
 2. Install the CLI when it is missing, directly rather than staged as a decision:
@@ -58,6 +45,17 @@ Runtime activation may apply only to the current shell. Install, select, verify,
 Continue to defer everything else — authentication, provider setup, MCP endpoints, and evaluation tooling — until an approved step needs it. Do not check the registry merely to make a working installation match the latest release; reading a package's declared floor is a different question from chasing its newest version, and only the first is in scope here.
 
 Do not silently switch runtime managers, package managers, or installation methods. An ineffective installation attempt is not by itself a blocker: diagnose why it did not select a compatible runtime and try the next safe recovery within the detected manager. Stop when recovery requires elevation, introducing a different runtime manager, persistent user configuration, replacement of an unrecognized development build, an authentication change, or when all safe supported methods fail. Report that exact blocker instead of asking a speculative installation question.
+
+## Run canonical setup
+
+Once the CLI runs, its `doctor` verb is the supported read-only diagnosis of CLI, Recipes, Pi, Node, and local recipe readiness. Prefer it over hand-rolled shell probes when something is already wrong or a toolchain claim needs evidence; it changes nothing, so it is safe before any approval. Use `setup --check` for the plan to reach a ready machine and `doctor` for the state of the current one, and do not reconstruct either from independent probes.
+
+1. Run `introspection setup --check` without changing the machine.
+2. If it reports changes, show the complete rendered plan and proceed without asking for installation approval. Invoking the calling create, migrate, or onboarding workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through this reviewed setup path.
+3. Run `introspection setup --yes`. A returned session, process, cell, or job handle—or output that only reports an installation has begun—is an in-progress command, not a result. Poll the same handle to a terminal exit status; never start dependent work or report completion from partial output.
+4. After exit zero, rerun `introspection setup --check` and continue only when it reports no required changes. If setup exits nonzero or the check remains unsatisfied, preserve the exact invocation and failure, inspect the resulting read-only state, and change the diagnosis before retrying. Do not repeat the same mutation unchanged or repair Pi, Recipes, or plugins piecemeal around setup.
+
+`introspection init` creates a recipe only after setup is ready. It is not a prerequisite installer or repair command.
 
 ## Choose the entry path
 

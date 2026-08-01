@@ -1,10 +1,12 @@
 # Introspection
 
-Use the CLI as the only interface for **operating** Introspection: creating, inspecting, or changing runtimes, versions, environment pins, bindings, judges, experiments, keys, and the evidence behind them. Never substitute the dashboard, a browser, browser automation, a direct API call, an SDK, or database access for an operator action the CLI owns.
+Use the CLI as the only interface for **operating** Introspection: creating, inspecting, or changing runtimes, versions, environment pins, bindings, judges, experiments, keys, and the evidence behind them. It owns login too. Never substitute the dashboard, a browser, browser automation, a direct API call, an SDK, or database access for an operator action the CLI owns, and never on the grounds that a page would be quicker.
+
+That rule covers work inside a project, which is everything above. Organization administration sits outside it and has no CLI command group at all — no members, no integrations, no plan, usage, or billing — so there a browser is not a substitute but the only surface. Load the `dashboard-surface` reference when work reaches it, and guide the user to the page instead of reporting the operation as unsupported.
 
 That rule governs operating the platform, not building on it. Application code that runs tasks for end users is an SDK integration, and shelling out to the operator CLI from a product is the mirror-image mistake. When work crosses from managing a runtime to writing code that calls one, load the `integration-surface` reference; it also owns durable files, shares, conversation forks, and end-user memory. Never treat the CLI-only rule as a reason to refuse an integration.
 
-Keep recipe design in the [Recipes capability](recipes.md), evaluation reasoning in the [Evals capability](evals.md), and production diagnosis and fixes in `$introspection:improve`.
+Keep recipe design in the [Recipes capability](recipes.md) and evaluation reasoning in the [Evals capability](evals.md). Route the work itself by what the request ends in: a change to the recipe belongs to `$introspection:improve`, a change to what an environment resolves to belongs to `$introspection:deploy`, and an answer about live state or a change to a live resource belongs to `$introspection:operate`.
 
 ## Load references
 
@@ -26,7 +28,7 @@ Current docs and compatible installed CLI output are authoritative. Do not repea
 
 If a requested documented operation is absent from installed help, verify command resolution and compare the installed version with the official CLI package named by current Introspection documentation before declaring the operation unsupported. Resolve that package through its documented installation source; do not probe similarly named packages, unrelated package managers, repository release APIs, or source checkouts. That missing operation is an actual incompatibility, not a reason to stop at the older surface. Upgrade through the detected installation method, or use an isolated transient invocation of the exact official version when the approved workflow explicitly forbids changing the global installation. Recheck focused help in the resulting fresh process. Do not guess at flags from another source checkout.
 
-If a required platform operation is not available in the current CLI, report the gap and stop at the last supported step. Do not substitute another interface.
+Only once that upgrade path is exhausted does the gap become real: if the operation is still unavailable on the current official version, report it and stop at the last supported step. Do not substitute another interface. Stopping at an outdated binary you could have upgraded is not honoring this rule; it is skipping the step above.
 
 ## Return useful links
 
@@ -41,6 +43,8 @@ Authenticate, validate the local recipe, and run from its Git worktree. Prefer a
 When a declared MCP server is still local, pass `--mcp NAME=URL`; the name must match the recipe declaration. This routes development calls to the local process while the command remains attached. It does not read local credential files or upload local secrets, so use a development binding only when that local server actually requires bound credentials. Keep the command attached while testing: it refreshes the development recipe as files change and prints a runtime preview URL that works only for the attached session.
 
 Prove the loop with a visible recipe-specific change in a development conversation. Stopping the command ends the preview attachment; publishing still follows the normal Git and deployment flow.
+
+When an edit does not appear, the cause is usually which file changed rather than a broken attachment, and re-asking in the same chat is the common wrong move. Read the `development-lifecycle` page of the `introspection-docs` source for which edits reach the current chat and which need a new one.
 
 ## Connect and deploy
 
@@ -59,19 +63,11 @@ A terminal status is not a result. Read the whole task row: a completed task rep
 
 A successful deployment is a proven user workflow, not merely a created runtime. Keep **created**, **active**, **deployed**, and **verified** as distinct claims. Verification requires a representative task through the environment under test, inspection of its exact complete conversation, and proof that intended pushed Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical. If any evidence is unavailable, report the environment as active or deployed but unverified and name the gap.
 
-A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results.
-
-The boundary runs between definition and operational state, not between the CLI and something else. A judge's definition is Git-owned and changes through the normal release path; its live state — whether it is on, and how much production traffic it grades — is platform-owned, and the CLI is the surface for it. Enabling, disabling, and sampling are ordinary operator actions, so never report them as an unsupported boundary. Treat a sampling change as production-affecting: it changes what is measured and what it costs.
-
 ## Recover a bad version
 
 Deployment has a recovery path, and it is not deploying again. When a live version is suspected of causing harm, load the `runtime-recovery` reference before acting; it owns the choice between repinning, withdrawal, restoration, and deletion.
 
-Establish that the version is the cause before withdrawing it. An unresolved binding, an expired credential, a provider outage, a changed MCP endpoint, or upstream data can fail a task without the version being at fault, and withdrawing a healthy one hides the real defect.
-
-Prefer moving what an environment resolves to over destroying a version. Pinning staging to a known-good version is the fastest reversible response there and keeps the suspect version available for investigation. Staging is the steerable lane; production follows the default branch, so recovering it means withdrawing the implicated version and correcting the branch. Withdrawal does not move traffic by itself, so confirm what each environment resolves to afterward. Deletion evicts baked images and destroys provenance that judgements and experiments depend on; never delete while an incident is open.
-
-Recovery restores service without correcting the recipe: the commit that produced the version is still on the branch. Close the loop through the normal Git path, verify the replacement the way any deployment is verified, and until then report the environment as recovered but not yet fixed.
+Three things hold whichever it chooses. Establish that the version is the cause before withdrawing it — an unresolved binding, an expired credential, a provider outage, a changed MCP endpoint, or upstream data can fail a task without the version being at fault, and withdrawing a healthy one hides the real defect. Never delete a version while an incident is open. And recovery restores service without correcting the recipe, so report the environment as recovered but not yet fixed until a replacement is verified the way any deployment is.
 
 ## Learn from production
 
@@ -79,7 +75,7 @@ Navigate from recurring patterns to supporting observations and then to the unde
 
 Read individual evidence and aggregate shape with the surfaces built for each. Typed event reads return the canonical event families; the aggregate telemetry surface answers how often and how much across a population, including model and token usage. Use it before claiming a pattern is common or rare, rather than estimating prevalence from a handful of inspected conversations.
 
-Its query is a document the CLI forwards unchanged, so focused help describes only how to submit it, not which views, metrics, dimensions, or filters exist. Read the `observations-and-patterns` page of the `introspection-docs` source, or the Data Plane API reference, for the grammar; do not infer a query shape from help.
+Its query is a document the CLI forwards unchanged, so focused help describes only how to submit it and never names a field. Load the `metrics-query` reference for the views, the measure-versus-dimension split, and the field names; do not infer a query shape from help.
 
 Use the basic improvement loop:
 
@@ -95,6 +91,12 @@ Use the basic improvement loop:
 Treat business outcomes as pressure on eval coverage, not as a reward to chase directly. Form a behavior hypothesis, represent it in approved cases, and validate it offline before considering a production comparison.
 
 ## Judge and compare
+
+A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results.
+
+The boundary runs between definition and operational state, not between the CLI and something else. A judge's definition is Git-owned and changes through the normal release path; its live state — whether it is on, and how much production traffic it grades — is platform-owned, and the CLI is the surface for it. Enabling, disabling, and sampling are ordinary operator actions, so never report them as an unsupported boundary. Treat a sampling change as production-affecting: it changes what is measured and what it costs.
+
+Calibrating a judge definition is separate work from changing its live state:
 
 - Resolve the owning recipe Git worktree and judge name. Export representative fixtures, including positives, negatives, edge cases, and random controls, then persist them at `judges/<judge-name>.calibration.jsonl` beside `judges/<judge-name>.yaml`. Use temporary output only while assembling the review draft; never calibrate from a temp file that remains the sole retained copy.
 - Show every fixture with its proposed label, rationale, provenance, and split to the domain owner. Pause until every label is approved or corrected; a model may propose labels but cannot establish its own ground truth.

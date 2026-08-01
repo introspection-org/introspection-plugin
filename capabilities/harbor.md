@@ -8,8 +8,6 @@ Do not force a project with a working evaluation framework to migrate. Keep its 
 
 Before an approved task-authoring or execution operation requires Harbor, confirm the CLI and selected official skill are available. Do not install or upgrade Harbor during evaluation design merely to make it current. If required tooling is missing or incompatible, route to the current official Harbor installation source instead of reconstructing its workflow locally.
 
-Before spending any approved real-agent attempt, resolve and print the complete run configuration with current CLI help: agent, explicit model, authentication source, environment, task or dataset selector, attempt count, and output directory. Run a non-mutating setup or config check when the agent supports one. For Codex, `--model` is required; when using an existing ChatGPT login, pass `CODEX_AUTH_JSON_PATH` or `CODEX_FORCE_AUTH_JSON` through `--agent-env` instead of assuming the host login will appear inside the Harbor environment. Never print credential contents.
-
 ## Load references
 
 Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
@@ -30,6 +28,10 @@ Assume the current official Harbor skills are installed; the `harbor-skills` sou
 - `upload-parity-experiments` only while contributing adapter parity artifacts to Harbor's shared dataset.
 
 Do not copy their schemas, commands, examples, or troubleshooting tables into this plugin. Confirm current behavior with the installed `harbor` CLI help, and use the `harbor-docs` source only when help does not settle the question.
+
+## Before spending a real-agent attempt
+
+Real-agent attempts are budgeted and cost money, and a misconfiguration burns one. Before spending any approved attempt, resolve and print the complete run configuration with current CLI help: agent, explicit model, authentication source, environment, task or dataset selector, attempt count, and output directory. Run a non-mutating setup or config check when the agent supports one. For Codex, `--model` is required; when using an existing ChatGPT login, pass `CODEX_AUTH_JSON_PATH` or `CODEX_FORCE_AUTH_JSON` through `--agent-env` instead of assuming the host login will appear inside the Harbor environment. Never print credential contents.
 
 ## Create a task
 
