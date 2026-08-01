@@ -77,7 +77,7 @@ Use the smallest structure required by the calling workflow's approved cases. Lo
 - Use agent YAML for specialized instructions, model configuration, tools, skills, subagents, and capability narrowing.
 - Use `system_instructions.append` to specialize the shared recipe prompt and `replace` only when the agent intentionally replaces it.
 - Use `from:` to derive a complete agent definition and then apply documented field-specific overrides. Omission inherits, capability arrays replace, explicit `[]` clears, and model, extension, and MCP objects merge by their documented keys. Do not treat inheritance as text concatenation.
-- Put reusable domain judgment in recipe skills and deterministic operations in scripts or extensions.
+- Put reusable domain judgment in recipe skills and deterministic operations in scripts or extensions. Turning existing code into an extension is where a migration actually lands, so load the Pi capability for the registration contract rather than inferring it from a recipe you have seen.
 - Add a child agent only for an independent context boundary with a clear input, output, and completion path.
 - Declare only the external capabilities the agent needs. Keep endpoint details, credentials, `.pi/mcp.local.json`, other local bindings, and generated runtime state outside the portable package. A committed `.pi/mcp.local.example.json` may document the required shape without carrying a live endpoint or credential.
 - Treat host-specific connectors, policies, deployment manifests, and judges as conditional resources rather than default scaffolding. An offline eval suite is not among them: it is repository content, not a declared resource.
