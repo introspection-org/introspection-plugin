@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/introspection-org/introspection-plugin/compare/v0.3.2...v0.4.0) (2026-08-01)
+
+
+### Features
+
+* **skills:** add the operate entry point, split the five by what a request ends in, and route organization work to the dashboard ([#32](https://github.com/introspection-org/introspection-plugin/issues/32)) ([f78c9aa](https://github.com/introspection-org/introspection-plugin/commit/f78c9aa28e890b98d317c6d11adf9714329fd0bc))
+
+
+### Bug Fixes
+
+* **skills:** correct claims about surfaces that do not exist ([#30](https://github.com/introspection-org/introspection-plugin/issues/30)) ([a66532f](https://github.com/introspection-org/introspection-plugin/commit/a66532f19fc429dfc4f9ede3dcf35984659c4f98))
+* **skills:** route to pages instead of restating them, close the workflow lifecycle, and validate page keys ([#33](https://github.com/introspection-org/introspection-plugin/issues/33)) ([52549b0](https://github.com/introspection-org/introspection-plugin/commit/52549b0321e252a4cb18dac2c62135aa9135e1a1))
+
 ## [0.3.2](https://github.com/introspection-org/introspection-plugin/compare/v0.3.1...v0.3.2) (2026-07-31)
 
 
