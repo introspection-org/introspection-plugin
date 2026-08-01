@@ -44,7 +44,7 @@ When a declared MCP server is still local, pass `--mcp NAME=URL`; the name must 
 
 Prove the loop with a visible recipe-specific change in a development conversation. Stopping the command ends the preview attachment; publishing still follows the normal Git and deployment flow.
 
-When an edit does not appear, the cause is usually which file changed rather than a broken attachment. Only some edits reach the current chat: a skill body or a script lands on the next turn, while a system prompt, agent YAML, prompt, extension, or MCP declaration needs a new chat, dependencies need a new chat that reinstalls them, and a `.introspection` manifest change needs a whole new runtime version. Re-asking in the same chat is the common wrong move. Read the `development-lifecycle` page of the `introspection-docs` source before diagnosing further.
+When an edit does not appear, the cause is usually which file changed rather than a broken attachment, and re-asking in the same chat is the common wrong move. Read the `development-lifecycle` page of the `introspection-docs` source for which edits reach the current chat and which need a new one.
 
 ## Connect and deploy
 
@@ -67,11 +67,7 @@ A successful deployment is a proven user workflow, not merely a created runtime.
 
 Deployment has a recovery path, and it is not deploying again. When a live version is suspected of causing harm, load the `runtime-recovery` reference before acting; it owns the choice between repinning, withdrawal, restoration, and deletion.
 
-Establish that the version is the cause before withdrawing it. An unresolved binding, an expired credential, a provider outage, a changed MCP endpoint, or upstream data can fail a task without the version being at fault, and withdrawing a healthy one hides the real defect.
-
-Prefer moving what an environment resolves to over destroying a version. Pinning staging to a known-good version is the fastest reversible response there and keeps the suspect version available for investigation. Staging is the steerable lane; production follows the default branch, so recovering it means withdrawing the implicated version and correcting the branch. Withdrawal does not move traffic by itself, so confirm what each environment resolves to afterward. It also does not stop work already running: a task holds the version it resolved at its start for its whole life, so withdrawal and repinning both act on new tasks only, and anything in flight keeps going on the bad version. State which of the two you actually stopped. Deletion evicts baked images and destroys provenance that judgements and experiments depend on; never delete while an incident is open.
-
-Recovery restores service without correcting the recipe: the commit that produced the version is still on the branch. Close the loop through the normal Git path, verify the replacement the way any deployment is verified, and until then report the environment as recovered but not yet fixed.
+Three things hold whichever it chooses. Establish that the version is the cause before withdrawing it — an unresolved binding, an expired credential, a provider outage, a changed MCP endpoint, or upstream data can fail a task without the version being at fault, and withdrawing a healthy one hides the real defect. Never delete a version while an incident is open. And recovery restores service without correcting the recipe, so report the environment as recovered but not yet fixed until a replacement is verified the way any deployment is.
 
 ## Learn from production
 

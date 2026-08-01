@@ -112,9 +112,7 @@ Report the deployed identity, active commit per environment, runtime and task ev
 
 This workflow owns recovery for any deployed version, not only one it deployed itself. An incident that arrives cold — no prior deployment in this session — is in scope, and so is one handed over mid-investigation by `$introspection:improve`. Resolve the runtime identity the same way any deployment does, then load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
 
-Confirm the version is the cause before withdrawing it. For staging, pinning to the last known-good version is the fastest reversible response and preserves the suspect version for investigation; production is not steered by a pin, so recovering it means withdrawing the implicated version and correcting the default branch. Withdrawal does not move traffic by itself, so state what each environment resolves to afterward. Deletion destroys provenance judgements and experiments depend on, and is never the response to an open incident.
-
-Recovery restores service without fixing the recipe: the commit that produced the version is still on the branch. Report the environment as recovered but not yet fixed until a corrected version is verified the way any deployment is.
+Confirm the version is the cause before withdrawing it, and never delete one while an incident is open. Recovery restores service without fixing the recipe — the commit that produced the version is still on the branch — so report the environment as recovered but not yet fixed until a corrected version is verified the way any deployment is.
 
 ## Firm boundaries
 
