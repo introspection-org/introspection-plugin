@@ -115,10 +115,12 @@ Consequences for changes here:
   answer or a changed live resource that leaves the recipe alone (`operate`).
   Adding a sixth needs that test to yield a genuinely new terminal state, not
   a new topic.
-- Every public skill and capability module that cites the index must carry the
-  reference-loading and degradation contract verbatim. `validate-references.mjs`
-  enforces both this and the five-skill discovery surface, so the copies cannot
-  drift.
+- The reference loading contract lives once, in `CONTRACT.md`. Every public
+  skill and capability module links it rather than restating it, so a copy
+  cannot drift because there are no copies. `validate-references.mjs` enforces
+  that `CONTRACT.md` carries the contract verbatim, that every module links it
+  (or carries it inline), and the five-skill discovery surface. Change the
+  contract in one place; do not paste it back into a module.
 
 To validate a skill against an unpublished reference, serve the docs branch and
 point the validator at it instead of the published index:

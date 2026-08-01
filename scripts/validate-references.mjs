@@ -65,6 +65,17 @@ for (const name of skillNames) {
 for (const name of expectedCapabilities) {
   if (!capabilityNames.includes(name)) errors.push(`capability module capabilities/${name}.md is missing`)
 }
+
+// The single source of the loading contract. Everything else links to it, so if
+// this drifts or disappears the whole plugin silently loses its fetch rules.
+try {
+  const contractBody = readFileSync(join(ROOT, 'CONTRACT.md'), 'utf8')
+  if (!contractBody.includes(CONTRACT)) {
+    errors.push('CONTRACT.md does not carry the reference loading and degradation contract verbatim')
+  }
+} catch {
+  errors.push('CONTRACT.md is missing or unreadable')
+}
 for (const name of capabilityNames) {
   if (!expectedCapabilities.has(name)) errors.push(`unexpected capability module: capabilities/${name}.md`)
 }
@@ -96,10 +107,13 @@ for (const { absolutePath, relativePath } of contentFiles) {
     }
   }
 
-  const resolvesContent = urls.includes(INDEX_URL)
-  if (resolvesContent && !body.includes(CONTRACT)) {
+  // The contract lives in one file and everything else links to it, so a copy
+  // cannot drift because there are no copies. Carrying it inline still passes,
+  // which keeps CONTRACT.md itself valid under the same rule.
+  const linksContract = /\]\((?:\.\.\/)+CONTRACT\.md\)/.test(body)
+  if (!linksContract && !body.includes(CONTRACT)) {
     errors.push(
-      `${relativePath} cites the reference index but does not carry the loading and degradation contract verbatim`,
+      `${relativePath} neither links the reference loading contract (CONTRACT.md) nor carries it verbatim`,
     )
   }
 
