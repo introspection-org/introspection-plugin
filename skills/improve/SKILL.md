@@ -64,6 +64,8 @@ Use production evidence when relevant and available, but do not force it onto a 
 
 Open-code the evidence before imposing a taxonomy. Separate prevalence from severity and business importance. Ask the human to resolve disputed product behavior rather than encoding an agent guess.
 
+Once the divergence has a name, load the `agent-failure-patterns` reference before choosing the remedy. A symptom with an obvious-looking fix is where the wrong layer gets edited: several of the failures listed there are routinely answered with prompt text when the mechanism needs a boundary the model cannot argue with. When the evidence instead shows retrieved content, tool output, or a child agent's result steering what the agent did, load the `agent-security-review` reference to judge the control rather than crediting the first one you find.
+
 ## Align with the user
 
 Explain what you inspected, the strongest evidence, the likely owning layer, the change you recommend, and how you will know it worked. Include confidence, meaningful risks, and the proposed pull-request boundary. Mention eval or experiment work only when the evidence justifies it. Use the clearest natural format for this case, not a fixed report shape.

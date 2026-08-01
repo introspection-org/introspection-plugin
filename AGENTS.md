@@ -98,7 +98,7 @@ Consequences for changes here:
   a new topic.
 - Every public skill and capability module that cites the index must carry the
   reference-loading and degradation contract verbatim. `validate-references.mjs`
-  enforces both this and the four-skill discovery surface, so the copies cannot
+  enforces both this and the five-skill discovery surface, so the copies cannot
   drift.
 
 To validate a skill against an unpublished reference, serve the docs branch and
