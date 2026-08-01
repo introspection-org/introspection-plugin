@@ -6,7 +6,7 @@ That rule covers work inside a project, which is everything above. Organization 
 
 That rule governs operating the platform, not building on it. Application code that runs tasks for end users is an SDK integration, and shelling out to the operator CLI from a product is the mirror-image mistake. When work crosses from managing a runtime to writing code that calls one, load the `integration-surface` reference; it also owns durable files, shares, conversation forks, and end-user memory. Never treat the CLI-only rule as a reason to refuse an integration.
 
-Keep recipe design in the [Recipes capability](recipes.md) and evaluation reasoning in the [Evals capability](evals.md). Route the work itself by what the request ends in: a change to the recipe belongs to `$introspection:improve`, a change to what an environment resolves to belongs to `$introspection:deploy`, and an answer about live state or a change to a live resource belongs to `$introspection:operate`.
+Keep recipe design in the [Recipes capability](recipes.md) and evaluation reasoning in the [Evals capability](evals.md). Route the work itself by what the request ends in: a change to the recipe belongs to `improve`, a change to what an environment resolves to belongs to `deploy`, and an answer about live state or a change to a live resource belongs to `operate`.
 
 ## Load references
 
@@ -57,9 +57,9 @@ When an edit does not appear, the cause is usually which file changed rather tha
 - Retrieve the conversation associated with that task and inspect its complete evidence bundle, not only task status.
 - Join the resolved runtime to its recipe pin and verify the intended Git commit.
 
-A task is a durable execution, not a blocking call. A terminal status is therefore not a result: never claim a smoke test or verification passed from a completed status alone, and never abandon a task you started without cancelling it. The lifecycle itself — what each status means, why a task queues, what a completion or failure reason tells you — is the `tasks-and-runs` page of the `introspection-docs` source; `$introspection:operate` owns diagnosis.
+A task is a durable execution, not a blocking call. A terminal status is therefore not a result: never claim a smoke test or verification passed from a completed status alone, and never abandon a task you started without cancelling it. The lifecycle itself — what each status means, why a task queues, what a completion or failure reason tells you — is the `tasks-and-runs` page of the `introspection-docs` source; `operate` owns diagnosis.
 
-A successful deployment is a proven user workflow, not merely a created runtime, so keep **created**, **active**, **deployed**, and **verified** as distinct claims. `$introspection:deploy` defines what each one requires. If the evidence for the strongest claim is unavailable, make the weaker one and name the gap.
+A successful deployment is a proven user workflow, not merely a created runtime, so keep **created**, **active**, **deployed**, and **verified** as distinct claims. `deploy` defines what each one requires. If the evidence for the strongest claim is unavailable, make the weaker one and name the gap.
 
 ## Recover a bad version
 
@@ -94,7 +94,7 @@ A judge is an online measurement instrument, distinct from an offline eval suite
 
 The boundary runs between definition and operational state, not between the CLI and something else. A judge's definition is Git-owned and changes through the normal release path; its live state — whether it is on, and how much production traffic it grades — is platform-owned, and the CLI is the surface for it. Enabling, disabling, and sampling are ordinary operator actions, so never report them as an unsupported boundary. Treat a sampling change as production-affecting: it changes what is measured and what it costs.
 
-Calibrating a definition is separate work from changing live state, and it belongs to `$introspection:improve`. The `eval-design` reference owns the method and the `recipe-judges` page of the `introspection-docs` source owns the file contract, so do not reconstruct either here. Three constraints hold regardless of how the calibration is run:
+Calibrating a definition is separate work from changing live state, and it belongs to `improve`. The `eval-design` reference owns the method and the `recipe-judges` page of the `introspection-docs` source owns the file contract, so do not reconstruct either here. Three constraints hold regardless of how the calibration is run:
 
 - **A model may propose labels but cannot establish its own ground truth.** Every fixture goes to the domain owner with its rationale and provenance, and calibration pauses until each label is approved or corrected.
 - **Fixtures are repository data, so they must be authorized to live there and free of secrets.** When a source conversation cannot be committed, replay an authorized sanitized one rather than editing an export's provenance.

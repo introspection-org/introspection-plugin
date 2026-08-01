@@ -32,15 +32,15 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 The test is what the request ends in:
 
 - An answer, or a live resource that changed without the recipe changing — **this workflow**.
-- A change to which version an environment resolves to, including rollback, repinning, withdrawal, and restoration — `$introspection:deploy`.
-- A change to how the agent behaves, landed through the repository — `$introspection:improve`.
-- A new recipe, or an existing agent ported into one — `$introspection:create` and `$introspection:migrate`.
+- A change to which version an environment resolves to, including rollback, repinning, withdrawal, and restoration — `deploy`.
+- A change to how the agent behaves, landed through the repository — `improve`.
+- A new recipe, or an existing agent ported into one — `create` and `migrate`.
 
-Bindings are the one resource both this workflow and `$introspection:deploy` touch, and the same test settles it: configuring bindings so a version can serve an environment is part of deploying, while inspecting or correcting a binding on a runtime that is already serving is ordinary operation.
+Bindings are the one resource both this workflow and `deploy` touch, and the same test settles it: configuring bindings so a version can serve an environment is part of deploying, while inspecting or correcting a binding on a runtime that is already serving is ordinary operation.
 
-Route rather than refuse, and say which workflow you are handing to. An investigation that starts here and turns out to need a behavior change is an ordinary handoff to `$introspection:improve`, not a failure of this one. When live traffic is affected and the remedy is moving what an environment resolves to, hand to `$introspection:deploy` before continuing.
+Route rather than refuse, and say which workflow you are handing to. An investigation that starts here and turns out to need a behavior change is an ordinary handoff to `improve`, not a failure of this one. When live traffic is affected and the remedy is moving what an environment resolves to, hand to `deploy` before continuing.
 
-Judge definition and calibration are repository work owned by `$introspection:improve`; a judge's live state — on or off, and how much traffic it grades — is owned here. Do not report an operational judge change as an unsupported boundary.
+Judge definition and calibration are repository work owned by `improve`; a judge's live state — on or off, and how much traffic it grades — is owned here. Do not report an operational judge change as an unsupported boundary.
 
 ## Read before you change
 
@@ -102,14 +102,14 @@ Shelling out to the operator CLI from product code is the mirror image of operat
 
 Report what you inspected, what it means, and what changed, with the identifiers and evidence behind each claim. Preserve and present every actionable URL the CLI returned, labelled by destination. Name anything you could not determine and what evidence would settle it.
 
-When the finding calls for another workflow, say which one and why. Use `/introspection:` in Claude Code and `$introspection:` in Codex.
+When the finding calls for another workflow, name it and say why, then invoke it in the syntax the current host uses.
 
 ## Firm boundaries
 
 - Do not change a live resource before resolving its exact identity and current state.
 - Do not treat a terminal task status as a result, or report a smoke test or verification as passing from status alone.
 - Do not fabricate evidence, counts, statuses, or causes when access is unavailable. State what remains unverified and what you would gather.
-- Do not edit recipe files, commit, push, or open a pull request in this workflow; hand behavior changes to `$introspection:improve`.
-- Do not create runtimes or runtime versions, change what an environment resolves to, or withdraw, restore, or delete a version; hand those to `$introspection:deploy`.
+- Do not edit recipe files, commit, push, or open a pull request in this workflow; hand behavior changes to `improve`.
+- Do not create runtimes or runtime versions, change what an environment resolves to, or withdraw, restore, or delete a version; hand those to `deploy`.
 - Do not read or expose credential contents. Operate on credentials by reference.
 - Do not substitute the dashboard, browser automation, a direct API call, or database access for an operator action the CLI owns; expose the gap instead.

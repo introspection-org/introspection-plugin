@@ -5,7 +5,7 @@ description: Convert an existing agent into a locally proven Introspection recip
 
 # Migrate
 
-Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `$introspection:deploy`.
+Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `deploy`.
 
 ## Load capabilities
 
@@ -65,9 +65,9 @@ Deploy:
 <host invocation for introspection:deploy> <resolved-package-path>
 ```
 
-Give the local command as the CLI's run verb, matching `$introspection:create`. Scaffolding writes the manifest the verb resolves, and the verb preflights Pi and the recipe instead of surfacing a missing Recipes extension as a bare Pi argument error. Fall back to a direct Pi invocation only when the package deliberately has no manifest, and say why.
+Give the local command as the CLI's run verb, matching `create`. Scaffolding writes the manifest the verb resolves, and the verb preflights Pi and the recipe instead of surfacing a missing Recipes extension as a bare Pi argument error. Fall back to a direct Pi invocation only when the package deliberately has no manifest, and say why.
 
-Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex. Omit `--agent` only for one unambiguous default agent. Invite the user to request another iteration.
+Hand off to `deploy` using the invocation syntax the current host uses. Omit `--agent` only for one unambiguous default agent. Invite the user to request another iteration.
 
 ## Firm boundaries
 

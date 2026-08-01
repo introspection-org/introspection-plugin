@@ -5,7 +5,7 @@ description: Create a focused agent from scratch or a recipe template, ending wi
 
 # Create
 
-Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `$introspection:migrate` and platform deployment to `$introspection:deploy`.
+Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `migrate` and platform deployment to `deploy`.
 
 ## Load capabilities
 
@@ -84,11 +84,11 @@ A template may be private. That is an access question rather than a capability q
 
 Catalog templates are licensed, so preserve their `LICENSE` and attribution. That holds for the starter too: every recipe begins as someone else's template, and starting from one is not the same as authoring the package.
 
-Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
+Do not treat an ordinary application repository as an existing agent. Route to `migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
-This skill owns an agent up to its first locally proven version. Changing one that already exists — adding a tool, skill, capability, or MCP server to it, or altering how it behaves — is `$introspection:improve`, even when the request is phrased as building something new. Resolve which case you are in before scaffolding.
+This skill owns an agent up to its first locally proven version. Changing one that already exists — adding a tool, skill, capability, or MCP server to it, or altering how it behaves — is `improve`, even when the request is phrased as building something new. Resolve which case you are in before scaffolding.
 
-Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, route to `$introspection:operate`, which owns that boundary, rather than scaffolding a recipe.
+Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, route to `operate`, which owns that boundary, rather than scaffolding a recipe.
 
 Once the user has reached for a template, prefer a source they supplied. Otherwise let the Recipes capability resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
 
@@ -142,7 +142,7 @@ Deploy:
 
 Give the local command as the CLI's own run verb rather than a raw Pi invocation. The verb resolves the local runtime manifest and launches Pi itself, so it keeps the single developer surface the user already has installed and does not require them to know a second command or where the package root sits. Confirm its flags from help before handing them over. Keep Introspection options before the argument separator and Pi arguments after it; do not invent a prompt flag. Resolve manifest discovery separately from process working directory: `--work-dir` changes where Introspection searches for manifests, while Pi inherits the directory from which the CLI was invoked.
 
-Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex. Omit `--agent` only for one unambiguous default agent. Omit the deploy invocation when the approved output is not inside a Git worktree, and explain that concrete boundary. Invite the user to request another iteration.
+Hand off to `deploy` using the invocation syntax the current host uses. Omit `--agent` only for one unambiguous default agent. Omit the deploy invocation when the approved output is not inside a Git worktree, and explain that concrete boundary. Invite the user to request another iteration.
 
 ## Firm boundaries
 
