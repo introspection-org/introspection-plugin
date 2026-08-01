@@ -2,7 +2,7 @@
 
 Treat a recipe as portable agent IP: the versioned package that carries instructions, agents, skills, extensions, and declared capabilities. Keep Pi harness mechanics in the [Pi capability](pi.md), outcome design in the calling workflow, evaluation reasoning in the [Evals capability](evals.md), and hosted operation in the [Introspection capability](introspection.md).
 
-Keep offline evals and online judges distinct, and note that only one of them is a recipe resource. Judges are declared and validated; an offline eval suite is not part of the package format at all, so it lives in the repository as ordinary unvalidated content and is versioned by Git like any other source. The Evals capability owns the human-approved offline measurement contract, the [Harbor capability](harbor.md) owns an accepted environment-level task and its run evidence, and this module owns only what the package format actually declares. Online judges follow a separate human-label, calibration, declaration, and deployment path through the Evals and Introspection capabilities. Keep each judge's direct-child YAML and approved calibration data together as `judges/<judge-name>.yaml` and `judges/<judge-name>.calibration.jsonl`; both belong to the recipe Git repository.
+Keep offline evals and online judges distinct, and note that only one is a recipe resource: judges are declared and validated, while an offline eval suite is not part of the package format at all and is versioned by Git like any other source. The Evals capability owns the human-approved offline measurement contract, the [Harbor capability](harbor.md) owns an accepted environment-level task and its run evidence, and this module owns only what the package format declares. Online judges follow a separate human-label, calibration, declaration, and deployment path through the Evals and Introspection capabilities. Keep each judge's direct-child YAML and approved calibration data together as `judges/<judge-name>.yaml` and `judges/<judge-name>.calibration.jsonl`; both belong to the recipe Git repository.
 
 ## Load references
 
@@ -89,14 +89,12 @@ Load the Pi capability when the work requires exact Pi extension, skill-discover
 
 ## Separate the portable package from the deployment manifest
 
-The recipe package is portable agent IP. The Introspection manifest under `.introspection/` is a separate, non-portable artifact that describes how a managed runtime should run that package, and it carries decisions the package does not.
+The Introspection manifest under `.introspection/` is a separate, non-portable artifact describing how a managed runtime should run the package, and it carries decisions the package does not. Two of its runtime fields change product behavior and must be resolved rather than inherited:
 
-Two of its runtime fields change product behavior and must be resolved rather than inherited:
+- **Model access mode** decides whether the runtime reaches models through the managed provider gateway or the user's own provider account via an LLM endpoint binding — a commercial and trust decision, and inherited input in exactly the way a scaffold's model is. Confirm it before first deployment, and read the `llm-providers` page of the `introspection-docs` source when the choice is open. Bring-your-own-key also requires its endpoint binding in every environment that will serve traffic.
+- **Runtime resources** size each task's sandbox. Leave them unset unless the workload has a demonstrated need, set them from observed behavior rather than a guess, and treat a change as deployment-affecting.
 
-- **Model access mode** decides whether the runtime reaches models through Introspection's managed provider gateway or through your own provider account via an LLM endpoint binding. This is a commercial and trust decision, not a default to accept silently. A scaffold's value is inherited input in exactly the way a scaffold's model is. Confirm the intended mode with the user before first deployment, and read the `llm-providers` page of the `introspection-docs` source when the choice is open. Bring-your-own-key additionally requires the matching endpoint binding to exist in every environment that will serve traffic.
-- **Runtime resources** size the sandbox each task gets. Leave them unset unless the workload has a demonstrated need; set them from observed behavior rather than a guess, and treat a change as a deployment-affecting edit.
-
-Read the `runtimes` page of the `introspection-docs` source for the manifest's current fields. Do not infer them from the portable package manifest, which is a different schema with different ownership.
+Read the `runtimes` page of the `introspection-docs` source for the manifest's current fields rather than inferring them from the portable package manifest, which is a different schema.
 
 Validate the portable recipe with no local binding inside it. Attach local connectivity only through a supported external configuration scope documented for the installed toolchain, run the real recipe, then confirm that no endpoint, credential, or local binding entered the artifact. Never guess an undocumented environment variable or temporarily place rejected local configuration inside the recipe to make a run pass.
 
@@ -106,7 +104,9 @@ Resolve any provider or model choice that changes the recipe before writing it. 
 
 Run the Introspection CLI's `check` verb, since it is the single recipe validation surface. It takes no profile or mode selector, and it runs the same validation the platform runs when a version is built, so a clean local check is the same answer the push will get.
 
-It takes no path positional either, and this is where a correct package gets reported as broken. The verb addresses either a manifest directly or a workspace root to search, and discovery looks only in that root — it does not walk. Its convenience walk upward applies only when it runs bare from the default directory. So when the manifest sits at the repository root above the package, pointing the search root at the package directory finds nothing and fails as though no recipe existed. Either run it bare from inside the recipe and let the walk find the manifest, or address the resolved manifest explicitly. Treat a no-manifest result from an explicitly targeted run as a targeting error until you have confirmed the manifest's real location. Fix structural diagnostics at their owning layer. A successful check proves the authored package contract, not useful behavior.
+It takes no path positional either, and this is where a correct package gets reported as broken. The verb addresses a manifest directly or a workspace root to search, and discovery looks only in that root — it walks upward only when run bare from the default directory. So when the manifest sits at the repository root above the package, pointing the search root at the package directory finds nothing and fails as though no recipe existed. Run it bare from inside the recipe, or address the resolved manifest explicitly, and treat a no-manifest result from a targeted run as a targeting error until you have confirmed the manifest's real location.
+
+Fix structural diagnostics at their owning layer. A successful check proves the authored package contract, not useful behavior.
 
 Run the selected agent directly from its recipe path in a fresh Pi process. Load the Pi capability for setup, invocation, and host preflight. Defer authentication and capability setup until the first approved behavior run needs them. Prefer a supported redacted status check; if none exists, use the first minimal model call as authentication proof. Never read, print, copy, or parse raw credential files or secret values.
 
