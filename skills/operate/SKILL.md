@@ -102,7 +102,7 @@ Shelling out to the operator CLI from product code is the mirror image of operat
 
 Report what you inspected, what it means, and what changed, with the identifiers and evidence behind each claim. Preserve and present every actionable URL the CLI returned, labelled by destination. Name anything you could not determine and what evidence would settle it.
 
-When the finding calls for another workflow, name it and say why, then invoke it in the syntax the current host uses.
+When the finding calls for another workflow, say which skill to use and why.
 
 ## Firm boundaries
 

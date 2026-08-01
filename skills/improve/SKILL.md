@@ -78,7 +78,7 @@ Add an approved eval alongside or before the fix so baseline and candidate compa
 
 ## Hand off
 
-Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local and `deploy` invocations in the syntax the current host uses.
+Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local invocation and say to use the deploy skill to ship it.
 
 ## Firm boundaries
 
