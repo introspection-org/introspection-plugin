@@ -1,0 +1,4 @@
+interface:
+  display_name: "Operate"
+  short_description: "Inspect and operate a live Introspection project"
+  default_prompt: "Use $introspection:operate to inspect this Introspection project's live state and explain what it means."

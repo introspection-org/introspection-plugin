@@ -4,7 +4,7 @@ Use the CLI as the only interface for **operating** Introspection: creating, ins
 
 That rule governs operating the platform, not building on it. Application code that runs tasks for end users is an SDK integration, and shelling out to the operator CLI from a product is the mirror-image mistake. When work crosses from managing a runtime to writing code that calls one, load the `integration-surface` reference; it also owns durable files, shares, conversation forks, and end-user memory. Never treat the CLI-only rule as a reason to refuse an integration.
 
-Keep recipe design in the [Recipes capability](recipes.md), evaluation reasoning in the [Evals capability](evals.md), and production diagnosis and fixes in `$introspection:improve`.
+Keep recipe design in the [Recipes capability](recipes.md) and evaluation reasoning in the [Evals capability](evals.md). Route the work itself by what the request ends in: a change to the recipe belongs to `$introspection:improve`, a change to what an environment resolves to belongs to `$introspection:deploy`, and an answer about live state or a change to a live resource belongs to `$introspection:operate`.
 
 ## Load references
 

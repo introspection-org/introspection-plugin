@@ -15,7 +15,7 @@ Load only the local capability modules the request reaches:
 - [Recipes](../../capabilities/recipes.md) for portable package composition, templates, validation, distribution, or judge declarations.
 - [Evals](../../capabilities/evals.md) for behavior discovery, trace analysis, measurement design, case approval, or judge calibration.
 - [Harbor](../../capabilities/harbor.md) only after the Evals module selects a new environment-level evaluation, or for a narrowly scoped Harbor question.
-- [Introspection](../../capabilities/introspection.md) when a runtime already exists and the user wants to exercise recipe changes through the platform's development chat, or when the request turns out to be about writing application code that calls a runtime rather than about building one.
+- [Introspection](../../capabilities/introspection.md) when a runtime already exists and the user wants to exercise recipe changes through the platform's development chat.
 
 For a focused supporting question, load and follow the matching module without forcing the full creation workflow. When one module routes to another, load the named module before acting at that boundary.
 
@@ -84,7 +84,7 @@ Catalog templates are licensed, so preserve their `LICENSE` and attribution. Tha
 
 Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
-Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, load the Introspection capability and its `integration-surface` reference instead of scaffolding a recipe.
+Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, route to `$introspection:operate`, which owns that boundary, rather than scaffolding a recipe.
 
 Once the user has reached for a template, prefer a source they supplied. Otherwise let the Recipes capability resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
 

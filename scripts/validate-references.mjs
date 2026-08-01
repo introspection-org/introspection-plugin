@@ -9,7 +9,7 @@
  *   2. Every public skill and capability module that resolves content carries
  *      the reference-loading and degradation contract verbatim, so a copy
  *      cannot drift.
- *   3. Exactly the four intended public skills are discoverable.
+ *   3. Exactly the five intended public skills are discoverable.
  *   4. Cited keys are well-formed.
  *
  * When the published index is reachable it also checks that every cited key
@@ -46,7 +46,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 const errors = []
 const citedKeys = new Set()
-const expectedSkills = new Set(['create', 'deploy', 'improve', 'migrate'])
+const expectedSkills = new Set(['create', 'deploy', 'improve', 'migrate', 'operate'])
 const expectedCapabilities = new Set(['evals', 'harbor', 'introspection', 'pi', 'recipes'])
 const skillNames = readdirSync(SKILLS_DIR, { withFileTypes: true })
   .filter(entry => entry.isDirectory())
