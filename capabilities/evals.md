@@ -113,7 +113,7 @@ Do not block a prototype on optimization-grade coverage. Do not call an agent de
 ## Route the next step
 
 - Load the [Harbor capability](harbor.md) when creating new environment-level tasks or when the existing framework cannot represent the required environment, execution, or grading contract. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
-- Load the [Recipes capability](recipes.md) before changing recipe structure, checks, or recipe eval declarations, and load the [Pi capability](pi.md) before invoking the local Pi harness. Let each resolve tooling only when the approved operation actually needs it.
+- Load the [Recipes capability](recipes.md) before changing recipe structure, checks, or judge declarations, and load the [Pi capability](pi.md) before invoking the local Pi harness. Let each resolve tooling only when the approved operation actually needs it.
 - Load the [Introspection capability](introspection.md) to inspect production evidence, deploy calibrated judges, sample live behavior, or compare releases.
 - When trustworthy offline evidence cannot decide among credible candidates, return a bounded experiment proposal to the calling workflow. Do not launch an experiment or start autonomous candidate search.
 

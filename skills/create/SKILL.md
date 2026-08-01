@@ -12,7 +12,7 @@ Turn the user's desired outcome into a locally proven recipe, starting from a te
 Load only the local capability modules the request reaches:
 
 - [Pi](../../capabilities/pi.md) for harness, extension, skill-discovery, provider, settings, package, or local-execution behavior.
-- [Recipes](../../capabilities/recipes.md) for portable package composition, templates, validation, distribution, or eval declarations.
+- [Recipes](../../capabilities/recipes.md) for portable package composition, templates, validation, distribution, or judge declarations.
 - [Evals](../../capabilities/evals.md) for behavior discovery, trace analysis, measurement design, case approval, or judge calibration.
 - [Harbor](../../capabilities/harbor.md) only after the Evals module selects a new environment-level evaluation, or for a narrowly scoped Harbor question.
 
