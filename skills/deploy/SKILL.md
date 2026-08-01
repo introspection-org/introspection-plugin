@@ -33,6 +33,8 @@ Deployment is a proof problem: establish which recipe, repository, commit, proje
 
 Staging is pinned directly; production moves when the configured branch merges. Deployment therefore does not end at staging, and it is not finished because a version exists.
 
+Changing that pin is an ordinary operation rather than only an incident response. Freezing staging on a chosen version, following a branch instead, or restoring the moving pin all use the one mechanism the `runtime-recovery` reference describes; load it for the routine case too, not just when a version is suspected of causing harm.
+
 Reuse the existing runtime lifecycle. A matching runtime group is not a reason to create another one, and an ambiguous identity is not permission to guess.
 
 ## Establish readiness
@@ -94,11 +96,11 @@ Keep creation, activation, deployment, and verification distinct. A runtime or v
 
 When the bindings required by staging are available, configure the in-scope staging bindings, select the candidate for staging, and run a representative task through the runtime-group slug so the smoke test exercises staging resolution. Follow the task to completion, retrieve its exact conversation ID, and inspect the complete conversation. A completed status is not a passing smoke test: read the task row's reason for ending, since a task torn down by the idle window also reports completed while having produced nothing. If the task failed before its agent ran there is no conversation to retrieve, and the task row's own failure reason — not a missing conversation — is the evidence. Before claiming verification, prove that the intended pushed Git HEAD, the selected runtime-version SHA, and the task-resolved runtime SHA are identical.
 
-Use an API key scoped to the environment under test; the credential is what selects the environment, so a staging key cannot verify production. Load the `runtime-auth` reference when the product needs more than a trusted backend calling on its own behalf, and treat the move to a service-account application or federation as an integration decision the user makes, not a deployment step.
+Use an API key scoped to the environment under test; the credential is what selects the environment, so a staging key cannot verify production. Load the `runtime-auth` reference when the product needs more than a trusted backend calling on its own behalf. A move to a service-account application, an identity provider, or federation is an integration decision the user makes rather than a deployment step — hand it to `$introspection:operate`, which owns that boundary, instead of stopping.
 
 ## Carry both environments
 
-Bindings are environment-scoped. A configured development or staging endpoint, variable, or credential does not configure production. A first-runtime bootstrap may register a version while bindings are unresolved, but it is not production-ready and must not be presented or exercised as such. Resolve the applicable rows for every environment the recipe will serve, and configure the missing production ones before directing production traffic or before a later merge activates a new version.
+Bindings are environment-scoped. Configuring them so a version can serve an environment is part of deploying and belongs here; inspecting or correcting a binding on a runtime that is already serving is ordinary operation and belongs to `$introspection:operate`. A configured development or staging endpoint, variable, or credential does not configure production. A first-runtime bootstrap may register a version while bindings are unresolved, but it is not production-ready and must not be presented or exercised as such. Resolve the applicable rows for every environment the recipe will serve, and configure the missing production ones before directing production traffic or before a later merge activates a new version.
 
 Merging is the user's release decision, so do not merge to make production move. Explain what the merge will activate, which production bindings are in place, and what remains unresolved.
 
@@ -127,4 +129,5 @@ Recovery restores service without fixing the recipe: the commit that produced th
 - Do not direct production traffic to, or claim production readiness for, a runtime with unresolved required production bindings. Configure them before a later merge activates a new version.
 - Do not create a GitHub repository without approval of its owner, name, and visibility, or when an appropriate remote already exists.
 - Do not block a valid logged-in user on speculative GitHub App confirmation; surface repository access failures only from supported operations.
+- Do not change judge state, experiments, credentials, application identity, or task lifecycle in this workflow; hand them to `$introspection:operate` rather than performing them under a deployment brief that never named their blast radius.
 - Do not substitute another platform interface when a required operation is unavailable through the current CLI; expose the gap.

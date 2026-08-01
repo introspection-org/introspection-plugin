@@ -84,6 +84,8 @@ Catalog templates are licensed, so preserve their `LICENSE` and attribution. Tha
 
 Do not treat an ordinary application repository as an existing agent. Route to `$introspection:migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
+This skill owns an agent up to its first locally proven version. Changing one that already exists — adding a tool, skill, capability, or MCP server to it, or altering how it behaves — is `$introspection:improve`, even when the request is phrased as building something new. Resolve which case you are in before scaffolding.
+
 Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, route to `$introspection:operate`, which owns that boundary, rather than scaffolding a recipe.
 
 Once the user has reached for a template, prefer a source they supplied. Otherwise let the Recipes capability resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.

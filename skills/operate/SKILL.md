@@ -1,6 +1,6 @@
 ---
 name: operate
-description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not a recipe change, including judge enablement and sampling, experiments, credentials, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource.
+description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not a recipe change, including judge enablement and sampling, experiments, credentials, bindings on an already-serving runtime, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource.
 ---
 
 # Operate
@@ -74,7 +74,7 @@ Treat these as production-affecting and name the effect before acting:
 - Judge enablement and sampling change what is measured and what it costs.
 - Starting or stopping an experiment changes what live traffic receives.
 - Rotating or revoking a credential can break a caller that is still using it. Rotation is not revocation; establish which one the user means.
-- Cancelling a task ends work that may be partially complete.
+- Cancelling ends the active turn and leaves the task warm and idle rather than terminating it, and work in flight may be partially complete. The CLI aborts; draining instead, so the turn finishes and the sandbox tears down, is an API-level choice with no CLI flag.
 
 Ask for confirmation before a change whose blast radius the user has not already accepted. An explicit instruction to make a specific change is that acceptance; a question about state is not.
 
