@@ -45,6 +45,8 @@ Separate repository setup from login and repository access. Local Git work, crea
 
 Without changing anything, resolve CLI version and login identity, project and scopes, Git remote and status, recipe package root, `.introspection` manifest, and intended diff. Inspect `.introspection/` explicitly, including hidden files; never infer that a manifest is absent from a generic repository listing. When multiple manifests exist, resolve the requested recipe before choosing one and do not replace or create a manifest while identity remains ambiguous.
 
+Resolve the manifest's model-access mode as part of this preflight, not after a runtime exists. It decides whether the runtime reaches models through the managed provider gateway or your own provider account, and bring-your-own-key needs its LLM endpoint binding present in every environment that will serve traffic. Treat a scaffolded value as inherited input: confirm the intended mode with the user before the first version, and name it in the execution brief alongside the environments it affects.
+
 Run the Introspection CLI's `check` verb against the exact resolved manifest, which is the single recipe validation surface. A rejected or malformed invocation is not a recipe-check result: read the focused installed help and retry the read-only validation before proposing repair or deployment. Identify missing or invalid configuration, but do not repair it yet.
 
 ## Resolve runtime identity
@@ -71,7 +73,7 @@ For a new runtime whose remote MCP binding is not ready, registration may be the
 
 Keep creation, activation, deployment, and verification distinct. A runtime or version is **created** when it exists, **active** when an environment resolves to it, **deployed** when the intended version is selected in that environment, and **verified** only after representative behavior and provenance are proven. Creation output, inventory, activation state, or task status alone cannot establish verification. If a lane cannot be exercised, report it as active or deployed but unverified and name the missing evidence.
 
-When the bindings required by staging are available, configure the in-scope staging bindings, select the candidate for staging, and run a representative task through the runtime-group slug so the smoke test exercises staging resolution. Follow the task to completion, retrieve its exact conversation ID, and inspect the complete conversation. Before claiming verification, prove that the intended pushed Git HEAD, the selected runtime-version SHA, and the task-resolved runtime SHA are identical.
+When the bindings required by staging are available, configure the in-scope staging bindings, select the candidate for staging, and run a representative task through the runtime-group slug so the smoke test exercises staging resolution. Follow the task to completion, retrieve its exact conversation ID, and inspect the complete conversation. A completed status is not a passing smoke test: read the task row's reason for ending, since a task torn down by the idle window also reports completed while having produced nothing. If the task failed before its agent ran there is no conversation to retrieve, and the task row's own failure reason — not a missing conversation — is the evidence. Before claiming verification, prove that the intended pushed Git HEAD, the selected runtime-version SHA, and the task-resolved runtime SHA are identical.
 
 Use an API key scoped to the environment under test; the credential is what selects the environment, so a staging key cannot verify production. Load the `runtime-auth` reference when the product needs more than a trusted backend calling on its own behalf, and treat the move to a service-account application or federation as an integration decision the user makes, not a deployment step.
 
@@ -85,12 +87,22 @@ After the user merges, verify production the same way staging was verified: run 
 
 Report the deployed identity, active commit per environment, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform. Include the resolved runtime dashboard URL and each task or conversation URL used as verification evidence.
 
+## Recover when a version goes wrong
+
+A deployment this workflow performed is one it can be asked to undo. Load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
+
+Confirm the version is the cause before withdrawing it. For staging, pinning to the last known-good version is the fastest reversible response and preserves the suspect version for investigation; production is not steered by a pin, so recovering it means withdrawing the implicated version and correcting the default branch. Withdrawal does not move traffic by itself, so state what each environment resolves to afterward. Deletion destroys provenance judgements and experiments depend on, and is never the response to an open incident.
+
+Recovery restores service without fixing the recipe: the commit that produced the version is still on the branch. Report the environment as recovered but not yet fixed until a corrected version is verified the way any deployment is.
+
 ## Firm boundaries
 
 - Do not perform work outside the user's deploy request without obtaining the material decision that expands its scope.
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command.
 - Do not deploy an ambiguous recipe, repository, commit, project, or runtime identity.
 - Do not create a duplicate runtime group or invent an unsupported update path.
+- Do not accept a scaffolded model-access mode as the user's decision, or deploy bring-your-own-key without its LLM endpoint binding present in each serving environment.
+- Do not delete a runtime version to recover from an incident, and do not withdraw a version before confirming it is the cause.
 - Do not merge to production for the user; the merge is their release decision.
 - Do not make first-runtime registration depend on a remote MCP endpoint or credential when the user approves a development-only bootstrap. Keep every affected lane's readiness gap explicit.
 - Do not direct production traffic to, or claim production readiness for, a runtime with unresolved required production bindings. Configure them before a later merge activates a new version.

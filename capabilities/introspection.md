@@ -1,6 +1,10 @@
 # Introspection
 
-Use the CLI as the only platform interface. Never use the dashboard, a browser, browser automation, a direct API, an SDK, or database access to operate Introspection. Keep recipe design in the [Recipes capability](recipes.md), evaluation reasoning in the [Evals capability](evals.md), and production diagnosis and fixes in `$introspection:improve`.
+Use the CLI as the only interface for **operating** Introspection: creating, inspecting, or changing runtimes, versions, environment pins, bindings, judges, experiments, keys, and the evidence behind them. Never substitute the dashboard, a browser, browser automation, a direct API call, an SDK, or database access for an operator action the CLI owns.
+
+That rule governs operating the platform, not building on it. Application code that runs tasks for end users is an SDK integration, and shelling out to the operator CLI from a product is the mirror-image mistake. When work crosses from managing a runtime to writing code that calls one, load the `integration-surface` reference; it also owns durable files, shares, conversation forks, and end-user memory. Never treat the CLI-only rule as a reason to refuse an integration.
+
+Keep recipe design in the [Recipes capability](recipes.md), evaluation reasoning in the [Evals capability](evals.md), and production diagnosis and fixes in `$introspection:improve`.
 
 ## Load references
 
@@ -49,13 +53,33 @@ Prove the loop with a visible recipe-specific change in a development conversati
 - Retrieve the conversation associated with that task and inspect its complete evidence bundle, not only task status.
 - Join the resolved runtime to its recipe pin and verify the intended Git commit.
 
+A task is a durable execution, not a blocking call: it can be streamed, cancelled, and resumed when the agent asks the caller something. Treat one awaiting input as live work, and never abandon a task you started without cancelling it. A task queued on organization concurrency is waiting, not wedged — it proceeds, is cancelled, or is collected once it exceeds the queue-wait budget, so retrying only lengthens the queue.
+
+A terminal status is not a result. Read the whole task row: a completed task reports why it ended, and one torn down by the idle window completes having produced nothing. A failed task carries its reason too, including failures that happen before the agent runs. Never claim a smoke test or verification passed from a completed status alone.
+
 A successful deployment is a proven user workflow, not merely a created runtime. Keep **created**, **active**, **deployed**, and **verified** as distinct claims. Verification requires a representative task through the environment under test, inspection of its exact complete conversation, and proof that intended pushed Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical. If any evidence is unavailable, report the environment as active or deployed but unverified and name the gap.
 
-A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results. Live judge enablement and production sampling may not be supported by the CLI; report that boundary when encountered and do not silently switch interfaces.
+A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results.
+
+The boundary runs between definition and operational state, not between the CLI and something else. A judge's definition is Git-owned and changes through the normal release path; its live state — whether it is on, and how much production traffic it grades — is platform-owned, and the CLI is the surface for it. Enabling, disabling, and sampling are ordinary operator actions, so never report them as an unsupported boundary. Treat a sampling change as production-affecting: it changes what is measured and what it costs.
+
+## Recover a bad version
+
+Deployment has a recovery path, and it is not deploying again. When a live version is suspected of causing harm, load the `runtime-recovery` reference before acting; it owns the choice between repinning, withdrawal, restoration, and deletion.
+
+Establish that the version is the cause before withdrawing it. An unresolved binding, an expired credential, a provider outage, a changed MCP endpoint, or upstream data can fail a task without the version being at fault, and withdrawing a healthy one hides the real defect.
+
+Prefer moving what an environment resolves to over destroying a version. Pinning staging to a known-good version is the fastest reversible response there and keeps the suspect version available for investigation. Staging is the steerable lane; production follows the default branch, so recovering it means withdrawing the implicated version and correcting the branch. Withdrawal does not move traffic by itself, so confirm what each environment resolves to afterward. Deletion evicts baked images and destroys provenance that judgements and experiments depend on; never delete while an incident is open.
+
+Recovery restores service without correcting the recipe: the commit that produced the version is still on the branch. Close the loop through the normal Git path, verify the replacement the way any deployment is verified, and until then report the environment as recovered but not yet fixed.
 
 ## Learn from production
 
 Navigate from recurring patterns to supporting observations and then to the underlying conversations. Sample normal traffic alongside failures. A zero count from asynchronous analysis is not proof that no issue exists; verify analysis status and raw evidence.
+
+Read individual evidence and aggregate shape with the surfaces built for each. Typed event reads return the canonical event families; the aggregate telemetry surface answers how often and how much across a population, including model and token usage. Use it before claiming a pattern is common or rare, rather than estimating prevalence from a handful of inspected conversations.
+
+Its query is a document the CLI forwards unchanged, so focused help describes only how to submit it, not which views, metrics, dimensions, or filters exist. Read the `observations-and-patterns` page of the `introspection-docs` source, or the Data Plane API reference, for the grammar; do not infer a query shape from help.
 
 Use the basic improvement loop:
 

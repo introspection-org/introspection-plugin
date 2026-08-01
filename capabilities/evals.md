@@ -58,6 +58,8 @@ After open coding, cluster related notes into specific, actionable failure modes
 
 Before writing fixtures, scaffolding a Harbor task, implementing a verifier, calibrating a judge, or running a proposed suite, show the human every proposed case with its input or scenario, capability or failure mode, proposed expected answer or label, rationale, provenance, and verification method. Mark machine-proposed answers and labels as proposals. Pause for the domain owner to approve, reject, edit, or relabel each case and to confirm the coverage.
 
+Approval covers whether a case is *correct*. It does not settle whether the underlying data may leave production, so resolve that separately and before the export. Exporting real conversations into a repository-committed fixture or calibration dataset moves production data into Git, where it is durable, copied by every clone, and effectively unrecallable. Read the `data-handling` page of the `introspection-docs` source for what may be collected, retained, exported, and stored, and honor any residency or sensitive-data constraint it sets. When a source conversation cannot be committed, replay an authorized sanitized conversation and export a fresh valid fixture rather than editing provenance out of the original. If authorization is unclear, treat it as a blocker and ask the owner; do not resolve it by redacting until the text looks safe.
+
 Do not treat silence, prior general workflow approval, machine agreement, a reference solution, or deterministic generation as case approval. If a material case, expected answer, label, rationale, split, or success contract changes later, show the changed case and obtain approval again before using it. Preserve the approval decision with the versioned dataset.
 
 Omit dataset splits for offline evals. Use splits only for judge calibration or when the user explicitly requests a holdout strategy.
@@ -111,7 +113,7 @@ Do not block a prototype on optimization-grade coverage. Do not call an agent de
 ## Route the next step
 
 - Load the [Harbor capability](harbor.md) when creating new environment-level tasks or when the existing framework cannot represent the required environment, execution, or grading contract. Its normal path is the official `create-task` skill; `rewardkit` is conditional, and `harbor-exec` is only for loose-input map or map-reduce work.
-- Load the [Recipes capability](recipes.md) before changing recipe structure, checks, or recipe eval declarations, and load the [Pi capability](pi.md) before invoking the local Pi harness. Let each resolve tooling only when the approved operation actually needs it.
+- Load the [Recipes capability](recipes.md) before changing recipe structure, checks, or judge declarations, and load the [Pi capability](pi.md) before invoking the local Pi harness. Let each resolve tooling only when the approved operation actually needs it.
 - Load the [Introspection capability](introspection.md) to inspect production evidence, deploy calibrated judges, sample live behavior, or compare releases.
 - When trustworthy offline evidence cannot decide among credible candidates, return a bounded experiment proposal to the calling workflow. Do not launch an experiment or start autonomous candidate search.
 

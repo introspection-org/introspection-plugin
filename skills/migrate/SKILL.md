@@ -47,11 +47,13 @@ Explain what was preserved, what intentionally changed, the parity evidence, kno
 
 ```text
 Try locally:
-pi --recipe <resolved-package-path> --agent <agent>
+introspection local --agent <agent>
 
 Deploy:
 <host invocation for introspection:deploy> <resolved-package-path>
 ```
+
+Give the local command as the CLI's run verb, matching `$introspection:create`. Scaffolding writes the manifest the verb resolves, and the verb preflights Pi and the recipe instead of surfacing a missing Recipes extension as a bare Pi argument error. Fall back to a direct Pi invocation only when the package deliberately has no manifest, and say why.
 
 Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex. Omit `--agent` only for one unambiguous default agent. Invite the user to request another iteration.
 
