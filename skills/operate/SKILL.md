@@ -63,7 +63,7 @@ Only once the task row is exhausted does conversation evidence become the right 
 
 Individual evidence and population shape have different surfaces. Read typed events for the canonical event families, and use the aggregate telemetry surface for how often, how many, and how much — including model and token usage. Use it before calling a pattern common or rare rather than estimating from a handful of inspected conversations.
 
-Its query is a document the CLI forwards unchanged, so focused help describes only how to submit it, not which views, metrics, dimensions, or filters exist. Read the grammar from the documented source rather than inferring a query shape from help.
+Its query is a document the CLI forwards unchanged, so focused help describes only how to submit it and never names a field. Load the `metrics-query` reference for the views and field names rather than inferring a query shape from help.
 
 A zero count from asynchronous analysis is not proof that nothing is wrong; verify analysis status and raw evidence.
 

@@ -79,7 +79,7 @@ Navigate from recurring patterns to supporting observations and then to the unde
 
 Read individual evidence and aggregate shape with the surfaces built for each. Typed event reads return the canonical event families; the aggregate telemetry surface answers how often and how much across a population, including model and token usage. Use it before claiming a pattern is common or rare, rather than estimating prevalence from a handful of inspected conversations.
 
-Its query is a document the CLI forwards unchanged, so focused help describes only how to submit it, not which views, metrics, dimensions, or filters exist. Read the `observations-and-patterns` page of the `introspection-docs` source, or the Data Plane API reference, for the grammar; do not infer a query shape from help.
+Its query is a document the CLI forwards unchanged, so focused help describes only how to submit it and never names a field. Load the `metrics-query` reference for the views, the measure-versus-dimension split, and the field names; do not infer a query shape from help.
 
 Use the basic improvement loop:
 
