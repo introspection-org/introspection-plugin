@@ -1,6 +1,6 @@
 ---
 name: operate
-description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not a recipe change, including judge enablement and sampling, experiments, credentials, bindings on an already-serving runtime, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource.
+description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not a recipe change, including judge enablement and sampling, experiments, credentials, bindings on an already-serving runtime, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource. Also use for organization-level work the CLI does not own, where the job is to guide the user through the dashboard: adding or removing a teammate, changing a role, connecting GitHub, Linear, or Slack, or checking plan, usage, and billing.
 ---
 
 # Operate
@@ -77,6 +77,14 @@ Treat these as production-affecting and name the effect before acting:
 - Cancelling ends the active turn and leaves the task warm and idle rather than terminating it, and work in flight may be partially complete. The CLI aborts; draining instead, so the turn finishes and the sandbox tears down, is an API-level choice with no CLI flag.
 
 Ask for confirmation before a change whose blast radius the user has not already accepted. An explicit instruction to make a specific change is that acceptance; a question about state is not.
+
+## Guide organization work to the dashboard
+
+The CLI does everything inside a project, and it does login. Organization administration is the one place it does not reach: there is no members, organizations, plan, usage, or billing command group, so inviting a teammate, changing a role, connecting GitHub, Linear, or Slack, or anything touching plan and billing happens in the dashboard. Load the `dashboard-surface` reference when work reaches that boundary.
+
+Guide rather than take over. Give the person the labelled link and the specific change to make, plus anything the page will ask of them that could stop them halfway — that only an owner can grant the owner role, for instance. Never send someone to a page for work the CLI owns, and never open one to gather evidence a command would give you: a command's output is inspectable and repeatable, and a scraped page is neither.
+
+Driving the browser yourself is a last resort, only for this organization-scoped work, and only when the user asks or genuinely cannot act. Confirm before anything that spends money, changes access, or is hard to reverse, and never enter someone's credentials or move through a login, payment, or consent screen for them.
 
 ## Support integration work
 

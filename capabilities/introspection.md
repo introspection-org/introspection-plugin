@@ -1,6 +1,8 @@
 # Introspection
 
-Use the CLI as the only interface for **operating** Introspection: creating, inspecting, or changing runtimes, versions, environment pins, bindings, judges, experiments, keys, and the evidence behind them. Never substitute the dashboard, a browser, browser automation, a direct API call, an SDK, or database access for an operator action the CLI owns.
+Use the CLI as the only interface for **operating** Introspection: creating, inspecting, or changing runtimes, versions, environment pins, bindings, judges, experiments, keys, and the evidence behind them. It owns login too. Never substitute the dashboard, a browser, browser automation, a direct API call, an SDK, or database access for an operator action the CLI owns, and never on the grounds that a page would be quicker.
+
+That rule covers work inside a project, which is everything above. Organization administration sits outside it and has no CLI command group at all — no members, no integrations, no plan, usage, or billing — so there a browser is not a substitute but the only surface. Load the `dashboard-surface` reference when work reaches it, and guide the user to the page instead of reporting the operation as unsupported.
 
 That rule governs operating the platform, not building on it. Application code that runs tasks for end users is an SDK integration, and shelling out to the operator CLI from a product is the mirror-image mistake. When work crosses from managing a runtime to writing code that calls one, load the `integration-surface` reference; it also owns durable files, shares, conversation forks, and end-user memory. Never treat the CLI-only rule as a reason to refuse an integration.
 
