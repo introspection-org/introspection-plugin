@@ -1,6 +1,6 @@
 ---
 name: operate
-description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not a recipe change, including judge enablement and sampling, experiments, credentials, bindings on an already-serving runtime, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource. Also use for organization-level work the CLI does not own, where the job is to guide the user through the dashboard — adding or removing a teammate, changing a role, connecting GitHub, Linear, or Slack, or checking plan, usage, and billing.
+description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not a recipe change, including judge enablement and sampling, experiments, credentials, bindings on an already-serving runtime, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource. Also use for organization-level work the CLI does not own, where the job is to guide the user through the dashboard — adding or removing a teammate, changing a role, connecting GitHub, Linear, or Slack, or checking plan, usage, and billing. A task that is queued, cancelled, or failing mechanically belongs here; an agent whose answers are poor is improve.
 ---
 
 # Operate
@@ -46,11 +46,11 @@ Resolve the project and the exact resource before acting on it. Preserve runtime
 
 Confirm which project a command acts on rather than assuming the one selected at login. Read-only inspection needs no approval; gather it before asking anything.
 
-When the question is who changed something, or what changed and when, that is the audit log rather than the resource's own row: it records the actor, the action, the resource, and the timestamp across projects, members, keys, integrations, and deployments. Read it for attribution and for compliance evidence, and pair it with the resource's own lineage when you need both who and what.
+When the question is who changed something, or what changed and when, the answer is the audit log rather than the resource's own row — read the `security` page of the `introspection-docs` source. Pair it with the resource's own lineage when you need both who and what.
 
 ## Diagnose from the task row outward
 
-A task is a durable execution, not a blocking call. Start every task question at the task row itself, not at the conversation:
+A task is a durable execution, not a blocking call. Start every task question at the task row itself, not at the conversation. The `tasks-and-runs` page of the `introspection-docs` source carries the full lifecycle — every status, the queue's exits, and the completion and failure reasons — and `conversations` carries what the record does and does not contain. Read them rather than inferring a status's meaning. Four things decide where to look:
 
 - A terminal status is not a result. Read why the task ended: a completed task reports its completion reason, and one torn down by the idle window completes having produced nothing.
 - A failed task carries its reason too, including failures that happen before the agent ever runs — an unresolved binding, an expired or missing credential, or a runtime that cannot serve.
@@ -73,9 +73,9 @@ A read is free; a change to live state is not. Before changing anything, state t
 
 Treat these as production-affecting and name the effect before acting:
 
-- Judge enablement and sampling change what is measured and what it costs.
-- Starting or stopping an experiment changes what live traffic receives.
-- Rotating or revoking a credential can break a caller that is still using it. Rotation is not revocation; establish which one the user means.
+- Judge enablement and sampling change what is measured and what it costs — the `judges` page of the `introspection-docs` source carries the split between the Git-owned definition and these platform-owned settings.
+- Starting or stopping an experiment changes what live traffic receives, and ending one does not ship its winner. Read the `experiments` page before starting or ending one.
+- Rotating or revoking a credential can break a caller that is still using it. Rotation is not revocation; establish which one the user means. The `bindings` page owns how credentials and endpoints resolve.
 - Cancelling ends the active turn and leaves the task warm and idle rather than terminating it, and work in flight may be partially complete. The CLI aborts; draining instead, so the turn finishes and the sandbox tears down, is an API-level choice with no CLI flag.
 
 Ask for confirmation before a change whose blast radius the user has not already accepted. An explicit instruction to make a specific change is that acceptance; a question about state is not.

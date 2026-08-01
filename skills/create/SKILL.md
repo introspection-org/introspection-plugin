@@ -1,6 +1,6 @@
 ---
 name: create
-description: Create a focused agent from scratch or a recipe template, ending with a locally proven Introspection recipe, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, Pi, recipe, eval, or Harbor requests that are not migration, production improvement, or deployment. Keep migration and deployment separate.
+description: Create a focused agent from scratch or a recipe template, ending with a locally proven Introspection recipe, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, Pi, recipe, eval, or Harbor requests that are not migration, production improvement, or deployment. Keep migration and deployment separate. Adding a tool, skill, capability, or MCP server to an agent that already exists is improve rather than create, even when the request is phrased as building something new, and an existing agent implementation to be ported is migrate.
 ---
 
 # Create

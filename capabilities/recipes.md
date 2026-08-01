@@ -110,7 +110,7 @@ Run the selected agent directly from its recipe path in a fresh Pi process. Load
 
 Exercise the calling workflow's representative cases, retain meaningful output and tool evidence, and distinguish configuration, authentication, deterministic implementation, and agent-judgment failures. Use Harbor suites or portable judges only when the Evals capability establishes that the risk merits durable behavioral measurement and the human has approved every case or calibration label. An accepted suite is versioned by its Git revision rather than by a manifest declaration, so record the revision that produced a result and change the suite in its own commit, separately from agent behavior. Never reuse machine-proposed labels as judge ground truth, and never treat an offline suite as a judge: a judge is declared, validated, and deployed, while a suite is repository content Harbor runs.
 
-For judge calibration, resolve the real recipe root before exporting fixtures. Persist the authorized dataset at `judges/<judge-name>.calibration.jsonl`, calibrate from that path, and stage it with `judges/<judge-name>.yaml`. Inspect the Git diff and commit both files together through the calling workflow. Do not claim a judge is recipe-owned, calibrated, or promotion-ready while its approved labels exist only in a temporary or untracked file.
+Judge calibration is the Evals capability's to direct, and the `recipe-judges` page of the `introspection-docs` source owns where the definition and its dataset live. The recipe-side rule is only this: a judge is not recipe-owned, calibrated, or promotion-ready while its approved labels exist anywhere but the repository.
 
 ## Keep distribution portable
 

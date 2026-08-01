@@ -10,7 +10,7 @@
  *      the reference-loading and degradation contract verbatim, so a copy
  *      cannot drift.
  *   3. Exactly the five intended public skills are discoverable.
- *   4. Cited keys are well-formed.
+ *   4. Cited keys, including page keys, are well-formed.
  *
  * When the published index is reachable it also checks that every cited key
  * exists. A network failure skips that check rather than failing the build; a
@@ -46,6 +46,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 
 const errors = []
 const citedKeys = new Set()
+const citedPageKeys = new Set()
 const expectedSkills = new Set(['create', 'deploy', 'improve', 'migrate', 'operate'])
 const expectedCapabilities = new Set(['evals', 'harbor', 'introspection', 'pi', 'recipes'])
 const skillNames = readdirSync(SKILLS_DIR, { withFileTypes: true })
@@ -109,6 +110,17 @@ for (const { absolutePath, relativePath } of contentFiles) {
     }
     citedKeys.add(key)
   }
+
+  // Page-level citations ("the `security` page of the `introspection-docs`
+  // source") route as precisely as a reference does, so they are held to the
+  // same existence check rather than being invisible to it.
+  for (const [, key] of body.matchAll(/`([^`]+)` page\b/g)) {
+    if (!/^[a-z0-9][a-z0-9-]*$/.test(key)) {
+      errors.push(`${relativePath} cites malformed page key "${key}"`)
+      continue
+    }
+    citedPageKeys.add(key)
+  }
 }
 
 if (citedKeys.size === 0) {
@@ -126,6 +138,15 @@ try {
 
 if (index) {
   const known = new Set([...Object.keys(index.references ?? {}), ...Object.keys(index.sources ?? {})])
+  const knownPages = new Set()
+  for (const source of Object.values(index.sources ?? {})) {
+    for (const page of Object.keys(source.pages ?? {})) knownPages.add(page)
+  }
+  for (const key of [...citedPageKeys].sort()) {
+    if (!knownPages.has(key)) {
+      errors.push(`page key "${key}" is cited by plugin content but no indexed source declares it`)
+    }
+  }
   for (const key of [...citedKeys].sort()) {
     if (!known.has(key)) {
       errors.push(`key "${key}" is cited by plugin content but absent from the published index`)
@@ -142,5 +163,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `✓ plugin resolves content by key only (${citedKeys.size} keys cited${index ? ', all present in the published index' : ''})`,
+  `✓ plugin resolves content by key only (${citedKeys.size} keys and ${citedPageKeys.size} pages cited${index ? ', all present in the published index' : ''})`,
 )
