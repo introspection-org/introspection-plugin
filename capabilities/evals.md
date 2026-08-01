@@ -82,6 +82,8 @@ For `introspection judges eval`, use only schema-v1 judge fixtures exported by t
 
 Calibrate from the repository, never from scratch space. The `recipe-judges` page of the `introspection-docs` source gives the definition and dataset their canonical paths; resolve the recipe root and move approved fixture rows there before calibrating. A temporary export is a staging file only — never the retained copy.
 
+Selecting the conversations is where a calibration set is silently spoiled: a conversation can read as successful in a list while a tool call inside it failed, an empty one exports looking like any other row, and the judge sees a failure status in the transcript header. Load the `conversation-evidence` reference before labelling anything.
+
 Treat the judge definition and calibration dataset as one versioned measurement contract. Confirm the fixtures are authorized for repository storage and contain no secrets. If source conversations cannot be committed safely, create authorized sanitized conversations and export fresh fixtures rather than mutating protected export fields. Stage the judge YAML and calibration JSONL together, verify both appear in the Git diff, and include them in the same focused commit. If Git mutation is not yet authorized, pause for approval and do not claim judge calibration complete until the dataset is tracked by the recipe repository.
 
 Load the `eval-design` reference for the complete error-analysis protocol, suite audit, dataset and synthetic-case design, judge construction and calibration, collaboration model, and operationalization checks.

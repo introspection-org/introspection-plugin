@@ -59,6 +59,8 @@ A task is a durable execution, not a blocking call. Start every task question at
 
 Only once the task row is exhausted does conversation evidence become the right place to look. Never abandon a task you started without cancelling it, and treat one awaiting input as live work.
 
+A conversation reports failure in more than one way, and the surfaces disagree: a conversation whose model calls all succeeded but whose tool calls did not still reads as successful in a list. Load the `conversation-evidence` reference before concluding a conversation went well, and before selecting conversations as calibration fixtures.
+
 ## Answer prevalence with the aggregate surface
 
 Individual evidence and population shape have different surfaces. Read typed events for the canonical event families, and use the aggregate telemetry surface for how often, how many, and how much — including model and token usage. Use it before calling a pattern common or rare rather than estimating from a handful of inspected conversations.
