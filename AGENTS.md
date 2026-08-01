@@ -86,6 +86,25 @@ Consequences for changes here:
   `introspection-docs` first so the published index has the key.
 - Adding a new *trigger* — a skill, or its `description` — does need a plugin
   release, because the routing surface cannot be fetched.
+- **Prefer discovery over citation.** A reference does not have to be named by a
+  skill to be reachable: the index is fetched once per session and every entry
+  carries its own `load_when`, so an agent finds an entry by matching that
+  condition. `validate-references.mjs` only requires that a *cited* key exist,
+  never that every key be cited, and `introspection-openapi` already works this
+  way. Leaving an entry uncited keeps the plugin light and lets the reference
+  ship, change, and retire on the docs cadence with no release and no ordering
+  between the two repositories.
+
+  Use `degradation` to decide. An `advisory` entry should normally stay uncited:
+  missing it costs depth, which is the same cost the contract already accepts on
+  a failed fetch. Cite a `required-for-step` or `gating` entry at the step that
+  needs it, because missing one of those produces a confidently wrong answer
+  rather than a shallower one — `conversation-evidence` is the model case, since
+  the platform itself reports a conversation as `Ok` when a tool call failed.
+
+  A citation is a commitment: it pins the plugin to that key, so the key must be
+  published before the citing release can pass CI. Do not spend that coupling on
+  an entry whose `load_when` can carry it.
 - Keep `skills/` limited to the five public autocomplete entry points:
   `create`, `migrate`, `deploy`, `improve`, and `operate`. Supporting Pi,
   Recipes, eval, Harbor, and Introspection behavior belongs in `capabilities/`
