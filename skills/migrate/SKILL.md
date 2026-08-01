@@ -55,14 +55,11 @@ Build a small varied parity set from real usage. Where practical, run the same i
 
 ## Hand off
 
-Explain what was preserved, what intentionally changed, the parity evidence, known limits, and the resolved package path and agent name. Give the actual local command and the appropriate deploy invocation for the current host:
+Explain what was preserved, what intentionally changed, the parity evidence, known limits, and the resolved package path and agent name. Give the actual local command:
 
 ```text
 Try locally:
 introspection local --agent <agent>
-
-Deploy:
-<host invocation for introspection:deploy> <resolved-package-path>
 ```
 
 Give the local command as the CLI's run verb, matching `create`. Scaffolding writes the manifest the verb resolves, and the verb preflights Pi and the recipe instead of surfacing a missing Recipes extension as a bare Pi argument error. Fall back to a direct Pi invocation only when the package deliberately has no manifest, and say why.
