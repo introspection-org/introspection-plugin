@@ -91,7 +91,7 @@ Report the deployed identity, active commit per environment, runtime and task ev
 
 A deployment this workflow performed is one this workflow can be asked to undo. Load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning an environment, withdrawing a version, restoring it, and deleting it.
 
-Confirm the version is the cause before withdrawing it. Pinning the affected environment to the last known-good version is the fastest reversible response and preserves the suspect version for investigation. Withdrawal does not move traffic by itself, so state what each environment resolves to afterward. Deletion destroys provenance that judgements and experiments depend on and is never the response to an open incident.
+Confirm the version is the cause before withdrawing it. For staging, pinning it to the last known-good version is the fastest reversible response and preserves the suspect version for investigation; production is not steered by a pin, so recovering it means withdrawing the implicated version and correcting the default branch. Withdrawal does not move traffic by itself, so state what each environment resolves to afterward. Deletion destroys provenance that judgements and experiments depend on and is never the response to an open incident.
 
 Treat recovery as restoring service, not as fixing the recipe: the commit that produced the version is still on the branch. Report the environment as recovered but not yet fixed until a corrected version is verified the same way any deployment is.
 
