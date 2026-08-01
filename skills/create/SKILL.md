@@ -69,7 +69,7 @@ Either way the starting point is a catalog template, so the routes differ only i
 - When `init` resolves the wanted template itself, use it. That keeps scaffolding, the manifest, and repository creation as one unit.
 - When it does not, obtain the template with ordinary Git and customize it into the approved output path.
 
-Read the keys `init` accepts from its help rather than naming one from memory, and do not assume a catalog repository is accepted as a URL; a key and a repository are different arguments even when they name the same template.
+Name the catalog repository itself, such as `template-starter`, rather than the bare key or a URL: the template option takes the repository name, and the CLI resolves it within the catalog organization.
 
 A template also carries a scaffolded model-access mode in its Introspection manifest, deciding whether a deployed runtime reaches models through the managed provider gateway or your own provider account. That is inherited input in the same way the template's model is. Leave the managed default in place for local proof, but surface the choice before handing off to deployment rather than letting the scaffold decide it silently.
 
