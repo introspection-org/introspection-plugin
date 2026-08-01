@@ -131,7 +131,7 @@ The index still publishes `plugin.min_supported_version` as a safety floor. An i
 
 ## Requirements
 
-- Required only when a workflow executes that layer: compatible `@earendil-works/pi-coding-agent`, `@introspection-ai/pi-recipes`, or `@introspection-ai/cli` tooling.
+- Required only when a workflow executes that layer: compatible `@earendil-works/pi-coding-agent`, `@introspection-ai/recipes`, or `@introspection-ai/cli` tooling.
 - Conditional: Harbor and its matching official skill when an environment-level agent eval is the lowest faithful layer.
 
 ## Validate a contribution

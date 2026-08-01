@@ -1,6 +1,10 @@
 # Introspection
 
-Use the CLI as the only platform interface. Never use the dashboard, a browser, browser automation, a direct API, an SDK, or database access to operate Introspection. Keep recipe design in the [Recipes capability](recipes.md), evaluation reasoning in the [Evals capability](evals.md), and production diagnosis and fixes in `$introspection:improve`.
+Use the CLI as the only interface for **operating** Introspection: creating, inspecting, or changing runtimes, versions, environment pins, bindings, judges, experiments, keys, and the evidence behind them. Never substitute the dashboard, a browser, browser automation, a direct API call, an SDK, or database access for an operator action the CLI owns.
+
+That rule governs operating the platform, not building on it. Application code that runs tasks for end users is an SDK integration, and shelling out to the operator CLI from a product is the mirror-image mistake — it has no end-user identity, no connection reuse, and no reconnect story. When work crosses from managing a runtime to writing code that calls one, load the `integration-surface` reference and follow it; that boundary also owns durable files, shares, conversation forks, and end-user memory. Do not treat the CLI-only rule as a reason to refuse or hand-roll an integration.
+
+Keep recipe design in the [Recipes capability](recipes.md), evaluation reasoning in the [Evals capability](evals.md), and production diagnosis and fixes in `$introspection:improve`.
 
 ## Load references
 
@@ -45,7 +49,7 @@ Prove the loop with a visible recipe-specific change in a development conversati
 - Bootstrap the first runtime only through the documented manifest flow. For later versions, use the immutable version created from the pull-request head; do not create another runtime group.
 - For a new runtime, allow registration with unresolved remote MCP bindings when the user chooses a development-only bootstrap; record the affected lane readiness instead of inventing placeholder values.
 - Configure required staging bindings before selecting and exercising the candidate through staging.
-- Start a representative task through staging runtime-group resolution, follow it to completion, and confirm which exact version answered.
+- Start a representative task through staging runtime-group resolution, follow it to completion, and confirm which exact version answered. A task is a durable execution, not a single blocking call: it can be streamed while it runs, cancelled, and — when the agent asks the caller something — resumed with an answer. Treat a task awaiting input as live work rather than a stall, and never abandon a task you started without cancelling it.
 - Retrieve the conversation associated with that task and inspect its complete evidence bundle, not only task status.
 - Join the resolved runtime to its recipe pin and verify the intended Git commit.
 
@@ -53,9 +57,21 @@ A successful deployment is a proven user workflow, not merely a created runtime.
 
 A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results. Live judge enablement and production sampling may not be supported by the CLI; report that boundary when encountered and do not silently switch interfaces.
 
+## Recover a bad version
+
+Deployment has a recovery path, and it is not deploying again. When a live version is suspected of causing harm, load the `runtime-recovery` reference before acting; it owns the choice between repinning, withdrawal, restoration, and deletion.
+
+Establish that the version is actually the cause before withdrawing it. An unresolved binding, an expired credential, a provider outage, a changed MCP endpoint, or upstream data can fail a task without the version being at fault, and withdrawing a healthy version hides the real defect. Confirm the resolved runtime SHA in the failing conversations is the one you intend to blame.
+
+Prefer moving what an environment resolves to over destroying a version. Pinning an environment to a known-good version is the fastest reversible response and keeps the suspect version available for investigation. Withdrawal marks a version unusable for future resolution but does not move traffic by itself, so confirm what each environment resolves to afterward rather than assuming a sensible fallback. Deletion evicts baked images and destroys provenance that judgements and experiments depend on; never delete while an incident is open.
+
+Recovery restores service without correcting the recipe. The commit that produced the bad version is still on the branch and will reproduce it, so close the loop through the normal Git path and report the environment as recovered but not yet fixed until a new version is verified. Verify a recovery with the same evidence a deployment needs: a representative task, the exact version that answered, and the complete conversation.
+
 ## Learn from production
 
 Navigate from recurring patterns to supporting observations and then to the underlying conversations. Sample normal traffic alongside failures. A zero count from asynchronous analysis is not proof that no issue exists; verify analysis status and raw evidence.
+
+Read individual evidence and aggregate shape with the surfaces built for each. Typed event reads return the platform's canonical event families; the aggregate telemetry surface answers how often and how much across a population, including model and token usage. Use the aggregate surface to separate prevalence from severity instead of estimating either from a handful of inspected conversations, and use it before claiming a pattern is common or rare. Confirm the available views, filters, and grouping from focused help rather than assuming a query shape.
 
 Use the basic improvement loop:
 

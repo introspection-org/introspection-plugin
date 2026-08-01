@@ -37,6 +37,8 @@ The CLI must be available before it can own setup. Resolve its documented Node r
 
 Probe first and narrate second. The CLI and its required runtime are usually already satisfied, so a requirements briefing delivered ahead of the probe inflates a two-line result into a wall of text nobody asked for. Report what you found, not how you looked for it.
 
+Once the CLI runs, its `doctor` verb is the supported read-only diagnosis of CLI, Recipes, Pi, Node, and local recipe readiness. Prefer it over hand-rolled shell probes when something is already wrong or a toolchain claim needs evidence; it changes nothing, so it is safe before any approval. Use `setup --check` for the plan to reach a ready machine and `doctor` for the state of the current one, and do not reconstruct either from independent probes.
+
 1. Find a Node runtime that meets the floor. Any installed runtime satisfying it is silent success: select it and continue. Do not report which version you chose over which other one, and do not raise version managers, shell state, or the user's default runtime — none of that is a decision the user has to make.
 2. Install the CLI when it is missing, directly rather than staged as a decision:
 
@@ -84,6 +86,17 @@ Use the smallest structure required by the calling workflow's approved cases. Lo
 - Keep an approved judge calibration dataset beside its judge definition under `judges/`. Never use a temporary directory as the retained dataset location.
 
 Load the Pi capability when the work requires exact Pi extension, skill-discovery, package, provider, settings, setup, or invocation behavior. Never modify Pi core to make a recipe work.
+
+## Separate the portable package from the deployment manifest
+
+The recipe package is portable agent IP. The Introspection manifest under `.introspection/` is a separate, non-portable artifact that describes how a managed runtime should run that package, and it carries decisions the package does not.
+
+Two of its runtime fields change product behavior and must be resolved rather than inherited:
+
+- **Model access mode** decides whether the runtime reaches models through Introspection's managed provider gateway or through your own provider account via an LLM endpoint binding. This is a commercial and trust decision, not a default to accept silently. A scaffold's value is inherited input in exactly the way a scaffold's model is. Confirm the intended mode with the user before first deployment, and read the `llm-providers` page of the `introspection-docs` source when the choice is open. Bring-your-own-key additionally requires the matching endpoint binding to exist in every environment that will serve traffic.
+- **Runtime resources** size the sandbox each task gets. Leave them unset unless the workload has a demonstrated need; set them from observed behavior rather than a guess, and treat a change as a deployment-affecting edit.
+
+Read the `runtimes` page of the `introspection-docs` source for the manifest's current fields. Do not infer them from the portable package manifest, which is a different schema with different ownership.
 
 Validate the portable recipe with no local binding inside it. Attach local connectivity only through a supported external configuration scope documented for the installed toolchain, run the real recipe, then confirm that no endpoint, credential, or local binding entered the artifact. Never guess an undocumented environment variable or temporarily place rejected local configuration inside the recipe to make a run pass.
 

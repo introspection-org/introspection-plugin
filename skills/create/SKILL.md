@@ -71,6 +71,8 @@ Either way the starting point is a catalog template, so the routes differ only i
 
 Read the keys `init` accepts from its help rather than naming one from memory, and do not assume a catalog repository is accepted as a URL; a key and a repository are different arguments even when they name the same template.
 
+A template also carries a scaffolded model-access mode in its Introspection manifest, deciding whether a deployed runtime reaches models through the managed provider gateway or your own provider account. That is inherited input in the same way the template's model is. Leave the managed default in place for local proof, but surface the choice before handing off to deployment rather than letting the scaffold decide it silently.
+
 Whichever route applies, the template carries its own identity and does not adopt the agreed slug on its own. Treat renaming it as part of scaffolding, not as later cleanup: the package name, the local runtime manifest and its filename, and anything else naming the template rather than the new recipe all have to move to the agreed slug before the recipe is proven. A recipe still carrying the template's runtime name will claim that name at deploy, where it is reserved per project.
 
 A template may be private. That is an access question rather than a capability question: the fetch uses whatever Git credentials the user already has, so no new authentication belongs in this workflow. When a private template cannot be reached, report it as access and let the user resolve it, rather than substituting a different template or asking them for credentials.
