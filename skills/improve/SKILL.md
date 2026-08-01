@@ -1,6 +1,6 @@
 ---
 name: improve
-description: Improve an existing agent with human approval, using production evidence by default or adapting to a user-directed prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Fix supported problems, publish focused pull requests, add evals only for durable behavioral risk, and propose experiments only when trustworthy offline evidence cannot decide.
+description: Improve, debug, or explain a deployed or local Introspection agent with human approval, using production evidence by default or adapting to a user-directed prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Use when the user asks to fix, investigate, diagnose, or understand an Introspection agent's behavior, a failing, stuck, queued, or cancelled task, a terminal status or completion reason, conversation and observation evidence, or judge and metric results. Fix supported problems, publish focused pull requests, add evals only for durable behavioral risk, and propose experiments only when trustworthy offline evidence cannot decide.
 ---
 
 # Improve
@@ -18,6 +18,8 @@ Load only the local capability modules the investigation reaches:
 - [Harbor](../../capabilities/harbor.md) only when the Evals capability selects a new environment-level evaluation or existing Harbor evidence must be interpreted.
 
 For a focused supporting question about an existing agent, load and follow the matching module without forcing an end-to-end production investigation. When one module routes to another, load the named module before acting at that boundary. Leave deployment to `$introspection:deploy`.
+
+This workflow diagnoses; it does not move what an environment resolves to. When live traffic is affected and the remedy is repinning, withdrawing, or restoring a version, hand recovery to `$introspection:deploy` first and continue the investigation afterward. Say so explicitly rather than stopping at the mutation boundary with no route onward.
 
 ## Load references
 
@@ -69,7 +71,7 @@ Add an approved eval alongside or before the fix so baseline and candidate compa
 
 ## Hand off
 
-Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local and deploy invocations for the current host.
+Explain the evidence, diagnosis, changes, proof, pull requests, remaining risks, and any justified eval or experiment proposal in the format that best helps the user decide what happens next. Include the resolved package path and agent name, then give the actual local and deploy invocations for the current host. Use `/introspection:deploy` in Claude Code and `$introspection:deploy` in Codex.
 
 ## Firm boundaries
 

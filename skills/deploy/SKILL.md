@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Deploy a locally proven Introspection recipe and verify the runtime it resolves to, in staging and then in production, including the environment-scoped bindings each lane needs. Use when the user asks to deploy, publish, stage, promote, release, configure bindings for, or create a runtime for an agent recipe, or invokes deploy.
+description: Deploy a locally proven Introspection recipe and verify the runtime it resolves to, in staging and then in production, including the environment-scoped bindings each lane needs, and recover a deployed version that is causing harm. Use when the user asks to deploy, publish, stage, promote, release, configure bindings for, or create a runtime for an agent recipe; to roll back, repin, withdraw, restore, or otherwise recover a deployed version; or to decide how an application authenticates to and calls a deployed runtime.
 ---
 
 # Deploy
@@ -63,7 +63,26 @@ If no suitable remote exists, propose creating the GitHub repository as part of 
 
 Explain the resolved target and provenance, local readiness, recipe-check result, proposed Git or configuration work, runtime lifecycle, environment effects, and verification plan. Make material side effects and uncertainty unmistakable, but choose the clearest natural presentation rather than a fixed deployment brief. This execution brief is informational when every operation remains within the user's deploy request; do not turn it into a permission gate by default.
 
-Treat an explicit deploy request as authorization for routine in-scope deployment work: focused recipe or runtime configuration edits, commits and pushes, runtime registration or candidate creation, staging binding changes, staging selection, and verification. Satisfy supported CLI confirmation gates non-interactively when the operation is already authorized. Pause only when work reaches a materially new external, destructive, or user-owned decision, such as creating a repository whose owner, name, or visibility was not specified; changing the resolved target; expanding the affected environments; or merging to production. When bindings are unresolved, name them, identify which environment lanes cannot yet be exercised, and offer the development-only bootstrap explicitly. Explain what first-runtime creation or an eventual merge activates before performing that in-scope operation, but do not ask for redundant approval. Never infer approval, refusal, or decline from scenario wording, an expected outcome, silence, or a missing response; report a decline only after the user explicitly refuses a decision that was actually presented.
+Treat an explicit deploy request as authorization for routine in-scope deployment work. Without asking again, perform:
+
+- focused recipe or runtime configuration edits
+- commits and pushes
+- runtime registration or candidate version creation
+- staging binding changes and staging selection
+- verification
+
+Satisfy supported CLI confirmation gates non-interactively for these; the operation is already authorized.
+
+Stop and obtain an explicit decision only when work reaches a materially new external, destructive, or user-owned choice:
+
+- creating a repository whose owner, name, or visibility was not specified
+- changing the resolved target
+- expanding the affected environments
+- merging to production
+
+Explain what first-runtime creation or an eventual merge activates before performing that in-scope operation, but do not ask for redundant approval. When bindings are unresolved, name them, identify which environment lanes cannot yet be exercised, and offer the development-only bootstrap explicitly.
+
+Never infer approval, refusal, or decline from scenario wording, an expected outcome, silence, or a missing response; report a decline only after the user explicitly refuses a decision that was actually presented.
 
 ## Deploy and verify
 
@@ -89,7 +108,7 @@ Report the deployed identity, active commit per environment, runtime and task ev
 
 ## Recover when a version goes wrong
 
-A deployment this workflow performed is one it can be asked to undo. Load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
+This workflow owns recovery for any deployed version, not only one it deployed itself. An incident that arrives cold — no prior deployment in this session — is in scope, and so is one handed over mid-investigation by `$introspection:improve`. Resolve the runtime identity the same way any deployment does, then load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
 
 Confirm the version is the cause before withdrawing it. For staging, pinning to the last known-good version is the fastest reversible response and preserves the suspect version for investigation; production is not steered by a pin, so recovering it means withdrawing the implicated version and correcting the default branch. Withdrawal does not move traffic by itself, so state what each environment resolves to afterward. Deletion destroys provenance judgements and experiments depend on, and is never the response to an open incident.
 

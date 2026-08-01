@@ -7,7 +7,17 @@ description: Convert an existing agent into a locally proven Introspection recip
 
 Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `$introspection:deploy`.
 
-Load and follow the [Pi](../../capabilities/pi.md), [Recipes](../../capabilities/recipes.md), and [Evals](../../capabilities/evals.md) capabilities before proceeding.
+## Load capabilities
+
+Load only the local capability modules the migration reaches:
+
+- [Recipes](../../capabilities/recipes.md) for the portable package contract, scaffolding, checks, and capability declarations.
+- [Pi](../../capabilities/pi.md) for harness, extension, provider, settings, and local execution behavior.
+- [Evals](../../capabilities/evals.md) when parity must be established by measurement rather than by inspecting representative runs.
+- [Introspection](../../capabilities/introspection.md) only when the source agent is already deployed and its platform identity or production evidence is the material being migrated.
+- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects an environment-level suite as the parity evidence.
+
+When one module routes to another, load the named module before acting at that boundary. Resolve each CLI only when an approved migration step first needs it.
 
 ## Load references
 

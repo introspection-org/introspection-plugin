@@ -26,7 +26,7 @@ Current docs and compatible installed CLI output are authoritative. Do not repea
 
 If a requested documented operation is absent from installed help, verify command resolution and compare the installed version with the official CLI package named by current Introspection documentation before declaring the operation unsupported. Resolve that package through its documented installation source; do not probe similarly named packages, unrelated package managers, repository release APIs, or source checkouts. That missing operation is an actual incompatibility, not a reason to stop at the older surface. Upgrade through the detected installation method, or use an isolated transient invocation of the exact official version when the approved workflow explicitly forbids changing the global installation. Recheck focused help in the resulting fresh process. Do not guess at flags from another source checkout.
 
-If a required platform operation is not available in the current CLI, report the gap and stop at the last supported step. Do not substitute another interface.
+Only once that upgrade path is exhausted does the gap become real: if the operation is still unavailable on the current official version, report it and stop at the last supported step. Do not substitute another interface. Stopping at an outdated binary you could have upgraded is not honoring this rule; it is skipping the step above.
 
 ## Return useful links
 
@@ -58,10 +58,6 @@ A task is a durable execution, not a blocking call: it can be streamed, cancelle
 A terminal status is not a result. Read the whole task row: a completed task reports why it ended, and one torn down by the idle window completes having produced nothing. A failed task carries its reason too, including failures that happen before the agent runs. Never claim a smoke test or verification passed from a completed status alone.
 
 A successful deployment is a proven user workflow, not merely a created runtime. Keep **created**, **active**, **deployed**, and **verified** as distinct claims. Verification requires a representative task through the environment under test, inspection of its exact complete conversation, and proof that intended pushed Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical. If any evidence is unavailable, report the environment as active or deployed but unverified and name the gap.
-
-A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results.
-
-The boundary runs between definition and operational state, not between the CLI and something else. A judge's definition is Git-owned and changes through the normal release path; its live state — whether it is on, and how much production traffic it grades — is platform-owned, and the CLI is the surface for it. Enabling, disabling, and sampling are ordinary operator actions, so never report them as an unsupported boundary. Treat a sampling change as production-affecting: it changes what is measured and what it costs.
 
 ## Recover a bad version
 
@@ -95,6 +91,12 @@ Use the basic improvement loop:
 Treat business outcomes as pressure on eval coverage, not as a reward to chase directly. Form a behavior hypothesis, represent it in approved cases, and validate it offline before considering a production comparison.
 
 ## Judge and compare
+
+A judge is an online measurement instrument, distinct from an offline eval suite. Judge definition calibration is an offline validation step against human-owned labels; judgement reads inspect its online results.
+
+The boundary runs between definition and operational state, not between the CLI and something else. A judge's definition is Git-owned and changes through the normal release path; its live state — whether it is on, and how much production traffic it grades — is platform-owned, and the CLI is the surface for it. Enabling, disabling, and sampling are ordinary operator actions, so never report them as an unsupported boundary. Treat a sampling change as production-affecting: it changes what is measured and what it costs.
+
+Calibrating a judge definition is separate work from changing its live state:
 
 - Resolve the owning recipe Git worktree and judge name. Export representative fixtures, including positives, negatives, edge cases, and random controls, then persist them at `judges/<judge-name>.calibration.jsonl` beside `judges/<judge-name>.yaml`. Use temporary output only while assembling the review draft; never calibrate from a temp file that remains the sole retained copy.
 - Show every fixture with its proposed label, rationale, provenance, and split to the domain owner. Pause until every label is approved or corrected; a model may propose labels but cannot establish its own ground truth.
