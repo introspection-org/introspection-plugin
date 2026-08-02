@@ -7,21 +7,11 @@ description: Operate a live Introspection project and answer questions about it 
 
 Answer questions about a live Introspection project and change the platform state the request actually calls for. This workflow ends in an answer or a changed live resource, not in a changed recipe.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the request reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Introspection](../../capabilities/introspection.md) for the CLI surface, project and runtime identity, task and conversation evidence, aggregate telemetry, judge operation, links, and platform development chat. This is the primary module for this workflow.
-- [Evals](../../capabilities/evals.md) when a judge result, calibration claim, or measurement question has to be interpreted rather than merely read.
-- [Recipes](../../capabilities/recipes.md) only when a live resource has to be traced back to what the package declares, such as which judge or capability a runtime version carries.
-
-When one module routes to another, load the named module before acting at that boundary. Resolve the CLI only when the first read or change needs it.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including the several ways a conversation can look successful while it was not.
-
-## Load references
-
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Know which workflow owns the request
 

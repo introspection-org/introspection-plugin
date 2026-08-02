@@ -7,33 +7,23 @@ description: Create a focused agent from scratch or a recipe template, ending wi
 
 Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `migrate` and platform deployment to `deploy`.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the request reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Pi](../../capabilities/pi.md) for harness, extension, skill-discovery, provider, settings, package, or local-execution behavior.
-- [Recipes](../../capabilities/recipes.md) for portable package composition, templates, validation, distribution, or judge declarations.
-- [Evals](../../capabilities/evals.md) for behavior discovery, trace analysis, measurement design, case approval, or judge calibration.
-- [Harbor](../../capabilities/harbor.md) only after the Evals module selects a new environment-level evaluation, or for a narrowly scoped Harbor question.
-- [Introspection](../../capabilities/introspection.md) when a runtime already exists and the user wants to exercise recipe changes through the platform's development chat.
-
-For a focused supporting question, load and follow the matching module without forcing the full creation workflow. When one module routes to another, load the named module before acting at that boundary.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including what a clean validator run does and does not prove.
-
-## Load references
-
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Keep the first run short
 
-Step `*/setup, then */start`.
+Step `*/setup`.
 
 Keep setup brief so the conversation can be about the agent. The Recipes capability owns getting a compatible Introspection CLI and running its canonical setup workflow before scaffolding; follow it there rather than driving the commands from here.
 
 When the machine is already ready, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When there are changes to make, show the rendered plan once and proceed without asking for installation approval. Entering this workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through that reviewed setup path.
 
 ## Think like an agent builder
+
+Step `*/capability-set`.
 
 Clarify the job before designing the agent. A strong first version owns one meaningful outcome for one accountable user. Representative cases are the working specification: use them to discover required judgment, evidence, side effects, and boundaries.
 
@@ -91,6 +81,8 @@ Once the user has reached for a template, prefer a source they supplied. Otherwi
 When candidate resolution fails, name the key that failed and ask the user for an explicit source. Do not dead-end the workflow, and do not name candidate templates from memory.
 
 ## Understand the job
+
+Step `create/measure`.
 
 Inspect relevant repository context and nearby recipes without changing anything. Learn who invokes the agent, what triggers it, what result it promises, what sources it may trust, what it may change, and when it must stop or ask for help. When starting from a template the user brought, distinguish behavior worth retaining from example behavior that must be removed or replaced.
 

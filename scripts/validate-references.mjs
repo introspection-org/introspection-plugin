@@ -6,9 +6,8 @@
  * that contract offline:
  *
  *   1. The only URL allowed in a skill is the index itself.
- *   2. Every public skill and capability module that resolves content carries
- *      the reference-loading and degradation contract verbatim, so a copy
- *      cannot drift.
+ *   2. Every public skill links the loading contract and the standing
+ *      boundaries, both of which live on disk in exactly one copy.
  *   3. Exactly the five intended public skills are discoverable.
  *   4. Cited keys, including page keys, are well-formed.
  *
@@ -33,7 +32,6 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SKILLS_DIR = join(ROOT, 'skills')
-const CAPABILITIES_DIR = join(ROOT, 'capabilities')
 const INDEX_URL = 'https://docs.introspection.dev/plugin/index.json'
 // Point at a locally served docs branch to validate an unpublished reference.
 const RESOLVED_INDEX_URL = process.env.PLUGIN_INDEX_URL ?? INDEX_URL
@@ -49,22 +47,16 @@ const citedKeys = new Set()
 const citedPageKeys = new Set()
 const citedStepIds = new Set()
 const expectedSkills = new Set(['create', 'deploy', 'improve', 'migrate', 'operate'])
-const expectedCapabilities = new Set(['evals', 'harbor', 'introspection', 'pi', 'recipes'])
+
 const skillNames = readdirSync(SKILLS_DIR, { withFileTypes: true })
   .filter(entry => entry.isDirectory())
   .map(entry => entry.name)
-const capabilityNames = readdirSync(CAPABILITIES_DIR, { withFileTypes: true })
-  .filter(entry => entry.isFile() && entry.name.endsWith('.md'))
-  .map(entry => entry.name.slice(0, -3))
 
 for (const name of expectedSkills) {
   if (!skillNames.includes(name)) errors.push(`public skill skills/${name}/SKILL.md is missing`)
 }
 for (const name of skillNames) {
   if (!expectedSkills.has(name)) errors.push(`unexpected discoverable skill: skills/${name}/SKILL.md`)
-}
-for (const name of expectedCapabilities) {
-  if (!capabilityNames.includes(name)) errors.push(`capability module capabilities/${name}.md is missing`)
 }
 
 // The single source of the loading contract. Everything else links to it, so if
@@ -77,20 +69,24 @@ try {
 } catch {
   errors.push('CONTRACT.md is missing or unreadable')
 }
-for (const name of capabilityNames) {
-  if (!expectedCapabilities.has(name)) errors.push(`unexpected capability module: capabilities/${name}.md`)
+
+// Permission lives in the released artifact, never in a fetched page. If this
+// file goes missing the skills lose their standing limits silently.
+try {
+  const boundaries = readFileSync(join(ROOT, 'BOUNDARIES.md'), 'utf8')
+  for (const required of ['## Interfaces', '## Tooling and bootstrap', '## Evidence and credentials']) {
+    if (!boundaries.includes(required)) {
+      errors.push(`BOUNDARIES.md is missing its "${required.replace('## ', '')}" section`)
+    }
+  }
+} catch {
+  errors.push('BOUNDARIES.md is missing or unreadable')
 }
 
-const contentFiles = [
-  ...skillNames.map(name => ({
-    absolutePath: join(SKILLS_DIR, name, 'SKILL.md'),
-    relativePath: `skills/${name}/SKILL.md`,
-  })),
-  ...capabilityNames.map(name => ({
-    absolutePath: join(CAPABILITIES_DIR, `${name}.md`),
-    relativePath: `capabilities/${name}.md`,
-  })),
-]
+const contentFiles = skillNames.map(name => ({
+  absolutePath: join(SKILLS_DIR, name, 'SKILL.md'),
+  relativePath: `skills/${name}/SKILL.md`,
+}))
 
 for (const { absolutePath, relativePath } of contentFiles) {
   let body
@@ -116,6 +112,10 @@ for (const { absolutePath, relativePath } of contentFiles) {
     errors.push(
       `${relativePath} neither links the reference loading contract (CONTRACT.md) nor carries it verbatim`,
     )
+  }
+
+  if (!/\]\((?:\.\.\/)+BOUNDARIES\.md\)/.test(body)) {
+    errors.push(`${relativePath} does not link the standing boundaries (BOUNDARIES.md)`)
   }
 
   for (const [, key] of body.matchAll(/`([^`]+)` (?:source|reference)\b/g)) {
@@ -153,7 +153,7 @@ for (const { absolutePath, relativePath } of contentFiles) {
 }
 
 if (citedKeys.size === 0) {
-  errors.push('no reference or source keys are cited by any public skill or capability module')
+  errors.push('no reference or source keys are cited by any public skill')
 }
 
 // A reachable index must contain every cited key. Offline CI skips this.

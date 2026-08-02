@@ -7,23 +7,11 @@ description: Convert an existing agent into a locally proven Introspection recip
 
 Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `deploy`.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the migration reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Recipes](../../capabilities/recipes.md) for the portable package contract, scaffolding, checks, and capability declarations.
-- [Pi](../../capabilities/pi.md) for harness, extension, provider, settings, and local execution behavior.
-- [Evals](../../capabilities/evals.md) when parity must be established by measurement rather than by inspecting representative runs.
-- [Introspection](../../capabilities/introspection.md) only when the source agent is already deployed and its platform identity or production evidence is the material being migrated.
-- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects an environment-level suite as the parity evidence.
-
-When one module routes to another, load the named module before acting at that boundary. Resolve each CLI only when an approved migration step first needs it.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including what a clean validator run does and does not prove.
-
-## Load references
-
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Think in behavior, not files
 

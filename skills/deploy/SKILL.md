@@ -7,23 +7,11 @@ description: Deploy a locally proven Introspection recipe and verify the runtime
 
 Deploy the locally proven recipe identified by the request. Resolve the actual package and platform identity instead of assuming the current directory or a passing check points to the right thing.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the deployment reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Recipes](../../capabilities/recipes.md) for package identity, validation, and deployment declarations.
-- [Introspection](../../capabilities/introspection.md) for CLI, project, runtime, environment, evidence, and release operations.
-- [Pi](../../capabilities/pi.md) when local harness execution or Pi-specific configuration must be resolved.
-- [Evals](../../capabilities/evals.md) when readiness or verification relies on behavioral measurement rather than existing approved proof.
-- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects an environment-level suite or deployment must interpret existing Harbor evidence.
-
-When one module routes to another, load the named module before acting at that boundary. Resolve each CLI only when the approved deployment step first needs it.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including why a working staging lane proves nothing about production.
-
-## Load references
-
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Think in provenance and lifecycle
 
@@ -36,6 +24,8 @@ Changing that pin is an ordinary operation rather than only an incident response
 Reuse the existing runtime lifecycle. A matching runtime group is not a reason to create another one, and an ambiguous identity is not permission to guess.
 
 ## Establish readiness
+
+Step `deploy/readiness`.
 
 Confirm local evidence in proportion to the agent's risk. For a newly created agent, use its approved acceptance set and retained local proof. For a migrated or improved agent, use the parity or comparison evidence from that workflow. Do not invent an eval, Harbor task, or calibrated judge when the job does not require one.
 

@@ -7,30 +7,11 @@ description: Improve a deployed or local Introspection agent with human approval
 
 Improve the right layer of an existing agent with a human in the loop. Start from production evidence unless the user directs the investigation toward a prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Treat that direction as scope or a hypothesis, not proof of the cause or permission for a predetermined edit.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the investigation reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Introspection](../../capabilities/introspection.md) for deployed identity, production evidence, observations, judges, comparisons, or release verification.
-- [Evals](../../capabilities/evals.md) for trace analysis, measurement design, suite audits, case approval, judge calibration, or regression interpretation.
-- [Pi](../../capabilities/pi.md) for harness, extension, provider, settings, skill, package, or local-execution behavior.
-- [Recipes](../../capabilities/recipes.md) for package composition, checks, capability declarations, or durable eval and judge resources.
-- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects a new environment-level evaluation or existing Harbor evidence must be interpreted.
-
-For a focused supporting question about an existing agent, load and follow the matching module without forcing an end-to-end production investigation. When one module routes to another, load the named module before acting at that boundary. Leave deployment to `deploy`.
-
-This workflow ends in a change to the recipe. Two neighbors own what it does not, and reaching either is an ordinary handoff rather than a refusal:
-
-- `deploy` moves what an environment resolves to. When live traffic is affected and the remedy is repinning, withdrawing, or restoring a version, hand recovery over first and continue the investigation afterward.
-- `operate` reads and changes live platform state that leaves the recipe alone — task and conversation inspection, aggregate telemetry, judge enablement and sampling, experiments, bindings, and credentials.
-
-Name the workflow you are handing to. Never stop at this skill's mutation boundary without one.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including which edits reach an open chat and which need a new one.
-
-## Load references
-
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Think from evidence to ownership
 
