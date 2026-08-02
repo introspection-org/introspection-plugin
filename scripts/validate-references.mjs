@@ -141,8 +141,16 @@ for (const { absolutePath, relativePath } of contentFiles) {
   // there. A step id that no longer exists routes to nothing and fails silently
   // at exactly the moment the content was needed, so hold it to the same
   // existence check as a key.
-  for (const [, stepId] of body.matchAll(/^Step `([^`]+)`\.$/gm)) {
-    for (const one of stepId.split(/,\s*(?:then\s*)?/)) {
+  // An announcement line may carry trailing prose ("Step `x` whenever …") and
+  // may name more than one step, so take every backticked step-shaped token on
+  // a line that opens with "Step ".
+  for (const [, line] of body.matchAll(/^Step (.+)$/gm)) {
+    const ids = [...line.matchAll(/`([^`]+)`/g)].map(m => m[1])
+    if (ids.length === 0) {
+      errors.push(`${relativePath} has a "Step" line naming no step id`)
+      continue
+    }
+    for (const one of ids) {
       if (!/^(\*|[a-z0-9-]+)\/[a-z0-9-]+$/.test(one)) {
         errors.push(`${relativePath} declares malformed step id "${one}"`)
         continue
@@ -175,6 +183,19 @@ if (index) {
   // published index older than this plugin content rather than a broken route.
   // Skip, the same way an unreachable index is skipped. Once the field exists,
   // a missing id is a real dangling route and fails.
+  // The inverse of the existence check. A step the index routes but no skill
+  // announces is unreachable by the mechanism the contract calls primary: its
+  // references are then reachable only by load_when discovery, which is exactly
+  // what step routing replaced. improve/measure was orphaned this way — five
+  // references, including the one that forbids forging a calibration fixture.
+  if (index.steps !== undefined) {
+    for (const stepId of Object.keys(index.steps).sort()) {
+      if (!citedStepIds.has(stepId)) {
+        errors.push(`step "${stepId}" is routed by the index but no skill announces it`)
+      }
+    }
+  }
+
   if (index.steps === undefined) {
     console.warn('note: published index predates step routing; skipped step-existence check')
   } else {
