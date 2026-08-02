@@ -47,6 +47,7 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 const errors = []
 const citedKeys = new Set()
 const citedPageKeys = new Set()
+const citedStepIds = new Set()
 const expectedSkills = new Set(['create', 'deploy', 'improve', 'migrate', 'operate'])
 const expectedCapabilities = new Set(['evals', 'harbor', 'introspection', 'pi', 'recipes'])
 const skillNames = readdirSync(SKILLS_DIR, { withFileTypes: true })
@@ -135,6 +136,20 @@ for (const { absolutePath, relativePath } of contentFiles) {
     }
     citedPageKeys.add(key)
   }
+
+  // A section announces the step it is entering; the index says what to load
+  // there. A step id that no longer exists routes to nothing and fails silently
+  // at exactly the moment the content was needed, so hold it to the same
+  // existence check as a key.
+  for (const [, stepId] of body.matchAll(/^Step `([^`]+)`\.$/gm)) {
+    for (const one of stepId.split(/,\s*(?:then\s*)?/)) {
+      if (!/^(\*|[a-z0-9-]+)\/[a-z0-9-]+$/.test(one)) {
+        errors.push(`${relativePath} declares malformed step id "${one}"`)
+        continue
+      }
+      citedStepIds.add(one)
+    }
+  }
 }
 
 if (citedKeys.size === 0) {
@@ -156,6 +171,13 @@ if (index) {
   for (const source of Object.values(index.sources ?? {})) {
     for (const page of Object.keys(source.pages ?? {})) knownPages.add(page)
   }
+  const knownSteps = new Set(Object.keys(index.steps ?? {}))
+  for (const stepId of [...citedStepIds].sort()) {
+    if (!knownSteps.has(stepId)) {
+      errors.push(`step "${stepId}" is declared by plugin content but absent from the published index`)
+    }
+  }
+
   for (const key of [...citedPageKeys].sort()) {
     if (!knownPages.has(key)) {
       errors.push(`page key "${key}" is cited by plugin content but no indexed source declares it`)

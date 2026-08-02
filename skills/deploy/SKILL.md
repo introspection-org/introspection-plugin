@@ -23,7 +23,7 @@ Load the `common-failures` reference before starting: it lists, by lifecycle sta
 
 ## Load references
 
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. The index also carries entries no skill names; match `load_when` against the work rather than assuming the set is what this module mentions.
+All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
 
 ## Think in provenance and lifecycle
 
@@ -88,6 +88,8 @@ Never infer approval, refusal, or decline from scenario wording, an expected out
 
 ## Deploy and verify
 
+Step `deploy/verify`.
+
 Make the in-scope manifest or configuration changes and rerun the recipe check. Commit them, create a remote only after any required owner, name, and visibility decision, and push the intended commit. Do not create or update a runtime until the recipe is correctly configured and its applicable local proof still holds. Requery before first-runtime creation and prefer any supported idempotency or uniqueness mechanism.
 
 For a new runtime whose remote MCP binding is not ready, registration may be the approved stopping point for deployment. Hand development back to `introspection dev --mcp NAME=URL` so the declared MCP server can resolve to the local process while the command remains attached. Do not use `--check-bindings` as a prerequisite for this loop; it intentionally turns missing required bindings into a failing readiness check. Do not claim staging or production verification from development evidence.
@@ -107,6 +109,8 @@ Merging is the user's release decision, so do not merge to make production move.
 After the user merges, verify production the same way staging was verified: run a representative task through the stable runtime-group slug, confirm that the merged Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical, and inspect the complete conversation. A created or active production version is not a verified one.
 
 ## Recover when a version goes wrong
+
+Step `deploy/recover`.
 
 This workflow owns recovery for any deployed version, not only one it deployed itself. An incident that arrives cold — no prior deployment in this session — is in scope, and so is one handed over mid-investigation by `improve`. Resolve the runtime identity the same way any deployment does, then load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
 

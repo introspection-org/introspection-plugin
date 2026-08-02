@@ -10,10 +10,28 @@ On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduc
 
 Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
 
-## Not every entry is named by a skill
+## Steps decide what to load
 
-An entry does not have to be cited to be reachable. The index carries a
-`load_when` for every reference and source, and matching that condition against
-the work in progress is the ordinary way to find one — several entries are
-reached no other way. Read the index's own entries rather than assuming the set
-is whatever the active skill happens to mention.
+The index carries a `steps` map: step id to the keys that step needs. A skill
+names the step it is entering; you look that step up and load what it lists.
+This is the primary routing mechanism, and it is a lookup rather than a
+judgement.
+
+A step id is `<skill>/<step>`, or `*/<step>` when the same work is reached from
+more than one workflow. `*/capability-set` and `improve/read-evidence` both
+apply when improving an agent whose capability set is in question; load the
+union, not the first match.
+
+Do this at the moment you enter the step, not at the start of the session. A
+step you never reach costs nothing.
+
+## Discovery still applies
+
+Not every entry is routed by a step. Every reference and source also carries a
+`load_when`, and matching that condition against the work is a legitimate second
+way in — advisory entries in particular are often reached no other way. Read the
+index's own entries rather than assuming the set is whatever the active skill
+mentions.
+
+Where the two disagree, the step map wins: it is maintained against the
+workflows, and `load_when` is prose you have to interpret.

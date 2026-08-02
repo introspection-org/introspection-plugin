@@ -23,7 +23,7 @@ Load the `common-failures` reference before starting: it lists, by lifecycle sta
 
 ## Load references
 
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. The index also carries entries no skill names; match `load_when` against the work rather than assuming the set is what this module mentions.
+All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
 
 ## Think in behavior, not files
 
@@ -34,6 +34,8 @@ Prefer the smallest faithful translation. Recipes are not valuable merely becaus
 Confirm there is a migration to perform before translating anything. An agent that is already an Introspection recipe has nothing to port, so a request to change how it behaves is `improve`; an outcome the user describes with no implementation behind it is `create`. Preserved behavior is the test — when the user cannot point at something whose behavior must survive, this is not the workflow.
 
 ## Understand the source
+
+Step `migrate/translate`.
 
 Locate the real instructions, tools, skills, model configuration, runtime assumptions, authentication, side effects, tests, traces, and representative inputs. Use safe existing evidence and run the source during discovery only when doing so is read-only and cannot trigger an external side effect.
 
@@ -46,6 +48,8 @@ Share your understanding of the source behavior, the proposed recipe, the import
 Ask the user to confirm before changing project files or configuration. Treat approval as permission to complete the agreed migration and local proof without routine stops. Pause only if a newly discovered dependency, side effect, provider choice, or behavior difference requires a material decision.
 
 ## Translate and prove
+
+Step `migrate/prove`.
 
 Resolve the real package root and use the Introspection CLI to scaffold and check it. Translate durable judgment into skills, deterministic operations into scripts and tests, and external access into explicit capabilities or bindings. Default to one agent.
 

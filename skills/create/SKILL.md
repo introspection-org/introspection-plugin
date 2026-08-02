@@ -23,9 +23,11 @@ Load the `common-failures` reference before starting: it lists, by lifecycle sta
 
 ## Load references
 
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. The index also carries entries no skill names; match `load_when` against the work rather than assuming the set is what this module mentions.
+All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
 
 ## Keep the first run short
+
+Step `*/setup, then */start`.
 
 Keep setup brief so the conversation can be about the agent. The Recipes capability owns getting a compatible Introspection CLI and running its canonical setup workflow before scaffolding; follow it there rather than driving the commands from here.
 
@@ -38,6 +40,8 @@ Clarify the job before designing the agent. A strong first version owns one mean
 Do not add tools, skills, subagents, or elaborate evaluation infrastructure because they are available. Add each only when an approved case requires it. Prefer a small system whose behavior and failure boundary can be explained.
 
 ## Choose the starting point
+
+Step `create/scaffold`.
 
 Open by asking what sort of agent the user wants to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Ask it on its own and wait; do not stack a second question behind it.
 
@@ -103,6 +107,8 @@ Share what you learned, the agent you intend to build, how its representative ca
 Ask for confirmation before changing project files or configuration. Treat confirmation as approval to build and prove the agreed local recipe in one continuous pass. Routine local bootstrap is already authorized by invoking this workflow and is not part of this confirmation gate. Pause again only when a newly discovered dependency, side effect, provider choice, or product decision materially changes the agreed recipe work.
 
 ## Build and prove
+
+Step `create/prove`.
 
 Resolve the real package root and use the Introspection CLI to build the smallest recipe that satisfies the approved cases:
 

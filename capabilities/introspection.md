@@ -10,7 +10,7 @@ Keep recipe design in the [Recipes capability](recipes.md) and evaluation reason
 
 ## Load references
 
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. The index also carries entries no skill names; match `load_when` against the work rather than assuming the set is what this module mentions.
+All content resolves by key through the plugin reference index. Read the [reference loading contract](../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
 
 ## Route through current documentation
 

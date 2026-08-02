@@ -30,9 +30,11 @@ Load the `common-failures` reference before starting: it lists, by lifecycle sta
 
 ## Load references
 
-All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. The index also carries entries no skill names; match `load_when` against the work rather than assuming the set is what this module mentions.
+All content resolves by key through the plugin reference index. Read the [reference loading contract](../../CONTRACT.md) before the first fetch and follow it exactly: it governs how the index is fetched, when an entry may be loaded, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop rather than act on newer semantics. Sections below name a step id; look that step up in the index's `steps` map and load what it lists on entering the step. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this module mentions.
 
 ## Think from evidence to ownership
+
+Step `improve/diagnose`.
 
 Find the earliest meaningful divergence between the intended and observed behavior. Diagnose whether the owner is the environment, access, data, tool implementation, runtime configuration, agent judgment, or product policy before choosing a remedy.
 
@@ -43,6 +45,8 @@ Gather safe read-only evidence before the human confirmation gate; do not ask pe
 Fix deterministic failures deterministically. Use an ordinary test when it faithfully protects the behavior. Add an eval only for recurring, important behavioral risk that ordinary tests cannot measure. Propose an experiment only when credible alternatives remain and trustworthy offline evidence cannot answer a bounded question. Do not turn every failure into prompt text, an eval, or an experiment.
 
 ## Resolve the target and evidence
+
+Step `improve/read-evidence`.
 
 For a deployed agent, use the current Introspection CLI and documentation to resolve the project, runtime group, active version, recipe repository, and deployed Git commit. For a local agent, resolve the package root, selected agent, worktree, and available tests or evals. Confirm that the evidence and local code describe the same target before drawing conclusions.
 
@@ -67,6 +71,8 @@ Explain what you inspected, the strongest evidence, the likely owning layer, the
 Ask for confirmation before editing project files, changing configuration, or opening pull requests. Approval covers the proposed local changes and focused pull requests, not runtime changes, judge enablement, experiments, or deployment. Pause if the target, side effects, product decision, or pull-request scope changes materially.
 
 ## Improve and prove
+
+Step `improve/change, then improve/measure`.
 
 Establish the unchanged baseline before editing whenever behavioral measurement is warranted. Change one coherent mechanism at a time, then run affected cases, tests, and non-regression controls in fresh Pi sessions with frozen configuration where comparison matters. Inspect the traces behind score changes and iterate until the approved change is proven or a concrete blocker remains.
 
