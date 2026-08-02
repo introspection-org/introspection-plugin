@@ -32,15 +32,9 @@ Treat user-facing URLs as part of the result of every cloud operation. Preserve 
 
 ## Develop through the platform
 
-After a runtime exists, use `introspection dev` when the user wants to exercise uncommitted recipe changes through the platform's development chat. This complements local Pi proof; it does not replace it and does not create a deployable runtime version.
+After a runtime exists, use `introspection dev` when the user wants to exercise uncommitted recipe changes through the platform's development chat. This complements local Pi proof; it does not replace it, and it does not create a deployable runtime version. Publishing still follows the normal Git and deployment flow.
 
-Authenticate, validate the local recipe, and run from its Git worktree. Prefer an explicit runtime slug when repository-based resolution is ambiguous. Inspect binding readiness, but do not make remote MCP endpoints or credentials a prerequisite for development: missing required and optional development bindings warn by default, while `--check-bindings` deliberately turns missing required bindings into a failing readiness check.
-
-When a declared MCP server is still local, pass `--mcp NAME=URL`; the name must match the recipe declaration. This routes development calls to the local process while the command remains attached. It does not read local credential files or upload local secrets, so use a development binding only when that local server actually requires bound credentials. Keep the command attached while testing: it refreshes the development recipe as files change and prints a runtime preview URL that works only for the attached session.
-
-Prove the loop with a visible recipe-specific change in a development conversation. Stopping the command ends the preview attachment; publishing still follows the normal Git and deployment flow.
-
-When an edit does not appear, the cause is usually which file changed rather than a broken attachment, and re-asking in the same chat is the common wrong move. Read the `development-lifecycle` page of the `introspection-docs` source for which edits reach the current chat and which need a new one.
+The index entry covering the development command carries how to start it, binding readiness, routing a declared MCP server to a local process, why the command stays attached, and what to do when an edit does not appear in the open conversation. Read it before running the command rather than inferring flags from help.
 
 ## Connect and deploy
 

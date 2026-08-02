@@ -72,17 +72,9 @@ A check is not trustworthy merely because it runs deterministically. Verify an o
 
 Design a judge only when the product needs an online semantic signal. Make one judge answer one specific question and prefer an operational pass/fail decision over an ambiguous rating scale. A judge is another fallible model and must earn trust against human-labeled examples before it gates changes or monitors production.
 
-Let AI propose balanced development examples with positives, negatives, hard boundaries, and written rationales, but require the domain owner to approve or relabel every example before calibration. Keep prompt-development, validation, and held-out test data separate. Diagnose true-positive and true-negative behavior, false positives, and false negatives separately; aggregate agreement can hide a judge that always predicts the majority class.
+Let AI propose balanced development examples with positives, negatives, hard boundaries, and written rationales, but require the domain owner to approve or relabel every example before calibration. A model may propose labels; it cannot establish its own ground truth.
 
-For `introspection judges eval`, use only schema-v1 judge fixtures exported by the current CLI from complete Introspection conversations. Preserve the exported `conversation`, `engine`, and `snapshot_hash` exactly; add only the owner-approved top-level `expected` and optional `split` fields. Never hand-author a `judge_fixture`, adapt arbitrary JSONL into one, guess its hash or engine contract, or call the private judge-engine binary. If evidence starts as local or third-party traces, evaluate it in the project's faithful local harness, or replay it through a real Introspection conversation and export that conversation before CLI judge calibration. Treat unavailable provenance as a calibration blocker, not an invitation to forge a fixture.
-
-Calibrate from the repository, never from scratch space. The `recipe-judges` page of the `introspection-docs` source gives the definition and dataset their canonical paths; resolve the recipe root and move approved fixture rows there before calibrating. A temporary export is a staging file only — never the retained copy.
-
-Selecting the conversations is where a calibration set is silently spoiled: a conversation can read as successful in a list while a tool call inside it failed, an empty one exports looking like any other row, and the judge sees a failure status in the transcript header. Load the `conversation-evidence` reference before labelling anything.
-
-Treat the judge definition and calibration dataset as one versioned measurement contract. Confirm the fixtures are authorized for repository storage and contain no secrets. If source conversations cannot be committed safely, create authorized sanitized conversations and export fresh fixtures rather than mutating protected export fields. Stage the judge YAML and calibration JSONL together, verify both appear in the Git diff, and include them in the same focused commit. If Git mutation is not yet authorized, pause for approval and do not claim judge calibration complete until the dataset is tracked by the recipe repository.
-
-Load the `eval-design` reference for the complete error-analysis protocol, suite audit, dataset and synthetic-case design, judge construction and calibration, collaboration model, and operationalization checks.
+Load the `eval-design` reference for the complete error-analysis protocol, suite audit, dataset and synthetic-case design, judge construction and calibration, collaboration model, and operationalization checks. The fixture contract and the mechanics of a calibration run are carried separately by the index entry covering judge fixtures — read it before exporting or labelling anything, since a calibration set is most often spoiled during selection rather than during scoring.
 
 ## Improve and close the loop
 

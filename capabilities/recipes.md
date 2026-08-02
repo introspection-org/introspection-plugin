@@ -80,17 +80,11 @@ Validate the portable recipe with no local binding inside it. Attach local conne
 
 Resolve any provider or model choice that changes the recipe before writing it. A scaffold's default model is inherited input, not an approved choice. Do not silently retain it when the user, source agent, or approved execution brief has not selected that provider and model.
 
-Run the Introspection CLI's `check` verb, since it is the single recipe validation surface. It takes no profile or mode selector, and it runs the same validation the platform runs when a version is built, so a clean local check is the same answer the push will get.
+Validation runs through the CLI's `check` verb, and proving behavior means running the selected agent from its recipe path in a fresh Pi process — load the Pi capability for setup, invocation, and host preflight. The index entry covering recipe validation carries the verb's targeting behavior, what a clean check does and does not prove, and the rule that no endpoint, credential, or local binding may enter the validated artifact. Read it there rather than from memory; a correct package reported as broken is usually a targeting mistake rather than a packaging defect.
 
-It takes no path positional either, and this is where a correct package gets reported as broken. The verb addresses a manifest directly or a workspace root to search, and discovery looks only in that root — it walks upward only when run bare from the default directory. So when the manifest sits at the repository root above the package, pointing the search root at the package directory finds nothing and fails as though no recipe existed. Run it bare from inside the recipe, or address the resolved manifest explicitly, and treat a no-manifest result from a targeted run as a targeting error until you have confirmed the manifest's real location.
+Never read, print, copy, or parse raw credential files or secret values.
 
-Fix structural diagnostics at their owning layer. A successful check proves the authored package contract, not useful behavior.
-
-Run the selected agent directly from its recipe path in a fresh Pi process. Load the Pi capability for setup, invocation, and host preflight. Defer authentication and capability setup until the first approved behavior run needs them. Prefer a supported redacted status check; if none exists, use the first minimal model call as authentication proof. Never read, print, copy, or parse raw credential files or secret values.
-
-Exercise the calling workflow's representative cases, retain meaningful output and tool evidence, and distinguish configuration, authentication, deterministic implementation, and agent-judgment failures. Use Harbor suites or portable judges only when the Evals capability establishes that the risk merits durable behavioral measurement and the human has approved every case or calibration label. An accepted suite is versioned by its Git revision rather than by a manifest declaration, so record the revision that produced a result and change the suite in its own commit, separately from agent behavior. Never reuse machine-proposed labels as judge ground truth, and never treat an offline suite as a judge: a judge is declared, validated, and deployed, while a suite is repository content Harbor runs.
-
-Judge calibration is the Evals capability's to direct, and the `recipe-judges` page of the `introspection-docs` source owns where the definition and its dataset live. The recipe-side rule is only this: a judge is not recipe-owned, calibrated, or promotion-ready while its approved labels exist anywhere but the repository.
+Use Harbor suites or portable judges only when the Evals capability establishes that the risk merits durable behavioral measurement and the human has approved every case or calibration label. Judge calibration is the Evals capability's to direct, and the `recipe-judges` page of the `introspection-docs` source owns where the definition and its dataset live. The recipe-side rule is only this: a judge is not recipe-owned, calibrated, or promotion-ready while its approved labels exist anywhere but the repository.
 
 ## Keep distribution portable
 
