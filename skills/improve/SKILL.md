@@ -13,18 +13,6 @@ Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading c
 
 Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
-## Think from evidence to ownership
-
-Step `improve/diagnose`.
-
-Find the earliest meaningful divergence between the intended and observed behavior. Diagnose whether the owner is the environment, access, data, tool implementation, runtime configuration, agent judgment, or product policy before choosing a remedy.
-
-Speak only from evidence actually inspected in the current run. If evidence access is unavailable or the user asks for a dry run, stop at that boundary: state what remains unknown and describe the evidence you would gather next. Never simulate a completed investigation, write “I inspected” for hypothetical work, or fill a diagnosis with invented or placeholder counts, traces, files, causes, confidence, or results.
-
-Gather safe read-only evidence before the human confirmation gate; do not ask permission merely to inspect accessible context. Confirmation belongs after diagnosis and covers the proposed edits and pull-request work. When a dry run forbids discovery, explain that sequence without presenting the evidence plan itself as something awaiting approval.
-
-Fix deterministic failures deterministically. Use an ordinary test when it faithfully protects the behavior. Add an eval only for recurring, important behavioral risk that ordinary tests cannot measure. Propose an experiment only when credible alternatives remain and trustworthy offline evidence cannot answer a bounded question. Do not turn every failure into prompt text, an eval, or an experiment.
-
 ## Resolve the target and evidence
 
 Step `improve/read-evidence`.
@@ -45,6 +33,18 @@ Use production evidence when relevant and available, but do not force it onto a 
 
 Open-code the evidence before imposing a taxonomy. Separate prevalence from severity and business importance. Ask the human to resolve disputed product behavior rather than encoding an agent guess.
 
+## Think from evidence to ownership
+
+Step `improve/diagnose`.
+
+Find the earliest meaningful divergence between the intended and observed behavior. Diagnose whether the owner is the environment, access, data, tool implementation, runtime configuration, agent judgment, or product policy before choosing a remedy.
+
+Speak only from evidence actually inspected in the current run. If evidence access is unavailable or the user asks for a dry run, stop at that boundary: state what remains unknown and describe the evidence you would gather next. Never simulate a completed investigation, write “I inspected” for hypothetical work, or fill a diagnosis with invented or placeholder counts, traces, files, causes, confidence, or results.
+
+Gather safe read-only evidence before the human confirmation gate; do not ask permission merely to inspect accessible context. Confirmation belongs after diagnosis and covers the proposed edits and pull-request work. When a dry run forbids discovery, explain that sequence without presenting the evidence plan itself as something awaiting approval.
+
+Fix deterministic failures deterministically. Use an ordinary test when it faithfully protects the behavior. Add an eval only for recurring, important behavioral risk that ordinary tests cannot measure. Propose an experiment only when credible alternatives remain and trustworthy offline evidence cannot answer a bounded question. Do not turn every failure into prompt text, an eval, or an experiment.
+
 ## Align with the user
 
 Explain what you inspected, the strongest evidence, the likely owning layer, the change you recommend, and how you will know it worked. Include confidence, meaningful risks, and the proposed pull-request boundary. Mention eval or experiment work only when the evidence justifies it. Use the clearest natural format for this case, not a fixed report shape.
@@ -53,7 +53,7 @@ Ask for confirmation before editing project files, changing configuration, or op
 
 ## Improve and prove
 
-Step `improve/change, then improve/measure`.
+Step `improve/change`.
 
 Establish the unchanged baseline before editing whenever behavioral measurement is warranted. Change one coherent mechanism at a time, then run affected cases, tests, and non-regression controls in fresh Pi sessions with frozen configuration where comparison matters. Inspect the traces behind score changes and iterate until the approved change is proven or a concrete blocker remains.
 

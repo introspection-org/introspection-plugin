@@ -17,7 +17,7 @@ Sections below name a step id. Look it up in the index's `steps` map on entering
 
 Step `*/setup`.
 
-Keep setup brief so the conversation can be about the agent. The Recipes capability owns getting a compatible Introspection CLI and running its canonical setup workflow before scaffolding; follow it there rather than driving the commands from here.
+Keep setup brief so the conversation can be about the agent. This step's references own getting a compatible CLI and running its canonical setup workflow before scaffolding; follow them rather than driving the commands from here.
 
 When the machine is already ready, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When there are changes to make, show the rendered plan once and proceed without asking for installation approval. Entering this workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through that reviewed setup path.
 
@@ -35,7 +35,7 @@ Step `create/scaffold`.
 
 Open by asking what sort of agent the user wants to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Ask it on its own and wait; do not stack a second question behind it.
 
-Their first answer will be a sentence, not a specification, so step them through the job from there — a short interview of a few focused questions, one round at a time, each one narrowing what the agent owns. Never present them as a numbered list or a form; ask, listen, and let the next question follow from the last answer. The Evals capability owns what to ask about behavior; this skill owns keeping it short and conversational.
+Their first answer will be a sentence, not a specification, so step them through the job from there — a short interview of a few focused questions, one round at a time, each one narrowing what the agent owns. Never present them as a numbered list or a form; ask, listen, and let the next question follow from the last answer. The `create/measure` references own what to ask about behavior; this skill owns keeping it short and conversational.
 
 Everything else about the starting point — the name, the mode, the destination — follows from those answers and is proposed rather than asked for.
 
@@ -76,7 +76,7 @@ This skill owns an agent up to its first locally proven version. Changing one th
 
 Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, route to `operate`, which owns that boundary, rather than scaffolding a recipe.
 
-Once the user has reached for a template, prefer a source they supplied. Otherwise let the Recipes capability resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
+Once the user has reached for a template, prefer a source they supplied. Otherwise let this step's references resolve a small credible set of catalog candidates against the required job, capabilities, provider requirements, license, and adaptation cost. Present the resolved candidates as selectable options, each naming its inherited behavior, required and optional capabilities, provider, and license, so the choice is informed rather than a list of titles. Let the user select the source and an owned repository-local destination. Do not install, customize, or copy a template before confirmation.
 
 When candidate resolution fails, name the key that failed and ask the user for an explicit source. Do not dead-end the workflow, and do not name candidate templates from memory.
 
@@ -88,7 +88,7 @@ Inspect relevant repository context and nearby recipes without changing anything
 
 Continue the interview the opening question started, in small rounds rather than one dense block, and only for what the starting point did not already settle. Where a question reduces to known alternatives — who invokes it, what it may change, when it must stop — offer them through the host's structured selection affordance, always leaving a path for an answer you did not anticipate.
 
-Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let the Recipes capability resolve the portable package and provider/model choices that affect it, and the Pi capability resolve harness, extension, provider, and local execution behavior. Defer tool upgrades, setup, and authentication until an approved execution step actually needs them; the Introspection CLI is the exception, and the Recipes capability resolves it up front so it is available in this and later shells.
+Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let this step's references resolve the portable package, the provider and model choices that affect it, and the harness, extension, and local-execution behavior. Defer tool upgrades, setup, and authentication until an approved execution step actually needs them; the Introspection CLI is the exception, and this step's references resolves it up front so it is available in this and later shells.
 
 Treat any model written by a scaffold or template as inherited input, not an approved provider decision. Resolve it explicitly before editing the recipe. If the request and repository do not establish a safe choice, pause for that decision instead of silently retaining the placeholder.
 
@@ -109,7 +109,7 @@ Resolve the real package root and use the Introspection CLI to build the smalles
 - Pass the agreed recipe slug as the name argument. Running the verb bare makes it prompt interactively for a recipe name, which stalls a non-interactive shell and takes the naming decision out of the dialog where it was already settled. The slug is the verb's only positional: it becomes the package name, the directory, and the manifest filename stem. The template is a separate named option whose value is the catalog repository, so there is no second positional and no key that differs from the repository. Help states the default template but does not enumerate the catalog, so resolve the available templates from the catalog source rather than expecting a list from help.
 - Expect the scaffolded agent to be named `agent`, the recipe spec's default, rather than named after the recipe. Confirm it from the generated agent YAML instead of assuming, since a recipe may hold more than one agent and any of them can be renamed. Rename it only if the user asks, and treat that as an ordinary edit to its YAML.
 - The verb always creates its own subdirectory beneath the working directory and refuses to merge into a path that already exists, so the decision that matters is which directory it runs in: outside a repository the recipe becomes its own repository, and inside one it becomes a subdirectory whose manifest lands at the repository root.
-- When the template has to be obtained with Git instead, use the Recipes capability to customize it into the approved output path. Keep the new recipe's history its own: a clone carries the template's commits and its origin, and neither belongs to the user's agent. Creating a new GitHub repository is outside this local workflow.
+- When the template has to be obtained with Git instead, use this step's references to customize it into the approved output path. Keep the new recipe's history its own: a clone carries the template's commits and its origin, and neither belongs to the user's agent. Creating a new GitHub repository is outside this local workflow.
 - Confirm the recipe's identity is the agreed slug before proving anything by reading the files back — rewriting it yourself only when the template came from ordinary Git rather than the scaffolding verb. The package name and the local runtime manifest are the two that matter, because they are what deployment later claims. Preserve required attribution and license files while doing it. Treat the template as a starting point, not proof that the customized agent is correct.
 
 Default to one agent. Put judgment in skills, deterministic behavior in scripts and tests, and external access behind explicit capabilities. The owned package path is the source of truth: a recipe is an ordinary Git-backed source package, with no separate install store to register it in.
@@ -136,7 +136,7 @@ Use the deploy skill to publish it. Do not deploy when the approved output is no
 - Do not edit project files or configuration before confirmation.
 - Do not silently switch providers, models, package managers, installation methods, or authentication.
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command, apart from the Introspection CLI, which every path through this workflow needs.
-- Explain and perform routine runtime or tooling bootstrap when the workflow needs it; do not ask whether to install required local tooling. Stop only at the concrete bootstrap blockers defined by the Recipes capability.
+- Explain and perform routine runtime or tooling bootstrap when the workflow needs it; do not ask whether to install required local tooling. Stop only at the concrete bootstrap blockers defined by this step's references.
 - Do not silently choose a template or imply that customization removes its license obligations.
 - Do not read or expose credentials.
 - Do not commit, push, open a pull request, register a runtime, change bindings, or deploy in this workflow.
