@@ -171,10 +171,18 @@ if (index) {
   for (const source of Object.values(index.sources ?? {})) {
     for (const page of Object.keys(source.pages ?? {})) knownPages.add(page)
   }
-  const knownSteps = new Set(Object.keys(index.steps ?? {}))
-  for (const stepId of [...citedStepIds].sort()) {
-    if (!knownSteps.has(stepId)) {
-      errors.push(`step "${stepId}" is declared by plugin content but absent from the published index`)
+  // An index with no `steps` field predates step routing entirely, which is a
+  // published index older than this plugin content rather than a broken route.
+  // Skip, the same way an unreachable index is skipped. Once the field exists,
+  // a missing id is a real dangling route and fails.
+  if (index.steps === undefined) {
+    console.warn('note: published index predates step routing; skipped step-existence check')
+  } else {
+    const knownSteps = new Set(Object.keys(index.steps))
+    for (const stepId of [...citedStepIds].sort()) {
+      if (!knownSteps.has(stepId)) {
+        errors.push(`step "${stepId}" is declared by plugin content but absent from the published index`)
+      }
     }
   }
 
