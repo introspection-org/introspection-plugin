@@ -36,7 +36,7 @@ const INDEX_URL = 'https://docs.introspection.dev/plugin/index.json'
 // Point at a locally served docs branch to validate an unpublished reference.
 const RESOLVED_INDEX_URL = process.env.PLUGIN_INDEX_URL ?? INDEX_URL
 
-const CONTRACT = `Resolve every reference and source through the plugin reference index at \`${INDEX_URL}\`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with \`curl\` when the host has none. Load an entry only when the work reaches the step its \`load_when\` describes, and report the key and \`revision\` you used. When a source declares a \`pages\` map, choose the page whose \`read_for\` matches the question instead of recalling a filename; the set of pages is not fixed.
+const CONTRACT = `Resolve every reference and source through the plugin reference index at \`${INDEX_URL}\`, by key and never by a hard-coded content URL. When command execution is available, use \`scripts/load-references.mjs\` beside this contract: it discovers the effective index URL from this file, caches the index, resolves step and page keys without \`jq\`, and reports provenance. Do not fetch the index or content URLs yourself after using it. If command execution is unavailable, fetch the index once per session with the host's web-fetch tool and retain it for later step lookups. Load an entry only when the work reaches the step its \`load_when\` describes. For indexed references report the key and \`revision\`; for an external source without an indexed revision report the content hash the loader emits. When a source declares a \`pages\` map, choose the page whose \`read_for\` matches the question instead of recalling a filename; the set of pages is not fixed.
 
 On a failed fetch, honor the entry's \`degradation\`: \`advisory\` proceeds at reduced depth, \`required-for-step\` skips only that step and says so, and \`gating\` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
 
@@ -68,6 +68,15 @@ try {
   }
 } catch {
   errors.push('CONTRACT.md is missing or unreadable')
+}
+
+try {
+  const loader = readFileSync(join(ROOT, 'scripts', 'load-references.mjs'), 'utf8')
+  for (const required of ['--step', '--reference', '--source-page', 'PLUGIN_INDEX_CACHE']) {
+    if (!loader.includes(required)) errors.push(`reference loader is missing ${required} support`)
+  }
+} catch {
+  errors.push('scripts/load-references.mjs is missing or unreadable')
 }
 
 // Permission lives in the released artifact, never in a fetched page. If this

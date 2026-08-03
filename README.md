@@ -114,7 +114,7 @@ The default improvement path is production evidence → adaptive parallel invest
 
 The plugin is a stable router. It carries the routing surface and the safety contract — skill descriptions, workflow control flow, approval gates, and firm boundaries — and resolves everything else at run time.
 
-All content is resolved through the **plugin reference index** at [`docs.introspection.dev/plugin/index.json`](https://docs.introspection.dev/plugin/index.json), by key rather than by URL, so content can be corrected, split, or re-hosted without a plugin release. The index carries two kinds of entry:
+All content is resolved through the **plugin reference index** at [`docs.introspection.dev/plugin/index.json`](https://docs.introspection.dev/plugin/index.json), by key rather than by URL, so content can be corrected, split, or re-hosted without a plugin release. The bundled reference loader caches that index, resolves step and page keys without optional shell utilities, and prints the provenance used. The index carries two kinds of entry:
 
 - **References** are the plugin's own cross-cutting judgment, such as evaluation design and vertical-agent composition. They are published from the docs repository and reach every installation on its next session.
 - **Sources** are external truth: Pi, Pi Recipes, Harbor, and the Introspection documentation. Read only the page the current operation needs, then confirm exact operations with installed CLI help.

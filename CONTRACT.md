@@ -4,7 +4,7 @@ This contract is binding on every public skill and capability module in this
 plugin. They link here rather than restating it, so there is exactly one copy to
 read and exactly one to change.
 
-Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
+Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. When command execution is available, use `scripts/load-references.mjs` beside this contract: it discovers the effective index URL from this file, caches the index, resolves step and page keys without `jq`, and reports provenance. Do not fetch the index or content URLs yourself after using it. If command execution is unavailable, fetch the index once per session with the host's web-fetch tool and retain it for later step lookups. Load an entry only when the work reaches the step its `load_when` describes. For indexed references report the key and `revision`; for an external source without an indexed revision report the content hash the loader emits. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
 
 On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
 
@@ -13,7 +13,9 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 ## Steps decide what to load
 
 The index carries a `steps` map: step id to the keys that step needs. A skill
-names the step it is entering; you look that step up and load what it lists.
+names the step it is entering. With command execution, pass that id to
+`node <plugin-root>/scripts/load-references.mjs --step <step-id>` before doing
+the step; otherwise look it up in the retained index and load what it lists.
 This is the primary routing mechanism, and it is a lookup rather than a
 judgement.
 

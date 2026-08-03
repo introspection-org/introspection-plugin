@@ -31,7 +31,7 @@ Do not add tools, skills, subagents, or elaborate evaluation infrastructure beca
 
 ## Choose the starting point
 
-Step `create/scaffold`.
+Step `create/scaffold`. Load it before proposing a template or package shape.
 
 Open by asking what sort of agent the user wants to build. That is the only thing the workflow cannot proceed without, and the one question they arrive already able to answer. Ask it on its own and wait; do not stack a second question behind it.
 
@@ -102,6 +102,8 @@ Ask for confirmation before changing project files or configuration. Treat confi
 
 Step `create/prove`.
 
+Enter and load this step before the first `introspection init`. The same step remains active through package editing, `introspection check`, and the first `introspection local` or direct Pi run; do not treat scaffolding or a clean validator result as proof that the step is complete.
+
 Resolve the real package root and use the Introspection CLI to build the smallest recipe that satisfies the approved cases:
 
 - Treat a returned session, process, cell, or job identifier as an in-progress command, not a result. Follow that same handle until a terminal exit status is available before starting a dependent mutation or reporting success. Serialize commands that mutate the same installation, cache, recipe, or worktree. After a nonzero exit, preserve the exact invocation and working directory, inspect focused help or read-only state, and change the hypothesis before retrying; never repeat the same mutation unchanged.
@@ -116,7 +118,7 @@ Default to one agent. Put judgment in skills, deterministic behavior in scripts 
 
 Preserve the recipe composition model. Put instructions shared across the root agent and delegated subagents in `SYSTEM.md`; put specialized role instructions in each agent's `system_instructions`. Use `from:` when a variant or subagent genuinely inherits a base configuration, and make capability overrides explicit because `tools`, `skills`, and `subagents` arrays replace rather than merge. Keep reusable detailed judgment in skills selected by the agents that need it.
 
-Prove one credible ordinary happy path first in a fresh Pi process. Only after the basic runtime works should you exercise the smallest additional approved cases needed to support the claimed behavior and important boundaries. Record unexecuted cases as planned coverage and never describe them as proven. Keep the evidence needed to explain what worked, what failed, and why. Fix the owning layer rather than accumulating prompt instructions. Once repeatable checks are credible, offer the user the Pi TUI so they can try the agent and continue iterating with them until the local version is accepted or a concrete blocker remains.
+A clean package check is necessary but is not behavioral proof. Prove one credible ordinary happy path first in a fresh Pi process. Only after the basic runtime works should you exercise the smallest additional approved cases needed to support the claimed behavior and important boundaries. Record unexecuted cases as planned coverage and never describe them as proven. Keep the evidence needed to explain what worked, what failed, and why. Fix the owning layer rather than accumulating prompt instructions. Once repeatable checks are credible, offer the user the Pi TUI so they can try the agent and continue iterating with them until the local version is accepted or a concrete blocker remains.
 
 ## Hand off
 
