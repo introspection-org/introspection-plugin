@@ -3,14 +3,11 @@
 /**
  * Resolve and load plugin references by index key.
  *
- * The cache holds the fetched index so a disposable agent environment downloads
- * it once. It deliberately does NOT persist which revisions were emitted: the
- * cache path is stable across processes, so on a developer workstation a later
- * unrelated session would be told `already-loaded` for content that session had
- * never seen. Suppression is therefore per-invocation only — it still collapses
- * the repeated keys of a multi-step call, which is where the duplication is.
+ * The cache contains both the fetched index and the revisions already emitted.
+ * Its default path is derived from the host's agent-session identifier, so later
+ * workflow steps remain cheap without leaking stale state into another session.
  */
-import { createHash } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -18,10 +15,14 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const CONTRACT_PATH = join(ROOT, 'CONTRACT.md')
-const DEFAULT_CACHE = join(tmpdir(), 'introspection-plugin-reference-index.json')
-// Long enough that a session never re-fetches mid-work, short enough that a
-// published correction reaches the next one.
-const CACHE_MAX_AGE_MS = 60 * 60 * 1000
+const VERSION_PATH = join(ROOT, 'version.txt')
+const sessionId = process.env.PLUGIN_REFERENCE_SESSION_ID
+  ?? process.env.CODEX_THREAD_ID
+  ?? process.env.CLAUDE_SESSION_ID
+  ?? process.env.CURSOR_SESSION_ID
+  ?? randomUUID()
+const sessionHash = createHash('sha256').update(sessionId).digest('hex').slice(0, 16)
+const DEFAULT_CACHE = join(tmpdir(), `introspection-plugin-reference-index-${sessionHash}.json`)
 
 function fail(message, code = 1) {
   console.error(`reference loader: ${message}`)
@@ -37,8 +38,38 @@ function usage() {
   node scripts/load-references.mjs --search <words>
 
 Options:
-  --cache <path>       Cache path (default: $PLUGIN_INDEX_CACHE or a temporary file)
+  --cache <path>       Cache path (default: $PLUGIN_INDEX_CACHE or a session-scoped temporary file)
   --index-url <url>    Override the URL discovered from CONTRACT.md`)
+}
+
+function parseSemver(value, label) {
+  const match = value.match(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/)
+  if (!match) fail(`${label} is not valid SemVer: "${value}"`, 3)
+  return {
+    core: match.slice(1, 4).map(Number),
+    prerelease: match[4]?.split('.') ?? [],
+  }
+}
+
+function compareSemver(left, right) {
+  for (let index = 0; index < 3; index += 1) {
+    if (left.core[index] !== right.core[index]) return left.core[index] - right.core[index]
+  }
+  if (left.prerelease.length === 0 || right.prerelease.length === 0) {
+    return right.prerelease.length - left.prerelease.length
+  }
+  for (let index = 0; index < Math.max(left.prerelease.length, right.prerelease.length); index += 1) {
+    const leftPart = left.prerelease[index]
+    const rightPart = right.prerelease[index]
+    if (leftPart === undefined || rightPart === undefined) return leftPart === undefined ? -1 : 1
+    if (leftPart === rightPart) continue
+    const leftNumeric = /^\d+$/.test(leftPart)
+    const rightNumeric = /^\d+$/.test(rightPart)
+    if (leftNumeric && rightNumeric) return Number(leftPart) - Number(rightPart)
+    if (leftNumeric !== rightNumeric) return leftNumeric ? -1 : 1
+    return leftPart < rightPart ? -1 : 1
+  }
+  return 0
 }
 
 const options = { steps: [], references: [], sourcePages: [], listSourcePages: [], searches: [] }
@@ -80,13 +111,7 @@ let state = null
 if (existsSync(cachePath)) {
   try {
     const candidate = JSON.parse(readFileSync(cachePath, 'utf8'))
-    // The cache path is stable across processes, so on a persistent host an
-    // unbounded cache would serve an indefinitely stale index to later
-    // sessions — corrections, new keys, and a raised min_supported_version
-    // would never reach them. Re-fetch once the entry ages past the window.
-    const age = Date.now() - Date.parse(candidate.fetched_at ?? 0)
-    const fresh = Number.isFinite(age) && age >= 0 && age < CACHE_MAX_AGE_MS
-    if (candidate.index_url === indexUrl && candidate.index && fresh) state = candidate
+    if (candidate.index_url === indexUrl && candidate.index) state = candidate
   } catch {
     // A partial or obsolete cache is replaced below.
   }
@@ -102,36 +127,18 @@ if (!state) {
     loaded: {},
   }
 }
-// Per-invocation only; see the header note on cross-session reuse.
-state.loaded = {}
+state.loaded ??= {}
 
-// The contract's safety floor. CONTRACT.md forbids the caller from fetching or
-// inspecting the index itself, so on a command-enabled host this loader is the
-// only place the floor can be checked — without this it is unenforceable.
-function compareVersions(a, b) {
-  const pa = String(a).split('.').map(Number)
-  const pb = String(b).split('.').map(Number)
-  for (let i = 0; i < Math.max(pa.length, pb.length); i += 1) {
-    const d = (pa[i] ?? 0) - (pb[i] ?? 0)
-    if (d !== 0) return d < 0 ? -1 : 1
-  }
-  return 0
-}
-const floor = state.index?.plugin?.min_supported_version
-if (floor) {
-  let installed = null
+const minimumVersion = state.index.plugin?.min_supported_version
+if (minimumVersion) {
+  let installedVersion
   try {
-    installed = readFileSync(join(ROOT, 'version.txt'), 'utf8').trim()
+    installedVersion = readFileSync(VERSION_PATH, 'utf8').trim()
   } catch {
-    // No version.txt: cannot prove the floor is met, so do not claim it is.
-    fail(`cannot read version.txt to check the index floor of ${floor}`, 2)
+    fail(`cannot read ${VERSION_PATH} to check the index minimum ${minimumVersion}`, 3)
   }
-  if (compareVersions(installed, floor) < 0) {
-    fail(
-      `installed plugin ${installed} is below the index's min_supported_version ${floor}. ` +
-        'Stop and require an upgrade rather than acting on content shaped for newer semantics.',
-      2,
-    )
+  if (compareSemver(parseSemver(installedVersion, VERSION_PATH), parseSemver(minimumVersion, 'plugin.min_supported_version')) < 0) {
+    fail(`installed plugin ${installedVersion} is below the index minimum ${minimumVersion}; upgrade the plugin before continuing`, 3)
   }
 }
 
@@ -218,9 +225,6 @@ for (const item of selected.filter((value, index, all) =>
 }
 
 const temporaryCache = `${cachePath}.${process.pid}.tmp`
-// Persist the index only. `loaded` is per-invocation by design, and writing it
-// would leave a record the next run must remember to ignore.
-const { loaded: _discarded, ...persisted } = state
-writeFileSync(temporaryCache, `${JSON.stringify(persisted, null, 2)}\n`, { mode: 0o600 })
+writeFileSync(temporaryCache, `${JSON.stringify(state, null, 2)}\n`, { mode: 0o600 })
 renameSync(temporaryCache, cachePath)
 process.exit(exitCode)
