@@ -72,6 +72,7 @@ function compareSemver(left, right) {
   return 0
 }
 
+let exitCodeSeed = 0
 const options = { steps: [], references: [], sourcePages: [], listSourcePages: [], searches: [] }
 for (let i = 2; i < process.argv.length; i += 1) {
   const argument = process.argv[i]
@@ -175,8 +176,21 @@ for (const words of options.searches) {
 }
 
 const selected = []
+const indexHasStepRouting = state.index.steps !== undefined
 for (const step of options.steps) {
-  const keys = state.index.steps?.[step]
+  if (!indexHasStepRouting) {
+    // Degrade the way the contract degrades a fetch: proceed with less, and say
+    // so. Dying here would mean a plugin released ahead of its index breaks
+    // every workflow rather than losing one routing convenience.
+    console.error(
+      `reference loader: the published index predates step routing, so "${step}" cannot be resolved. ` +
+        'Fall back to matching each entry\'s load_when against the work, and say that routing was unavailable.',
+    )
+    exitCodeSeed = Math.max(exitCodeSeed, 2)
+    continue
+  }
+  const keys = state.index.steps[step]
+  // The map exists and this id is not in it: a genuine dangling route.
   if (!Array.isArray(keys) || keys.length === 0) fail(`step "${step}" is absent or empty`)
   for (const key of keys) selected.push({ kind: 'reference', key, step })
 }
@@ -187,10 +201,21 @@ for (const selector of options.sourcePages) {
   selected.push({ kind: 'source-page', key, page })
 }
 
-let exitCode = 0
-for (const item of selected.filter((value, index, all) =>
-  all.findIndex(other => other.kind === value.kind && other.key === value.key && other.page === value.page) === index
-)) {
+let exitCode = exitCodeSeed
+// Deduplicate by identity but keep every step that asked for it, so a failure
+// can name exactly which steps it blocks.
+const deduped = []
+for (const value of selected) {
+  const existing = deduped.find(
+    other => other.kind === value.kind && other.key === value.key && other.page === value.page,
+  )
+  if (existing) {
+    if (value.step && !existing.steps.includes(value.step)) existing.steps.push(value.step)
+    continue
+  }
+  deduped.push({ ...value, steps: value.step ? [value.step] : [] })
+}
+for (const item of deduped) {
   const entry = item.kind === 'reference'
     ? state.index.references?.[item.key]
     : state.index.sources?.[item.key]?.pages?.[item.page]
@@ -218,7 +243,8 @@ for (const item of selected.filter((value, index, all) =>
     state.loaded[label] = revision
   } catch (error) {
     const degradation = parent?.degradation ?? 'required-for-step'
-    console.error(`reference loader: ${label} failed (${error.message}); degradation=${degradation}`)
+    const blocks = item.steps.length ? `; blocks=${item.steps.join(',')}` : ''
+    console.error(`reference loader: ${label} failed (${error.message}); degradation=${degradation}${blocks}`)
     if (degradation === 'gating') exitCode = Math.max(exitCode, 3)
     else if (degradation === 'required-for-step') exitCode = Math.max(exitCode, 2)
   }

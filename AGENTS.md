@@ -107,19 +107,20 @@ Consequences for changes here:
   an entry whose `load_when` can carry it.
 - Keep `skills/` limited to the five public autocomplete entry points:
   `create`, `migrate`, `deploy`, `improve`, and `operate`. Supporting Pi,
-  Recipes, eval, Harbor, and Introspection behavior belongs in `capabilities/`
-  and is loaded progressively by those entry points. The five split by what a
+  Recipes, eval, Harbor, and Introspection behavior is not shipped here at all:
+  it lives in `introspection-docs` as indexed references, and a skill reaches it
+  by naming the step it is entering. The five split by what a
   request *ends in*: a new recipe (`create`), an existing agent ported into one
   (`migrate`), changed agent behavior landed through the repository
   (`improve`), a change to what an environment resolves to (`deploy`), and an
   answer or a changed live resource that leaves the recipe alone (`operate`).
   Adding a sixth needs that test to yield a genuinely new terminal state, not
   a new topic.
-- The reference loading contract lives once, in `CONTRACT.md`. Every public
-  skill and capability module links it rather than restating it, so a copy
-  cannot drift because there are no copies. `validate-references.mjs` enforces
-  that `CONTRACT.md` carries the contract verbatim, that every module links it
-  (or carries it inline), and the five-skill discovery surface. Change the
+- The reference loading contract lives once, in `CONTRACT.md`, and the standing
+  boundaries once in `BOUNDARIES.md`. Every public skill links both rather than
+  restating them, so a copy cannot drift because there are no copies.
+  `validate-references.mjs` enforces that each file carries its own content,
+  that every skill links both, and the five-skill discovery surface. Change the
   contract in one place; do not paste it back into a module.
 
 To validate a skill against an unpublished reference, serve the docs branch and
