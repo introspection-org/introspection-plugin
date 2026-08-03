@@ -86,20 +86,42 @@ Consequences for changes here:
   `introspection-docs` first so the published index has the key.
 - Adding a new *trigger* — a skill, or its `description` — does need a plugin
   release, because the routing surface cannot be fetched.
+- **Prefer discovery over citation.** A reference does not have to be named by a
+  skill to be reachable: the index is fetched once per session and every entry
+  carries its own `load_when`, so an agent finds an entry by matching that
+  condition. `validate-references.mjs` only requires that a *cited* key exist,
+  never that every key be cited, and `introspection-openapi` already works this
+  way. Leaving an entry uncited keeps the plugin light and lets the reference
+  ship, change, and retire on the docs cadence with no release and no ordering
+  between the two repositories.
+
+  Use `degradation` to decide. An `advisory` entry should normally stay uncited:
+  missing it costs depth, which is the same cost the contract already accepts on
+  a failed fetch. Cite a `required-for-step` or `gating` entry at the step that
+  needs it, because missing one of those produces a confidently wrong answer
+  rather than a shallower one — `conversation-evidence` is the model case, since
+  the platform itself reports a conversation as `Ok` when a tool call failed.
+
+  A citation is a commitment: it pins the plugin to that key, so the key must be
+  published before the citing release can pass CI. Do not spend that coupling on
+  an entry whose `load_when` can carry it.
 - Keep `skills/` limited to the five public autocomplete entry points:
   `create`, `migrate`, `deploy`, `improve`, and `operate`. Supporting Pi,
-  Recipes, eval, Harbor, and Introspection behavior belongs in `capabilities/`
-  and is loaded progressively by those entry points. The five split by what a
+  Recipes, eval, Harbor, and Introspection behavior is not shipped here at all:
+  it lives in `introspection-docs` as indexed references, and a skill reaches it
+  by naming the step it is entering. The five split by what a
   request *ends in*: a new recipe (`create`), an existing agent ported into one
   (`migrate`), changed agent behavior landed through the repository
   (`improve`), a change to what an environment resolves to (`deploy`), and an
   answer or a changed live resource that leaves the recipe alone (`operate`).
   Adding a sixth needs that test to yield a genuinely new terminal state, not
   a new topic.
-- Every public skill and capability module that cites the index must carry the
-  reference-loading and degradation contract verbatim. `validate-references.mjs`
-  enforces both this and the four-skill discovery surface, so the copies cannot
-  drift.
+- The reference loading contract lives once, in `CONTRACT.md`, and the standing
+  boundaries once in `BOUNDARIES.md`. Every public skill links both rather than
+  restating them, so a copy cannot drift because there are no copies.
+  `validate-references.mjs` enforces that each file carries its own content,
+  that every skill links both, and the five-skill discovery surface. Change the
+  contract in one place; do not paste it back into a module.
 
 To validate a skill against an unpublished reference, serve the docs branch and
 point the validator at it instead of the published index:

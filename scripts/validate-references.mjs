@@ -6,9 +6,8 @@
  * that contract offline:
  *
  *   1. The only URL allowed in a skill is the index itself.
- *   2. Every public skill and capability module that resolves content carries
- *      the reference-loading and degradation contract verbatim, so a copy
- *      cannot drift.
+ *   2. Every public skill links the loading contract and the standing
+ *      boundaries, both of which live on disk in exactly one copy.
  *   3. Exactly the five intended public skills are discoverable.
  *   4. Cited keys, including page keys, are well-formed.
  *
@@ -33,12 +32,11 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const SKILLS_DIR = join(ROOT, 'skills')
-const CAPABILITIES_DIR = join(ROOT, 'capabilities')
 const INDEX_URL = 'https://docs.introspection.dev/plugin/index.json'
 // Point at a locally served docs branch to validate an unpublished reference.
 const RESOLVED_INDEX_URL = process.env.PLUGIN_INDEX_URL ?? INDEX_URL
 
-const CONTRACT = `Resolve every reference and source through the plugin reference index at \`${INDEX_URL}\`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with \`curl\` when the host has none. Load an entry only when the work reaches the step its \`load_when\` describes, and report the key and \`revision\` you used. When a source declares a \`pages\` map, choose the page whose \`read_for\` matches the question instead of recalling a filename; the set of pages is not fixed.
+const CONTRACT = `Resolve every reference and source through the plugin reference index at \`${INDEX_URL}\`, by key and never by a hard-coded content URL. When command execution is available, use \`scripts/load-references.mjs\` beside this contract: it discovers the effective index URL from this file, caches the index, resolves step and page keys without \`jq\`, and reports provenance. Do not fetch the index or content URLs yourself, refresh the loader, or inspect its cache after using it. Use its \`--search\` and \`--list-source-pages\` operations when you need to discover a key. If command execution is unavailable, fetch the index once per session with the host's web-fetch tool and retain it for later step lookups. Load an entry only when the work reaches the step its \`load_when\` describes. For indexed references report the key and \`revision\`; for an external source without an indexed revision report the content hash the loader emits. When a source declares a \`pages\` map, choose the page whose \`read_for\` matches the question instead of recalling a filename; the set of pages is not fixed.
 
 On a failed fetch, honor the entry's \`degradation\`: \`advisory\` proceeds at reduced depth, \`required-for-step\` skips only that step and says so, and \`gating\` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
 
@@ -47,14 +45,12 @@ Each host owns its own plugin updates, so do not prompt for one. The single exce
 const errors = []
 const citedKeys = new Set()
 const citedPageKeys = new Set()
+const citedStepIds = new Set()
 const expectedSkills = new Set(['create', 'deploy', 'improve', 'migrate', 'operate'])
-const expectedCapabilities = new Set(['evals', 'harbor', 'introspection', 'pi', 'recipes'])
+
 const skillNames = readdirSync(SKILLS_DIR, { withFileTypes: true })
   .filter(entry => entry.isDirectory())
   .map(entry => entry.name)
-const capabilityNames = readdirSync(CAPABILITIES_DIR, { withFileTypes: true })
-  .filter(entry => entry.isFile() && entry.name.endsWith('.md'))
-  .map(entry => entry.name.slice(0, -3))
 
 for (const name of expectedSkills) {
   if (!skillNames.includes(name)) errors.push(`public skill skills/${name}/SKILL.md is missing`)
@@ -62,23 +58,44 @@ for (const name of expectedSkills) {
 for (const name of skillNames) {
   if (!expectedSkills.has(name)) errors.push(`unexpected discoverable skill: skills/${name}/SKILL.md`)
 }
-for (const name of expectedCapabilities) {
-  if (!capabilityNames.includes(name)) errors.push(`capability module capabilities/${name}.md is missing`)
-}
-for (const name of capabilityNames) {
-  if (!expectedCapabilities.has(name)) errors.push(`unexpected capability module: capabilities/${name}.md`)
+
+// The single source of the loading contract. Everything else links to it, so if
+// this drifts or disappears the whole plugin silently loses its fetch rules.
+try {
+  const contractBody = readFileSync(join(ROOT, 'CONTRACT.md'), 'utf8')
+  if (!contractBody.includes(CONTRACT)) {
+    errors.push('CONTRACT.md does not carry the reference loading and degradation contract verbatim')
+  }
+} catch {
+  errors.push('CONTRACT.md is missing or unreadable')
 }
 
-const contentFiles = [
-  ...skillNames.map(name => ({
-    absolutePath: join(SKILLS_DIR, name, 'SKILL.md'),
-    relativePath: `skills/${name}/SKILL.md`,
-  })),
-  ...capabilityNames.map(name => ({
-    absolutePath: join(CAPABILITIES_DIR, `${name}.md`),
-    relativePath: `capabilities/${name}.md`,
-  })),
-]
+try {
+  const loader = readFileSync(join(ROOT, 'scripts', 'load-references.mjs'), 'utf8')
+  for (const required of ['--step', '--reference', '--source-page', '--list-source-pages', '--search', 'PLUGIN_INDEX_CACHE']) {
+    if (!loader.includes(required)) errors.push(`reference loader is missing ${required} support`)
+  }
+} catch {
+  errors.push('scripts/load-references.mjs is missing or unreadable')
+}
+
+// Permission lives in the released artifact, never in a fetched page. If this
+// file goes missing the skills lose their standing limits silently.
+try {
+  const boundaries = readFileSync(join(ROOT, 'BOUNDARIES.md'), 'utf8')
+  for (const required of ['## Interfaces', '## Tooling and bootstrap', '## Evidence and credentials']) {
+    if (!boundaries.includes(required)) {
+      errors.push(`BOUNDARIES.md is missing its "${required.replace('## ', '')}" section`)
+    }
+  }
+} catch {
+  errors.push('BOUNDARIES.md is missing or unreadable')
+}
+
+const contentFiles = skillNames.map(name => ({
+  absolutePath: join(SKILLS_DIR, name, 'SKILL.md'),
+  relativePath: `skills/${name}/SKILL.md`,
+}))
 
 for (const { absolutePath, relativePath } of contentFiles) {
   let body
@@ -96,11 +113,18 @@ for (const { absolutePath, relativePath } of contentFiles) {
     }
   }
 
-  const resolvesContent = urls.includes(INDEX_URL)
-  if (resolvesContent && !body.includes(CONTRACT)) {
+  // The contract lives in one file and everything else links to it, so a copy
+  // cannot drift because there are no copies. Carrying it inline still passes,
+  // which keeps CONTRACT.md itself valid under the same rule.
+  const linksContract = /\]\((?:\.\.\/)+CONTRACT\.md\)/.test(body)
+  if (!linksContract && !body.includes(CONTRACT)) {
     errors.push(
-      `${relativePath} cites the reference index but does not carry the loading and degradation contract verbatim`,
+      `${relativePath} neither links the reference loading contract (CONTRACT.md) nor carries it verbatim`,
     )
+  }
+
+  if (!/\]\((?:\.\.\/)+BOUNDARIES\.md\)/.test(body)) {
+    errors.push(`${relativePath} does not link the standing boundaries (BOUNDARIES.md)`)
   }
 
   for (const [, key] of body.matchAll(/`([^`]+)` (?:source|reference)\b/g)) {
@@ -121,10 +145,32 @@ for (const { absolutePath, relativePath } of contentFiles) {
     }
     citedPageKeys.add(key)
   }
+
+  // A section announces the step it is entering; the index says what to load
+  // there. A step id that no longer exists routes to nothing and fails silently
+  // at exactly the moment the content was needed, so hold it to the same
+  // existence check as a key.
+  // An announcement line may carry trailing prose ("Step `x` whenever …") and
+  // may name more than one step, so take every backticked step-shaped token on
+  // a line that opens with "Step ".
+  for (const [, line] of body.matchAll(/^Step (.+)$/gm)) {
+    const ids = [...line.matchAll(/`([^`]+)`/g)].map(m => m[1])
+    if (ids.length === 0) {
+      errors.push(`${relativePath} has a "Step" line naming no step id`)
+      continue
+    }
+    for (const one of ids) {
+      if (!/^(\*|[a-z0-9-]+)\/[a-z0-9-]+$/.test(one)) {
+        errors.push(`${relativePath} declares malformed step id "${one}"`)
+        continue
+      }
+      citedStepIds.add(one)
+    }
+  }
 }
 
 if (citedKeys.size === 0) {
-  errors.push('no reference or source keys are cited by any public skill or capability module')
+  errors.push('no reference or source keys are cited by any public skill')
 }
 
 // A reachable index must contain every cited key. Offline CI skips this.
@@ -142,6 +188,34 @@ if (index) {
   for (const source of Object.values(index.sources ?? {})) {
     for (const page of Object.keys(source.pages ?? {})) knownPages.add(page)
   }
+  // An index with no `steps` field predates step routing entirely, which is a
+  // published index older than this plugin content rather than a broken route.
+  // Skip, the same way an unreachable index is skipped. Once the field exists,
+  // a missing id is a real dangling route and fails.
+  // The inverse of the existence check. A step the index routes but no skill
+  // announces is unreachable by the mechanism the contract calls primary: its
+  // references are then reachable only by load_when discovery, which is exactly
+  // what step routing replaced. improve/measure was orphaned this way — five
+  // references, including the one that forbids forging a calibration fixture.
+  if (index.steps !== undefined) {
+    for (const stepId of Object.keys(index.steps).sort()) {
+      if (!citedStepIds.has(stepId)) {
+        errors.push(`step "${stepId}" is routed by the index but no skill announces it`)
+      }
+    }
+  }
+
+  if (index.steps === undefined) {
+    console.warn('note: published index predates step routing; skipped step-existence check')
+  } else {
+    const knownSteps = new Set(Object.keys(index.steps))
+    for (const stepId of [...citedStepIds].sort()) {
+      if (!knownSteps.has(stepId)) {
+        errors.push(`step "${stepId}" is declared by plugin content but absent from the published index`)
+      }
+    }
+  }
+
   for (const key of [...citedPageKeys].sort()) {
     if (!knownPages.has(key)) {
       errors.push(`page key "${key}" is cited by plugin content but no indexed source declares it`)

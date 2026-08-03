@@ -7,25 +7,11 @@ description: Operate a live Introspection project and answer questions about it 
 
 Answer questions about a live Introspection project and change the platform state the request actually calls for. This workflow ends in an answer or a changed live resource, not in a changed recipe.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the request reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Introspection](../../capabilities/introspection.md) for the CLI surface, project and runtime identity, task and conversation evidence, aggregate telemetry, judge operation, links, and platform development chat. This is the primary module for this workflow.
-- [Evals](../../capabilities/evals.md) when a judge result, calibration claim, or measurement question has to be interpreted rather than merely read.
-- [Recipes](../../capabilities/recipes.md) only when a live resource has to be traced back to what the package declares, such as which judge or capability a runtime version carries.
-
-When one module routes to another, load the named module before acting at that boundary. Resolve the CLI only when the first read or change needs it.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including the several ways a conversation can look successful while it was not.
-
-## Load references
-
-Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
-
-On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
-
-Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. Before the first CLI command, whichever section reaches it first, that step is `*/setup`. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Know which workflow owns the request
 
@@ -52,6 +38,8 @@ When the question is who changed something, or what changed and when, the answer
 
 ## Diagnose from the task row outward
 
+Step `operate/read-evidence`.
+
 A task is a durable execution, not a blocking call. Start every task question at the task row itself, not at the conversation. The `tasks-and-runs` page of the `introspection-docs` source carries the full lifecycle — every status, the queue's exits, and the completion and failure reasons — and `conversations` carries what the record does and does not contain. Read them rather than inferring a status's meaning. Four things decide where to look:
 
 - A terminal status is not a result. Read why the task ended: a completed task reports its completion reason, and one torn down by the idle window completes having produced nothing.
@@ -65,6 +53,8 @@ A conversation reports failure in more than one way, and the surfaces disagree: 
 
 ## Answer prevalence with the aggregate surface
 
+Step `operate/prevalence`.
+
 Individual evidence and population shape have different surfaces. Read typed events for the canonical event families, and use the aggregate telemetry surface for how often, how many, and how much — including model and token usage. Use it before calling a pattern common or rare rather than estimating from a handful of inspected conversations.
 
 Its query is a document the CLI forwards unchanged, so focused help describes only how to submit it and never names a field. Load the `metrics-query` reference for the views and field names rather than inferring a query shape from help.
@@ -72,6 +62,8 @@ Its query is a document the CLI forwards unchanged, so focused help describes on
 A zero count from asynchronous analysis is not proof that nothing is wrong; verify analysis status and raw evidence.
 
 ## Change live state deliberately
+
+Step `operate/change-live`.
 
 A read is free; a change to live state is not. Before changing anything, state the resource, the current value, the intended value, and who or what it affects. Then make the change and confirm the resulting state by reading it back rather than inferring it from command output.
 
@@ -86,6 +78,8 @@ Ask for confirmation before a change whose blast radius the user has not already
 
 ## Guide organization work to the dashboard
 
+Step `operate/org-work`.
+
 The CLI does everything inside a project, and it does login. Organization administration is the one place it does not reach: there is no members, organizations, plan, usage, or billing command group, so inviting a teammate, changing a role, connecting GitHub, Linear, or Slack, or anything touching plan and billing happens in the dashboard. Load the `dashboard-surface` reference when work reaches that boundary.
 
 Guide rather than take over. Give the person the labelled link and the specific change to make, plus anything the page will ask of them that could stop them halfway — that only an owner can grant the owner role, for instance. Never send someone to a page for work the CLI owns, and never open one to gather evidence a command would give you: a command's output is inspectable and repeatable, and a scraped page is neither.
@@ -93,6 +87,8 @@ Guide rather than take over. Give the person the labelled link and the specific 
 Driving the browser yourself is a last resort, only for this organization-scoped work, and only when the user asks or genuinely cannot act. Confirm before anything that spends money, changes access, or is hard to reverse, and never enter someone's credentials or move through a login, payment, or consent screen for them.
 
 ## Support integration work
+
+Step `operate/integrate`.
 
 Operating a runtime and building on one are different jobs with different surfaces. When the request moves from managing a runtime to writing application code that calls one, load the `integration-surface` reference; it owns that boundary along with durable files, shares, conversation forks, and end-user memory. Load `runtime-auth` when the product needs more than a trusted backend calling on its own behalf.
 

@@ -7,27 +7,11 @@ description: Deploy a locally proven Introspection recipe and verify the runtime
 
 Deploy the locally proven recipe identified by the request. Resolve the actual package and platform identity instead of assuming the current directory or a passing check points to the right thing.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the deployment reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Recipes](../../capabilities/recipes.md) for package identity, validation, and deployment declarations.
-- [Introspection](../../capabilities/introspection.md) for CLI, project, runtime, environment, evidence, and release operations.
-- [Pi](../../capabilities/pi.md) when local harness execution or Pi-specific configuration must be resolved.
-- [Evals](../../capabilities/evals.md) when readiness or verification relies on behavioral measurement rather than existing approved proof.
-- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects an environment-level suite or deployment must interpret existing Harbor evidence.
-
-When one module routes to another, load the named module before acting at that boundary. Resolve each CLI only when the approved deployment step first needs it.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including why a working staging lane proves nothing about production.
-
-## Load references
-
-Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
-
-On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
-
-Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. Before the first CLI command, whichever section reaches it first, that step is `*/setup`. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Think in provenance and lifecycle
 
@@ -40,6 +24,8 @@ Changing that pin is an ordinary operation rather than only an incident response
 Reuse the existing runtime lifecycle. A matching runtime group is not a reason to create another one, and an ambiguous identity is not permission to guess.
 
 ## Establish readiness
+
+Step `deploy/readiness`.
 
 Confirm local evidence in proportion to the agent's risk. For a newly created agent, use its approved acceptance set and retained local proof. For a migrated or improved agent, use the parity or comparison evidence from that workflow. Do not invent an eval, Harbor task, or calibrated judge when the job does not require one.
 
@@ -92,6 +78,8 @@ Never infer approval, refusal, or decline from scenario wording, an expected out
 
 ## Deploy and verify
 
+Step `deploy/verify`.
+
 Make the in-scope manifest or configuration changes and rerun the recipe check. Commit them, create a remote only after any required owner, name, and visibility decision, and push the intended commit. Do not create or update a runtime until the recipe is correctly configured and its applicable local proof still holds. Requery before first-runtime creation and prefer any supported idempotency or uniqueness mechanism.
 
 For a new runtime whose remote MCP binding is not ready, registration may be the approved stopping point for deployment. Hand development back to `introspection dev --mcp NAME=URL` so the declared MCP server can resolve to the local process while the command remains attached. Do not use `--check-bindings` as a prerequisite for this loop; it intentionally turns missing required bindings into a failing readiness check. Do not claim staging or production verification from development evidence.
@@ -111,6 +99,8 @@ Merging is the user's release decision, so do not merge to make production move.
 After the user merges, verify production the same way staging was verified: run a representative task through the stable runtime-group slug, confirm that the merged Git HEAD, selected runtime-version SHA, and task-resolved runtime SHA are identical, and inspect the complete conversation. A created or active production version is not a verified one.
 
 ## Recover when a version goes wrong
+
+Step `deploy/recover`.
 
 This workflow owns recovery for any deployed version, not only one it deployed itself. An incident that arrives cold — no prior deployment in this session — is in scope, and so is one handed over mid-investigation by `improve`. Resolve the runtime identity the same way any deployment does, then load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
 

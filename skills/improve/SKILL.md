@@ -7,46 +7,15 @@ description: Improve a deployed or local Introspection agent with human approval
 
 Improve the right layer of an existing agent with a human in the loop. Start from production evidence unless the user directs the investigation toward a prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Treat that direction as scope or a hypothesis, not proof of the cause or permission for a predetermined edit.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the investigation reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Introspection](../../capabilities/introspection.md) for deployed identity, production evidence, observations, judges, comparisons, or release verification.
-- [Evals](../../capabilities/evals.md) for trace analysis, measurement design, suite audits, case approval, judge calibration, or regression interpretation.
-- [Pi](../../capabilities/pi.md) for harness, extension, provider, settings, skill, package, or local-execution behavior.
-- [Recipes](../../capabilities/recipes.md) for package composition, checks, capability declarations, or durable eval and judge resources.
-- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects a new environment-level evaluation or existing Harbor evidence must be interpreted.
-
-For a focused supporting question about an existing agent, load and follow the matching module without forcing an end-to-end production investigation. When one module routes to another, load the named module before acting at that boundary. Leave deployment to `deploy`.
-
-This workflow ends in a change to the recipe. Two neighbors own what it does not, and reaching either is an ordinary handoff rather than a refusal:
-
-- `deploy` moves what an environment resolves to. When live traffic is affected and the remedy is repinning, withdrawing, or restoring a version, hand recovery over first and continue the investigation afterward.
-- `operate` reads and changes live platform state that leaves the recipe alone — task and conversation inspection, aggregate telemetry, judge enablement and sampling, experiments, bindings, and credentials.
-
-Name the workflow you are handing to. Never stop at this skill's mutation boundary without one.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including which edits reach an open chat and which need a new one.
-
-## Load references
-
-Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
-
-On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
-
-Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
-
-## Think from evidence to ownership
-
-Find the earliest meaningful divergence between the intended and observed behavior. Diagnose whether the owner is the environment, access, data, tool implementation, runtime configuration, agent judgment, or product policy before choosing a remedy.
-
-Speak only from evidence actually inspected in the current run. If evidence access is unavailable or the user asks for a dry run, stop at that boundary: state what remains unknown and describe the evidence you would gather next. Never simulate a completed investigation, write “I inspected” for hypothetical work, or fill a diagnosis with invented or placeholder counts, traces, files, causes, confidence, or results.
-
-Gather safe read-only evidence before the human confirmation gate; do not ask permission merely to inspect accessible context. Confirmation belongs after diagnosis and covers the proposed edits and pull-request work. When a dry run forbids discovery, explain that sequence without presenting the evidence plan itself as something awaiting approval.
-
-Fix deterministic failures deterministically. Use an ordinary test when it faithfully protects the behavior. Add an eval only for recurring, important behavioral risk that ordinary tests cannot measure. Propose an experiment only when credible alternatives remain and trustworthy offline evidence cannot answer a bounded question. Do not turn every failure into prompt text, an eval, or an experiment.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. Before the first CLI command, whichever section reaches it first, that step is `*/setup`. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Resolve the target and evidence
+
+Step `improve/read-evidence`.
 
 For a deployed agent, use the current Introspection CLI and documentation to resolve the project, runtime group, active version, recipe repository, and deployed Git commit. For a local agent, resolve the package root, selected agent, worktree, and available tests or evals. Confirm that the evidence and local code describe the same target before drawing conclusions.
 
@@ -64,6 +33,18 @@ Use production evidence when relevant and available, but do not force it onto a 
 
 Open-code the evidence before imposing a taxonomy. Separate prevalence from severity and business importance. Ask the human to resolve disputed product behavior rather than encoding an agent guess.
 
+## Think from evidence to ownership
+
+Step `improve/diagnose`.
+
+Find the earliest meaningful divergence between the intended and observed behavior. Diagnose whether the owner is the environment, access, data, tool implementation, runtime configuration, agent judgment, or product policy before choosing a remedy.
+
+Speak only from evidence actually inspected in the current run. If evidence access is unavailable or the user asks for a dry run, stop at that boundary: state what remains unknown and describe the evidence you would gather next. Never simulate a completed investigation, write “I inspected” for hypothetical work, or fill a diagnosis with invented or placeholder counts, traces, files, causes, confidence, or results.
+
+Gather safe read-only evidence before the human confirmation gate; do not ask permission merely to inspect accessible context. Confirmation belongs after diagnosis and covers the proposed edits and pull-request work. When a dry run forbids discovery, explain that sequence without presenting the evidence plan itself as something awaiting approval.
+
+Fix deterministic failures deterministically. Use an ordinary test when it faithfully protects the behavior. Add an eval only for recurring, important behavioral risk that ordinary tests cannot measure. Propose an experiment only when credible alternatives remain and trustworthy offline evidence cannot answer a bounded question. Do not turn every failure into prompt text, an eval, or an experiment.
+
 ## Align with the user
 
 Explain what you inspected, the strongest evidence, the likely owning layer, the change you recommend, and how you will know it worked. Include confidence, meaningful risks, and the proposed pull-request boundary. Mention eval or experiment work only when the evidence justifies it. Use the clearest natural format for this case, not a fixed report shape.
@@ -72,9 +53,13 @@ Ask for confirmation before editing project files, changing configuration, or op
 
 ## Improve and prove
 
+Step `improve/change`.
+
 Establish the unchanged baseline before editing whenever behavioral measurement is warranted. Change one coherent mechanism at a time, then run affected cases, tests, and non-regression controls in fresh Pi sessions with frozen configuration where comparison matters. Inspect the traces behind score changes and iterate until the approved change is proven or a concrete blocker remains.
 
 Parallelize independent reproduction or validation when it materially speeds proof, but do not allow competing edits to the same implementation or scope drift. Keep the result as one coherent change and focused pull request unless the approved plan explicitly separates independent fixes. Preserve unrelated work.
+
+Step `improve/measure` whenever the remedy involves measurement — an eval, a judge, or a calibration.
 
 Add an approved eval alongside or before the fix so baseline and candidate comparisons remain trustworthy. If only an experiment is justified, describe the hypothesis, candidates, success measure, guardrails, traffic assumptions, and stopping rule; do not launch it.
 

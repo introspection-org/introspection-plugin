@@ -7,27 +7,11 @@ description: Convert an existing agent into a locally proven Introspection recip
 
 Translate an existing agent into a portable, locally proven recipe in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `deploy`.
 
-## Load capabilities
+## Standing rules
 
-Load only the local capability modules the migration reaches:
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
-- [Recipes](../../capabilities/recipes.md) for the portable package contract, scaffolding, checks, and capability declarations.
-- [Pi](../../capabilities/pi.md) for harness, extension, provider, settings, and local execution behavior.
-- [Evals](../../capabilities/evals.md) when parity must be established by measurement rather than by inspecting representative runs.
-- [Introspection](../../capabilities/introspection.md) only when the source agent is already deployed and its platform identity or production evidence is the material being migrated.
-- [Harbor](../../capabilities/harbor.md) only when the Evals capability selects an environment-level suite as the parity evidence.
-
-When one module routes to another, load the named module before acting at that boundary. Resolve each CLI only when an approved migration step first needs it.
-
-Load the `common-failures` reference before starting: it lists, by lifecycle stage, the mistakes that are actually made here — including what a clean validator run does and does not prove.
-
-## Load references
-
-Resolve every reference and source through the plugin reference index at `https://docs.introspection.dev/plugin/index.json`, by key and never by a hard-coded content URL. Fetch it once per session with the host's web-fetch tool, or with `curl` when the host has none. Load an entry only when the work reaches the step its `load_when` describes, and report the key and `revision` you used. When a source declares a `pages` map, choose the page whose `read_for` matches the question instead of recalling a filename; the set of pages is not fixed.
-
-On a failed fetch, honor the entry's `degradation`: `advisory` proceeds at reduced depth, `required-for-step` skips only that step and says so, and `gating` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
-
-Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the `version.txt` beside this plugin's `skills/` directory is below the index's `plugin.min_supported_version`, stop and require an upgrade rather than acting on content shaped for newer semantics.
+Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. Before the first CLI command, whichever section reaches it first, that step is `*/setup`. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
 ## Think in behavior, not files
 
@@ -39,9 +23,11 @@ Confirm there is a migration to perform before translating anything. An agent th
 
 ## Understand the source
 
+Step `migrate/translate`, and `*/capability-set` when deciding what the ported agent may reach.
+
 Locate the real instructions, tools, skills, model configuration, runtime assumptions, authentication, side effects, tests, traces, and representative inputs. Use safe existing evidence and run the source during discovery only when doing so is read-only and cannot trigger an external side effect.
 
-Determine the migration boundary: behavior that must remain equivalent, bugs that should not survive, intentional improvements, unsupported dependencies, and evidence that would demonstrate acceptable parity. Resolve any provider or model choice that is not preserved by the source. Let the Recipes capability resolve the portable package contract and the Pi capability resolve harness, extension, provider, and local execution behavior. Defer tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
+Determine the migration boundary: behavior that must remain equivalent, bugs that should not survive, intentional improvements, unsupported dependencies, and evidence that would demonstrate acceptable parity. Resolve any provider or model choice that is not preserved by the source. Let this step's references resolve the portable package contract and this step's references resolve harness, extension, provider, and local execution behavior. Defer tool installation, upgrades, setup, and authentication until an approved execution step actually needs them.
 
 ## Align with the user
 
@@ -50,6 +36,8 @@ Share your understanding of the source behavior, the proposed recipe, the import
 Ask the user to confirm before changing project files or configuration. Treat approval as permission to complete the agreed migration and local proof without routine stops. Pause only if a newly discovered dependency, side effect, provider choice, or behavior difference requires a material decision.
 
 ## Translate and prove
+
+Step `migrate/prove`.
 
 Resolve the real package root and use the Introspection CLI to scaffold and check it. Translate durable judgment into skills, deterministic operations into scripts and tests, and external access into explicit capabilities or bindings. Default to one agent.
 
