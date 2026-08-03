@@ -153,8 +153,8 @@ for (const item of selected.filter((value, index, all) =>
   if (entry.audience === 'human') fail(`"${label}" is a human-only page and cannot be fetched`)
 
   const indexedRevision = entry.revision
-  if (indexedRevision && state.loaded[label] === indexedRevision) {
-    console.log(`--- ${label} revision=${indexedRevision} already-loaded ---`)
+  if (state.loaded[label] && (!indexedRevision || state.loaded[label] === indexedRevision)) {
+    console.log(`--- ${label} revision=${state.loaded[label]} already-loaded ---`)
     continue
   }
 
