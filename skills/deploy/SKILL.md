@@ -47,7 +47,7 @@ Query runtime groups and versions before proposing a deployment. Match repositor
 
 If a runtime group already represents the recipe, use its candidate-version flow. For a genuinely new first runtime, follow the documented clean-main bootstrap and make clear that its first version activates for both production and staging. Requery the same identity immediately before creation so concurrent work cannot produce a duplicate.
 
-Treat first-runtime registration and environment readiness as separate milestones. Offer to create a new runtime even when a declared remote MCP server, endpoint, or credential is not ready, especially when the recipe and MCP server are being developed together. Record the missing bindings and explain that registration makes the runtime available for development but does not prove staging or production readiness. Do not require placeholder endpoints or credentials.
+Treat first-runtime registration and environment readiness as separate milestones. An explicit request to deploy or create a runtime authorizes registration of a genuinely new first runtime even when a declared remote MCP server, endpoint, or credential is not ready; proceed without asking again, especially when the recipe and MCP server are being developed together. The same request authorizes this development-only bootstrap. Record the missing bindings and explain that registration makes the runtime available for development but does not prove staging or production readiness. Do not require or invent placeholder endpoints or credentials.
 
 If no suitable remote exists, propose creating the GitHub repository as part of the deployment mutation, naming its owner, repository name, and visibility. Reuse an appropriate existing remote instead of creating a duplicate. A missing remote is setup work, not a reason to stop before alignment.
 
@@ -72,7 +72,7 @@ Stop and obtain an explicit decision only when work reaches a materially new ext
 - expanding the affected environments
 - merging to production
 
-Explain what first-runtime creation or an eventual merge activates before performing that in-scope operation, but do not ask for redundant approval. When bindings are unresolved, name them, identify which environment lanes cannot yet be exercised, and offer the development-only bootstrap explicitly.
+Explain what first-runtime creation or an eventual merge activates before performing that in-scope operation, but do not ask for redundant approval. When bindings are unresolved, name them and identify which environment lanes cannot yet be exercised. For a genuinely new first runtime, continue with the registration already authorized by the explicit deploy request; do not present the development-only bootstrap as another choice or permission gate.
 
 Never infer approval, refusal, or decline from scenario wording, an expected outcome, silence, or a missing response; report a decline only after the user explicitly refuses a decision that was actually presented.
 
@@ -82,7 +82,9 @@ Step `deploy/verify`.
 
 Make the in-scope manifest or configuration changes and rerun the recipe check. Commit them, create a remote only after any required owner, name, and visibility decision, and push the intended commit. Do not create or update a runtime until the recipe is correctly configured and its applicable local proof still holds. Requery before first-runtime creation and prefer any supported idempotency or uniqueness mechanism.
 
-For a new runtime whose remote MCP binding is not ready, registration may be the approved stopping point for deployment. Hand development back to `introspection dev --mcp NAME=URL` so the declared MCP server can resolve to the local process while the command remains attached. Do not use `--check-bindings` as a prerequisite for this loop; it intentionally turns missing required bindings into a failing readiness check. Do not claim staging or production verification from development evidence.
+For a new runtime whose required remote MCP binding is not ready, complete the first-runtime registration authorized by the explicit deploy request, then stop before environment verification. Do not ask for another confirmation. After registration, report the registered runtime and exact commit, every missing binding and each affected environment, that staging and production remain unverified, and what must be configured next. Hand development back with the exact command pattern `introspection dev --mcp NAME=URL` so each declared MCP server can resolve to the user's real local process while the command remains attached. Never invent the value for `URL`.
+
+Do not use `--check-bindings` as a prerequisite for this loop; it intentionally turns missing required bindings into a failing readiness check. Never run a smoke task in an environment with a missing required binding, and do not claim staging or production verification from registration or development evidence.
 
 Keep creation, activation, deployment, and verification distinct. A runtime or version is **created** when it exists, **active** when an environment resolves to it, **deployed** when the intended version is selected in that environment, and **verified** only after representative behavior and provenance are proven. Creation output, inventory, activation state, or task status alone cannot establish verification. If a lane cannot be exercised, report it as active or deployed but unverified and name the missing evidence.
 
@@ -110,6 +112,8 @@ Confirm the version is the cause before withdrawing it, and never delete one whi
 
 Report the deployed identity, active commit per environment, runtime and task evidence, material environment effects, remaining readiness gaps, and anything the current CLI could not perform. Include the resolved runtime dashboard URL and each task or conversation URL used as verification evidence. After a recovery, say which environment is serving what now and what remains unfixed.
 
+When first-runtime registration completed with unresolved bindings, explicitly report the registered runtime and commit; list each missing binding and every environment it affects; state that staging and production remain unverified; name the configuration required next; and give the local handoff as `introspection dev --mcp NAME=URL`. Do not substitute an invented endpoint for `URL`.
+
 A verified deployment is where the agent starts producing evidence rather than where the work ends. From here, live tasks, conversations, and costs are read through `operate`, and what that evidence shows about the agent's behavior is acted on through `improve`, which lands the next version back through this workflow.
 
 ## Firm boundaries
@@ -121,8 +125,9 @@ A verified deployment is where the agent starts producing evidence rather than w
 - Do not accept a scaffolded model-access mode as the user's decision, or deploy bring-your-own-key without its LLM endpoint binding present in each serving environment.
 - Do not delete a runtime version to recover from an incident, and do not withdraw a version before confirming it is the cause.
 - Do not merge to production for the user; the merge is their release decision.
-- Do not make first-runtime registration depend on a remote MCP endpoint or credential when the user approves a development-only bootstrap. Keep every affected lane's readiness gap explicit.
+- Do not make first-runtime registration depend on a remote MCP endpoint or credential after an explicit deploy request. That request authorizes registration with unresolved bindings; do not add another permission gate. Keep every affected lane's readiness gap explicit.
 - Do not direct production traffic to, or claim production readiness for, a runtime with unresolved required production bindings. Configure them before a later merge activates a new version.
+- Do not invent an endpoint value or run a smoke task in an environment with a missing required binding.
 - Do not create a GitHub repository without approval of its owner, name, and visibility, or when an appropriate remote already exists.
 - Do not block a valid logged-in user on speculative GitHub App confirmation; surface repository access failures only from supported operations.
 - Do not change judge state, experiments, credentials, application identity, or task lifecycle in this workflow; hand them to `operate` rather than performing them under a deployment brief that never named their blast radius.
