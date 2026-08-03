@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.0](https://github.com/introspection-org/introspection-plugin/compare/v0.4.0...v0.5.0) (2026-08-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* capabilities/ is removed. Content that referenced a capability module by relative path must resolve the equivalent key through the index.
+
+### Code Refactoring
+
+* replace capability modules with step-routed references, keep permission on disk ([#34](https://github.com/introspection-org/introspection-plugin/issues/34)) ([9f3c5ec](https://github.com/introspection-org/introspection-plugin/commit/9f3c5eca24dbd23e6f16f9707f61991f5018d8c0))
+
 ## [0.4.0](https://github.com/introspection-org/introspection-plugin/compare/v0.3.2...v0.4.0) (2026-08-01)
 
 
