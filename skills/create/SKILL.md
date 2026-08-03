@@ -102,7 +102,7 @@ Ask for confirmation before changing project files or configuration. Treat confi
 
 Step `create/prove`.
 
-Enter and load this step before the first `introspection init`. The same step remains active through package editing, `introspection check`, and the first `introspection local` or direct Pi run; do not treat scaffolding or a clean validator result as proof that the step is complete.
+Do not load this step before the user confirms the build. After confirmation, enter and load it immediately before the first `introspection init`. The same step remains active through package editing, `introspection check`, and the first `introspection local` or direct Pi run; do not treat scaffolding or a clean validator result as proof that the step is complete.
 
 Resolve the real package root and use the Introspection CLI to build the smallest recipe that satisfies the approved cases:
 

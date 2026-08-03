@@ -27,20 +27,17 @@ function usage() {
   node scripts/load-references.mjs --step <step-id> [--step <step-id> ...]
   node scripts/load-references.mjs --reference <key>
   node scripts/load-references.mjs --source-page <source-key>/<page-key>
+  node scripts/load-references.mjs --list-source-pages <source-key>
+  node scripts/load-references.mjs --search <words>
 
 Options:
   --cache <path>       Cache path (default: $PLUGIN_INDEX_CACHE or a temporary file)
-  --index-url <url>    Override the URL discovered from CONTRACT.md
-  --refresh            Discard the cached index before loading`)
+  --index-url <url>    Override the URL discovered from CONTRACT.md`)
 }
 
-const options = { steps: [], references: [], sourcePages: [], refresh: false }
+const options = { steps: [], references: [], sourcePages: [], listSourcePages: [], searches: [] }
 for (let i = 2; i < process.argv.length; i += 1) {
   const argument = process.argv[i]
-  if (argument === '--refresh') {
-    options.refresh = true
-    continue
-  }
   const value = process.argv[++i]
   if (!value) {
     usage()
@@ -49,6 +46,8 @@ for (let i = 2; i < process.argv.length; i += 1) {
   if (argument === '--step') options.steps.push(value)
   else if (argument === '--reference') options.references.push(value)
   else if (argument === '--source-page') options.sourcePages.push(value)
+  else if (argument === '--list-source-pages') options.listSourcePages.push(value)
+  else if (argument === '--search') options.searches.push(value)
   else if (argument === '--cache') options.cache = value
   else if (argument === '--index-url') options.indexUrl = value
   else {
@@ -57,7 +56,10 @@ for (let i = 2; i < process.argv.length; i += 1) {
   }
 }
 
-if (options.steps.length + options.references.length + options.sourcePages.length === 0) {
+if (
+  options.steps.length + options.references.length + options.sourcePages.length
+  + options.listSourcePages.length + options.searches.length === 0
+) {
   usage()
   fail('choose at least one step, reference, or source page')
 }
@@ -69,7 +71,7 @@ if (!indexUrl) fail(`could not discover the plugin index URL from ${CONTRACT_PAT
 
 const cachePath = resolve(options.cache ?? process.env.PLUGIN_INDEX_CACHE ?? DEFAULT_CACHE)
 let state = null
-if (!options.refresh && existsSync(cachePath)) {
+if (existsSync(cachePath)) {
   try {
     const candidate = JSON.parse(readFileSync(cachePath, 'utf8'))
     if (candidate.index_url === indexUrl && candidate.index) state = candidate
@@ -90,6 +92,38 @@ if (!state) {
 }
 state.loaded ??= {}
 
+for (const key of options.listSourcePages) {
+  const source = state.index.sources?.[key]
+  if (!source) fail(`unknown source "${key}"`)
+  const pages = Object.entries(source.pages ?? {})
+  if (pages.length === 0) fail(`source "${key}" has no pages`)
+  console.log(`--- source pages: ${key} ---`)
+  for (const [pageKey, page] of pages) console.log(`${pageKey}\t${page.read_for}`)
+}
+
+for (const words of options.searches) {
+  const query = words.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
+  const matchesQuery = value => {
+    const haystack = value.toLowerCase().replace(/[^a-z0-9]+/g, ' ')
+    return query.every(word => haystack.includes(word))
+  }
+  const matches = []
+  for (const [key, entry] of Object.entries(state.index.references ?? {})) {
+    if (matchesQuery(`${key} ${entry.load_when ?? ''}`)) matches.push(`reference\t${key}\t${entry.load_when}`)
+  }
+  for (const [key, source] of Object.entries(state.index.sources ?? {})) {
+    if (matchesQuery(`${key} ${source.load_when ?? ''}`)) matches.push(`source\t${key}\t${source.load_when}`)
+    for (const [pageKey, page] of Object.entries(source.pages ?? {})) {
+      if (matchesQuery(`${key} ${pageKey} ${page.read_for ?? ''}`)) {
+        matches.push(`source-page\t${key}/${pageKey}\t${page.read_for}`)
+      }
+    }
+  }
+  console.log(`--- search: ${words} ---`)
+  if (matches.length === 0) console.log('no matches')
+  else console.log(matches.join('\n'))
+}
+
 const selected = []
 for (const step of options.steps) {
   const keys = state.index.steps?.[step]
@@ -108,8 +142,11 @@ for (const item of selected.filter((value, index, all) =>
   all.findIndex(other => other.kind === value.kind && other.key === value.key && other.page === value.page) === index
 )) {
   const entry = item.kind === 'reference'
-    ? state.index.references?.[item.key] ?? state.index.sources?.[item.key]
+    ? state.index.references?.[item.key]
     : state.index.sources?.[item.key]?.pages?.[item.page]
+  if (item.kind === 'reference' && !entry && state.index.sources?.[item.key]) {
+    fail(`"${item.key}" is a source; use --list-source-pages ${item.key}, then --source-page ${item.key}/<page-key>`)
+  }
   const parent = item.kind === 'source-page' ? state.index.sources?.[item.key] : entry
   const label = item.kind === 'source-page' ? `${item.key}/${item.page}` : item.key
   if (!entry) fail(`unknown ${item.kind === 'source-page' ? 'source page' : 'key'} "${label}"`)
