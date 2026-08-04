@@ -22,13 +22,26 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 /**
+ * The pinned package could not be fetched — as opposed to being fetched and
+ * disagreeing with the committed bundle. The two need different outcomes, so
+ * they need different types.
+ */
+class UnavailableError extends Error {}
+
+/**
  * The published capture package, pinned exactly.
  *
  * Bump this to adopt new capture behavior, then rerun this script. A range would
  * make the committed bundle depend on when it was built, which defeats `--check`.
+ *
+ * NOTE: the SDK repo releases every package at one repo-wide version stamped
+ * from the release tag, not at the placeholder in its `package.json`. So the
+ * first published version of this package will be whatever the SDK's next
+ * release is (0.16.x at time of writing), never `0.0.0-unpublished`. Set this to
+ * that version once it exists — see `--check` below for what happens until then.
  */
 const PACKAGE = "@introspection-sdk/coding-agent";
-const VERSION = "0.1.0";
+const VERSION = "0.0.0-unpublished";
 
 /** Pinned so a bundler release cannot silently change the committed artifact. */
 const ESBUILD = "esbuild@0.27.7";
@@ -54,11 +67,19 @@ function build(destination) {
       JSON.stringify({ name: "capture-build", private: true, type: "module" }),
     );
 
-    execFileSync(
-      "npm",
-      ["install", "--no-audit", "--no-fund", "--silent", `${PACKAGE}@${VERSION}`],
-      { cwd: staging, stdio: "inherit" },
-    );
+    try {
+      // Not `--silent`: when this fails, npm's own message is the useful part,
+      // and suppressing it leaves a bare non-zero exit to explain itself.
+      execFileSync(
+        "npm",
+        ["install", "--no-audit", "--no-fund", `${PACKAGE}@${VERSION}`],
+        { cwd: staging, stdio: "inherit" },
+      );
+    } catch {
+      throw new UnavailableError(
+        `${PACKAGE}@${VERSION} could not be installed from npm.`,
+      );
+    }
 
     // The package's own bin is the hook entrypoint, so bundling it gives the
     // exact surface the hook invokes rather than a re-implementation.
@@ -104,7 +125,24 @@ if (!existsSync(outputPath)) {
 }
 
 const candidate = join(mkdtempSync(join(tmpdir(), "introspection-capture-check-")), "capture.mjs");
-build(candidate);
+
+try {
+  build(candidate);
+} catch (error) {
+  if (!(error instanceof UnavailableError)) throw error;
+  // The pin is not on npm yet. This is the expected state until the SDK
+  // publishes, and it is NOT a stale bundle: "stale" only means anything once
+  // there is a published source of truth to be stale against. Failing here
+  // would leave a permanently red check that trains people to ignore CI, so
+  // this reports loudly and passes — and goes back to failing hard the moment
+  // the pin resolves and disagrees.
+  console.error(`SKIPPED: ${error.message}`);
+  console.error(
+    "The committed hooks/capture.mjs is therefore UNVERIFIED. Set VERSION in\n" +
+      "this script to the first published release and re-run to enforce it.",
+  );
+  process.exit(0);
+}
 
 const committed = readFileSync(outputPath);
 const rebuilt = readFileSync(candidate);

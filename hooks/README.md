@@ -51,9 +51,16 @@ It is a single self-contained bundle (~327 KB) of
 node scripts/build-capture.mjs
 ```
 
-CI fails if the committed bundle does not match the pinned package version, so
-the file cannot drift from its source. Change behavior in the SDK package,
-publish, bump the pin, and rebuild — never by editing this file.
+CI checks the committed bundle against the pinned package version, so the file
+cannot drift from its source. Change behavior in the SDK package, publish, bump
+the pin in `scripts/build-capture.mjs`, and rebuild — never by editing this file.
+
+**Until the package is published**, the pin cannot resolve and the check reports
+`SKIPPED` and passes: "stale" only means something once there is a published
+source of truth to be stale against, and a permanently red check trains people
+to ignore CI. It fails hard the moment the pin resolves and disagrees. The
+committed bundle is unverified until then, which is one of the reasons the
+plugin PR is a draft.
 
 Bundling it here rather than having the CLI place it elsewhere keeps both
 install routes identical: the README documents native
