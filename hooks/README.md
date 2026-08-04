@@ -25,11 +25,11 @@ revoked without uninstalling the plugin.
 Consent is granted through the CLI, not here:
 
 ```bash
-introspection plugin install --target claude-code --telemetry=metadata
+introspection plugin install --target claude-code --telemetry=on
 introspection plugin telemetry off      # revoke, plugin stays installed
 ```
 
-`INTROSPECTION_PLUGIN_TELEMETRY=off|on|metadata|full` overrides per session.
+`INTROSPECTION_PLUGIN_TELEMETRY=off|on|full` overrides per session.
 
 ## It cannot break a session
 

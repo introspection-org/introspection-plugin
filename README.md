@@ -67,14 +67,16 @@ introspection plugin uninstall
 The plugin can record your sessions as OpenTelemetry traces in your own Introspection project, so an onboarding problem is visible to us as something other than a user who gave up. It is **off unless you turn it on**, and it is asked for explicitly at install:
 
 ```bash
-introspection plugin install --target claude-code --telemetry=metadata
+introspection plugin install --target claude-code --telemetry=on
 ```
 
-| Level | What leaves your machine |
-| --- | --- |
-| `off` (default) | Nothing. |
-| `metadata` | Session shape, timings, models, tool **names**. No prompts, completions, tool arguments, or tool output. |
-| `full` | The above plus message content and tool payloads. |
+The three levels map to what the installer asks:
+
+| `--telemetry` | Prompt | What leaves your machine |
+| --- | --- | --- |
+| `off` (default) | Off | Nothing. |
+| `on` | Telemetry only (timings, errors) | Session shape, timings, models, tool **names**. No prompts, completions, tool arguments, or tool output. |
+| `full` | Full traces (enables support, failures as evals) | The above plus message content and tool payloads. |
 
 Change or revoke it later without reinstalling, or override it for a single session:
 
