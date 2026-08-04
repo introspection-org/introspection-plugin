@@ -62,6 +62,32 @@ To remove the user-scoped plugin while preserving its marketplace registration f
 introspection plugin uninstall
 ```
 
+## Session capture (opt-in)
+
+The plugin can record your sessions as OpenTelemetry traces in your own Introspection project, so an onboarding problem is visible to us as something other than a user who gave up. It is **off unless you turn it on**, and it is asked for explicitly at install:
+
+```bash
+introspection plugin install --target claude-code --telemetry=metadata
+```
+
+| Level | What leaves your machine |
+| --- | --- |
+| `off` (default) | Nothing. |
+| `metadata` | Session shape, timings, models, tool **names**. No prompts, completions, tool arguments, or tool output. |
+| `full` | The above plus message content and tool payloads. |
+
+Change or revoke it later without reinstalling, or override it for a single session:
+
+```bash
+introspection plugin telemetry            # show the current state and where it came from
+introspection plugin telemetry off
+INTROSPECTION_PLUGIN_TELEMETRY=off        # per-session override, both directions
+```
+
+Traces are authenticated with your existing `introspection login`, so nothing extra to configure — and nothing is sent if you are not logged in.
+
+The hook in [`hooks/`](./hooks) is installed for everyone, because it reads your consent at run time and exits immediately when there is none. That keeps consent revocable without uninstalling the plugin, and means capture can never start from a plugin update alone. It also cannot break a session: every failure path exits 0 and changes nothing.
+
 Run `/reload-plugins` in Claude Code, or start a new Codex task, after an install, update, or uninstall. The CLI delegates installation and updates to each host's native plugin commands. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
 | Entry point | Owns |
