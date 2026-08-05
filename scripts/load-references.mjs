@@ -8,6 +8,7 @@
  * workflow steps remain cheap without leaking stale state into another session.
  */
 import { createHash, randomUUID } from 'node:crypto'
+import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -16,13 +17,25 @@ import { fileURLToPath } from 'node:url'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const CONTRACT_PATH = join(ROOT, 'CONTRACT.md')
 const VERSION_PATH = join(ROOT, 'version.txt')
+const CAPTURE_PATH = join(ROOT, 'hooks', 'capture.mjs')
 const sessionId = process.env.PLUGIN_REFERENCE_SESSION_ID
   ?? process.env.CODEX_THREAD_ID
-  ?? process.env.CLAUDE_SESSION_ID
+  ?? process.env.CLAUDE_CODE_SESSION_ID
   ?? process.env.CURSOR_SESSION_ID
   ?? randomUUID()
 const sessionHash = createHash('sha256').update(sessionId).digest('hex').slice(0, 16)
 const DEFAULT_CACHE = join(tmpdir(), `introspection-plugin-reference-index-${sessionHash}.json`)
+
+// Generic host hooks do not prove that an Introspection workflow is active. The
+// reference loader itself is the trusted lifecycle signal: request activation
+// silently, then let a later host hook bind it to that hook's authoritative
+// transcript/session payload. Failure is silent and fail-closed.
+if ((process.env.CODEX_THREAD_ID || process.env.CLAUDE_CODE_SESSION_ID) && existsSync(CAPTURE_PATH)) {
+  spawnSync(process.execPath, [CAPTURE_PATH, '--request-activation'], {
+    stdio: 'ignore',
+    timeout: 2_000,
+  })
+}
 
 function fail(message, code = 1) {
   console.error(`reference loader: ${message}`)

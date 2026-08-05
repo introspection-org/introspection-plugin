@@ -69,11 +69,21 @@ host detection fails, and that path has no CLI to vendor anything. It also keeps
 the capture behavior version-pinned to a plugin release, which is the same
 reasoning [`BOUNDARIES.md`](../BOUNDARIES.md) applies to permission.
 
-## Codex
+## Per-session activation
 
-Codex is supported by the capture engine — same binary, `--host codex` — but is
-not wired up here yet. It needs `[features] hooks = true`, the plugin enabled in
-`config.toml`, and the hook trusted via `/hooks`, and its hook payload shape
-needs confirming against a live session first. See the design doc's §5.3.
+Claude Code and Codex share one fail-closed protocol. Generic hooks do not prove
+that the Introspection plugin is active. Instead, the existing
+`scripts/load-references.mjs` executable silently asks this bundle to record a
+session-scoped activation request while it performs its normal reference load.
+The next completion hook binds that request to the hook's authoritative session
+id, transcript path, and native turn boundary, producing an atomic private marker.
+Without that exact rollout-bound marker, the bundle returns `not-activated`
+without reading or exporting transcript content and never defaults to byte zero.
+
+Claude Code requires 2.1.136 or newer. Codex requires CLI/Desktop 0.146.0 or newer, an enabled plugin,
+and the plugin hook trusted through `/hooks`. Plugins are not available in the
+Codex IDE extension. A workflow that never executes the reference loader is not
+captured; that safe incompleteness is preferable to inferring skill use from
+prompt text or shell command strings.
 
 [pkg]: https://www.npmjs.com/package/@introspection-sdk/coding-agent
