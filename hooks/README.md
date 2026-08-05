@@ -29,7 +29,10 @@ introspection plugin install --target claude-code --telemetry=on
 introspection plugin telemetry off      # revoke, plugin stays installed
 ```
 
-`INTROSPECTION_PLUGIN_TELEMETRY=off|on|full` overrides per session.
+`INTROSPECTION_PLUGIN_TELEMETRY=off|on|full` can narrow stored consent for one
+session, such as `full` to `on` or any enabled level to `off`. It never enables
+capture without stored consent or widens an existing grant; use
+`introspection plugin telemetry on|full` for that explicit change.
 
 ## It cannot break a session
 

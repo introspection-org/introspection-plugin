@@ -78,12 +78,15 @@ The three levels control what is captured:
 | `on` | Telemetry only (timings, errors) | Session shape, timings, models, tool **names**, working directory, and Git branch. No prompts, completions, tool arguments, or tool output. |
 | `full` | Full traces (enables support, failures as evals) | The above plus message content and tool payloads. |
 
-Change or revoke it later without reinstalling, or override it for a single session:
+Change or revoke it later without reinstalling. For a single session, the
+environment override can only narrow the stored choice; it cannot enable
+capture or widen `on` to `full`:
 
 ```bash
 introspection plugin telemetry            # show the current state and where it came from
 introspection plugin telemetry off
-INTROSPECTION_PLUGIN_TELEMETRY=off        # per-session override, both directions
+INTROSPECTION_PLUGIN_TELEMETRY=off        # disable for this session
+INTROSPECTION_PLUGIN_TELEMETRY=on         # omit content from a stored full grant
 ```
 
 Traces are authenticated with your existing `introspection login`, so nothing extra to configure — and nothing is sent if you are not logged in.
