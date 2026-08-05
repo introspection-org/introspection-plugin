@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.0](https://github.com/introspection-org/introspection-plugin/compare/v0.5.0...v0.6.0) (2026-08-05)
+
+
+### Features
+
+* **hooks:** capture sessions as traces when the user opts in ([#38](https://github.com/introspection-org/introspection-plugin/issues/38)) ([f1c14cb](https://github.com/introspection-org/introspection-plugin/commit/f1c14cbc9b2383af836dd65937d5368ab4f87680))
+
+
+### Bug Fixes
+
+* **skills:** authorize unresolved first-runtime registration ([#36](https://github.com/introspection-org/introspection-plugin/issues/36)) ([aef447d](https://github.com/introspection-org/introspection-plugin/commit/aef447df279e396123d16f96c3bf15112cb7960d))
+
 ## [0.5.0](https://github.com/introspection-org/introspection-plugin/compare/v0.4.0...v0.5.0) (2026-08-03)
 
 
