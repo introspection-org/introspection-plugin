@@ -75,8 +75,8 @@ The three levels control what is captured:
 | `--telemetry` | Mode | What leaves your machine |
 | --- | --- | --- |
 | `off` (default) | Off | Nothing. |
-| `on` | Telemetry only (timings, errors) | Session shape, timings, models, tool **names**, working directory, and Git branch. No prompts, completions, tool arguments, or tool output. |
-| `full` | Full traces (enables support, failures as evals) | The above plus message content and tool payloads. |
+| `on` | Telemetry only (timings, errors) | Session shape, timings, models, and tool **names**. No prompts, completions, tool arguments, tool output, working directory, or Git branch. |
+| `full` | Full traces (enables support, failures as evals) | The above plus message content, tool payloads, working directory, and Git branch. |
 
 Change or revoke it later without reinstalling. For a single session, the
 environment override can only narrow the stored choice; it cannot enable

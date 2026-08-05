@@ -46,7 +46,7 @@ class UnavailableError extends Error {}
  * release tag rather than the placeholder in its source `package.json`.
  */
 const PACKAGE = "@introspection-sdk/coding-agent";
-const VERSION = "0.17.0";
+const VERSION = "0.18.1";
 
 /** Pinned so a bundler release cannot silently change the committed artifact. */
 const ESBUILD = "esbuild@0.27.7";
