@@ -42,14 +42,11 @@ class UnavailableError extends Error {}
  * Bump this to adopt new capture behavior, then rerun this script. A range would
  * make the committed bundle depend on when it was built, which defeats `--check`.
  *
- * NOTE: the SDK repo releases every package at one repo-wide version stamped
- * from the release tag, not at the placeholder in its `package.json`. So the
- * first published version of this package will be whatever the SDK's next
- * release is (0.16.x at time of writing), never `0.0.0-unpublished`. Set this to
- * that version once it exists — see `--check` below for what happens until then.
+ * The SDK repo releases every package at one repo-wide version stamped from the
+ * release tag rather than the placeholder in its source `package.json`.
  */
 const PACKAGE = "@introspection-sdk/coding-agent";
-const VERSION = "0.0.0-unpublished";
+const VERSION = "0.17.0";
 
 /** Pinned so a bundler release cannot silently change the committed artifact. */
 const ESBUILD = "esbuild@0.27.7";

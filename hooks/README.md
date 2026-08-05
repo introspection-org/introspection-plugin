@@ -55,12 +55,8 @@ CI checks the committed bundle against the pinned package version, so the file
 cannot drift from its source. Change behavior in the SDK package, publish, bump
 the pin in `scripts/build-capture.mjs`, and rebuild — never by editing this file.
 
-**Until the package is published**, the pin cannot resolve and the check reports
-`SKIPPED` and passes: "stale" only means something once there is a published
-source of truth to be stale against, and a permanently red check trains people
-to ignore CI. It fails hard the moment the pin resolves and disagrees. The
-committed bundle is unverified until then, which is one of the reasons the
-plugin PR is a draft.
+The exact published version is a release gate: CI fails if the pin cannot be
+installed or if rebuilding it does not reproduce the committed bundle.
 
 Bundling it here rather than having the CLI place it elsewhere keeps both
 install routes identical: the README documents native
