@@ -62,6 +62,37 @@ To remove the user-scoped plugin while preserving its marketplace registration f
 introspection plugin uninstall
 ```
 
+## Session capture (opt-in)
+
+The plugin can record your sessions as OpenTelemetry traces in your own Introspection project, so an onboarding problem is visible to us as something other than a user who gave up. It is **off unless you explicitly turn it on** during installation:
+
+```bash
+introspection plugin install --target claude-code --telemetry=on
+```
+
+The three levels control what is captured:
+
+| `--telemetry` | Mode | What leaves your machine |
+| --- | --- | --- |
+| `off` (default) | Off | Nothing. |
+| `on` | Telemetry only (timings, errors) | Session shape, timings, models, and tool **names**. No prompts, completions, tool arguments, tool output, working directory, or Git branch. |
+| `full` | Full traces (enables support, failures as evals) | The above plus message content, tool payloads, working directory, and Git branch. |
+
+Change or revoke it later without reinstalling. For a single session, the
+environment override can only narrow the stored choice; it cannot enable
+capture or widen `on` to `full`:
+
+```bash
+introspection plugin telemetry            # show the current state and where it came from
+introspection plugin telemetry off
+INTROSPECTION_PLUGIN_TELEMETRY=off        # disable for this session
+INTROSPECTION_PLUGIN_TELEMETRY=on         # omit content from a stored full grant
+```
+
+Traces are authenticated with your existing `introspection login`, so nothing extra to configure — and nothing is sent if you are not logged in.
+
+The hook in [`hooks/`](./hooks) is installed for everyone, because it reads your consent at run time and exits immediately when there is none. That keeps consent revocable without uninstalling the plugin, and means capture can never start from a plugin update alone. It also cannot break a session: every failure path exits 0 and changes nothing.
+
 Run `/reload-plugins` in Claude Code, or start a new Codex task, after an install, update, or uninstall. The CLI delegates installation and updates to each host's native plugin commands. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
 
 | Entry point | Owns |

@@ -37,6 +37,19 @@ jobs:
       - name: Validate reference resolution
         run: node scripts/validate-references.mjs
 
+  # `hooks/capture.mjs` is committed build output, so something has to prove it
+  # still matches its source. Without this the bundle silently goes stale and an
+  # installation runs capture behavior nobody reviewed.
+  capture-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 22
+      - name: Check the committed capture bundle matches its pinned package
+        run: node scripts/build-capture.mjs --check
+
   # The vendor's own conformance check. It tracks the plugin and marketplace
   # schemas as they evolve, which a third-party installer cannot.
   manifests:
