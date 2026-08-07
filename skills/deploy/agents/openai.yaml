@@ -1,4 +1,4 @@
 interface:
   display_name: "Deploy"
-  short_description: "Publish and verify a proven agent recipe"
-  default_prompt: "Publish this proven recipe and verify its Introspection runtime in staging."
+  short_description: "Deploy and verify a tested agent recipe"
+  default_prompt: "Deploy this agent recipe after testing it locally with representative cases, then verify its Introspection runtime in staging."

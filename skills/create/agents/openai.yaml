@@ -1,4 +1,4 @@
 interface:
   display_name: "Create"
-  short_description: "Build and locally prove a new agent"
-  default_prompt: "Build and locally prove a new agent recipe, from scratch or from a recipe template."
+  short_description: "Build and locally test a new agent"
+  default_prompt: "Build a new agent recipe, from scratch or from a recipe template, and test it locally with representative cases."

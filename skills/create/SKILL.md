@@ -1,11 +1,11 @@
 ---
 name: create
-description: Create a focused agent from scratch or a recipe template, ending with a locally proven Introspection recipe, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, Pi, recipe, eval, or Harbor requests that are not migration, production improvement, or deployment. Keep migration and deployment separate. Adding a tool, skill, capability, or MCP server to an agent that already exists is improve rather than create, even when the request is phrased as building something new, and an existing agent implementation to be ported is migrate.
+description: Create a focused agent from scratch or a recipe template, ending with an agent recipe tested locally with representative cases, and provide supporting Pi, Pi Recipes, evaluation, or Harbor guidance during agent development. Use for create, build, scaffold, template, Pi, recipe, eval, or Harbor requests that are not migration, production improvement, or deployment. Keep migration and deployment separate. Adding a tool, skill, capability, or MCP server to an agent that already exists is improve rather than create, even when the request is phrased as building something new, and an existing agent implementation to be ported is migrate.
 ---
 
 # Create
 
-Turn the user's desired outcome into a locally proven recipe, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `migrate` and platform deployment to `deploy`.
+Turn the user's desired outcome into an agent recipe tested locally with representative cases, starting from a template they brought when they have one. End with something they can run in Pi; leave migration to `migrate` and platform deployment to `deploy`.
 
 ## Standing rules
 
@@ -60,7 +60,7 @@ Either way the starting point is a catalog template, so the routes differ only i
 
 Name the catalog repository itself, such as `template-starter`, rather than the bare key or a URL: the template option takes the repository name, and the CLI resolves it within the catalog organization.
 
-A template also carries a scaffolded model-access mode in its Introspection manifest — managed gateway or the user's own provider account — which is inherited input in the same way its model is. Leave the default in place for local proof, but surface the choice before handing off to deployment rather than letting the scaffold settle it silently.
+A template also carries a scaffolded model-access mode in its Introspection manifest — managed gateway or the user's own provider account — which is inherited input in the same way its model is. Resolve which model and provider will be used for local proof before claiming the agent recipe works. The recipe can keep inherited model configuration unless deployment requires an explicit choice.
 
 Which route obtained the template decides who rewrites its identity. When the scaffolding verb fetched it, adoption is part of that verb: it drops the template's history and origin, removes its runtime manifest, writes a new one under the agreed slug with the package path rebased for wherever the recipe landed, and renames the package. Read the result back, but do not rewrite it — re-authoring the manifest is how a correct package acquires a stale path or a second manifest, and two manifests are ambiguous at deploy.
 
@@ -72,7 +72,7 @@ Catalog templates are licensed, so preserve their `LICENSE` and attribution. Tha
 
 Do not treat an ordinary application repository as an existing agent. Route to `migrate` only when an agent implementation exists and the user wants its approved behavior preserved.
 
-This skill owns an agent up to its first locally proven version. Changing one that already exists — adding a tool, skill, capability, or MCP server to it, or altering how it behaves — is `improve`, even when the request is phrased as building something new. Resolve which case you are in before scaffolding.
+This skill owns an agent until its agent recipe has been tested locally with representative cases. Changing one that already exists — adding a tool, skill, capability, or MCP server to it, or altering how it behaves — is `improve`, even when the request is phrased as building something new. Resolve which case you are in before scaffolding.
 
 Writing application code that calls a deployed runtime is not agent creation, even though "build" reaches this skill. When the user wants a backend, service, or product surface that runs tasks for their end users, route to `operate`, which owns that boundary, rather than scaffolding a recipe.
 
@@ -90,7 +90,7 @@ Continue the interview the opening question started, in small rounds rather than
 
 Develop a small varied acceptance set with the user. Cover ordinary work, ambiguity, missing access, partial failure, and a request that should be declined. Use concrete good and bad outcomes to resolve vague requirements. Let this step's references resolve the portable package, the provider and model choices that affect it, and the harness, extension, and local-execution behavior. Defer tool upgrades, setup, and authentication until an approved execution step actually needs them; the Introspection CLI is the exception, and this step's references resolves it up front so it is available in this and later shells.
 
-Treat any model written by a scaffold or template as inherited input, not an approved provider decision. Resolve it explicitly before editing the recipe. If the request and repository do not establish a safe choice, pause for that decision instead of silently retaining the placeholder.
+Treat any model written by a scaffold or template as inherited input. Resolve the model and provider used for local proof before editing the agent recipe. If the request and repository do not establish a safe choice for local proof, pause for that decision instead of silently retaining a placeholder. The agent recipe can retain inherited model configuration when deployment does not require an explicit choice.
 
 ## Align with the user
 
@@ -131,7 +131,7 @@ introspection local
 
 Give the local command as the CLI's own run verb rather than a raw Pi invocation. The verb resolves the local runtime manifest and launches Pi itself, so it keeps the single developer surface the user already has installed and does not require them to know a second command or where the package root sits. Confirm its flags from help before handing them over. Keep Introspection options before the argument separator and Pi arguments after it; do not invent a prompt flag. Resolve manifest discovery separately from process working directory: `--work-dir` changes where Introspection searches for manifests, while Pi inherits the directory from which the CLI was invoked.
 
-Use the deploy skill to publish it. Do not deploy when the approved output is not inside a Git worktree, and explain that boundary. Invite the user to request another iteration.
+Use the deploy skill to deploy it. Do not deploy when the approved output is not inside a Git worktree, and explain that boundary. Invite the user to request another iteration.
 
 ## Firm boundaries
 

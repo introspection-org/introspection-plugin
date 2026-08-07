@@ -1,11 +1,11 @@
 ---
 name: deploy
-description: Deploy a locally proven Introspection recipe and verify the runtime it resolves to, in staging and then in production, including the environment-scoped bindings each lane needs, and recover a deployed version that is causing harm. Use when the user asks to deploy, publish, stage, promote, release, configure bindings for, or create a runtime for an agent recipe; or to roll back, repin, withdraw, restore, or otherwise recover a deployed version. Bindings a version needs before it can serve an environment belong here; correcting a binding on a runtime that is already serving is operate.
+description: Deploy an agent recipe tested locally with representative cases and verify the runtime it resolves to, in staging and then in production, including the environment-scoped bindings each lane needs, and recover a deployed version that is causing harm. Use when the user asks to deploy, stage, promote, or release an agent recipe, configure bindings for it, or create its runtime; or to roll back, repin, withdraw, restore, or otherwise recover a deployed version. Bindings a version needs before it can serve an environment belong here; correcting a binding on a runtime that is already serving is operate.
 ---
 
 # Deploy
 
-Deploy the locally proven recipe identified by the request. Resolve the actual package and platform identity instead of assuming the current directory or a passing check points to the right thing.
+Deploy the agent recipe identified by the request after it has been tested locally with representative cases. Resolve the actual package and platform identity instead of assuming the current directory or a passing check points to the right thing.
 
 ## Standing rules
 
@@ -29,7 +29,7 @@ Step `deploy/readiness`.
 
 Confirm local evidence in proportion to the agent's risk. For a newly created agent, use its approved acceptance set and retained local proof. For a migrated or improved agent, use the parity or comparison evidence from that workflow. Do not invent an eval, Harbor task, or calibrated judge when the job does not require one.
 
-A request to deploy does not guarantee there is anything to deploy. When no recipe exists yet, the work ahead is `create` from the user's outcome or `migrate` from an existing implementation, and deployment resumes once that produces a locally proven package. Say so and continue there rather than scaffolding a recipe under a deployment brief that never proposed one.
+A request to deploy does not guarantee there is anything to deploy. When no agent recipe exists yet, the work ahead is `create` from the user's outcome or `migrate` from an existing implementation, and deployment resumes once that produces an agent recipe tested locally with representative cases. Say so and continue there rather than scaffolding an agent recipe under a deployment brief that never proposed one.
 
 Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 

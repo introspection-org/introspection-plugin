@@ -1,6 +1,6 @@
 {
   "name": "introspection-org-introspection-plugin",
-  "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection.",
+  "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection. A vertical agent owns a focused outcome from request to result.",
   "owner": {
     "name": "introspection-org"
   },
@@ -8,7 +8,7 @@
     {
       "name": "introspection",
       "source": "./",
-      "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection.",
+      "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection. A vertical agent owns a focused outcome from request to result.",
       "author": {
         "name": "Introspection"
       },
