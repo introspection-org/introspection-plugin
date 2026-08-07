@@ -1,6 +1,6 @@
 {
   "name": "introspection",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection. A vertical agent owns a focused outcome from request to result.",
   "author": {
     "name": "Introspection",
@@ -16,6 +16,7 @@
     "evals"
   ],
   "skills": "./skills/",
+  "hooks": "./hooks/codex-hooks.json",
   "interface": {
     "displayName": "Introspection",
     "shortDescription": "Build, ship, and operate production agents",
