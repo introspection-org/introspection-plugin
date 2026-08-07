@@ -120,6 +120,14 @@ Preserve the recipe composition model. Put instructions shared across the root a
 
 A clean package check is necessary but is not behavioral proof. Prove one credible ordinary happy path first in a fresh Pi process. Only after the basic runtime works should you exercise the smallest additional approved cases needed to support the claimed behavior and important boundaries. Record unexecuted cases as planned coverage and never describe them as proven. Keep the evidence needed to explain what worked, what failed, and why. Fix the owning layer rather than accumulating prompt instructions. Once repeatable checks are credible, offer the user the Pi TUI so they can try the agent and continue iterating with them until the local version is accepted or a concrete blocker remains.
 
+Use `introspection local -p <prompt>` for a one-shot smoke case. When the
+representative cases justify a persistent eval, use the `eval-run` reference
+loaded by `create/measure`: run the unchanged Recipe through the selected native
+runner, preserve its cases and scoring contract, and inspect the native traces
+behind the normalized comparison. Bootstrap selected Harbor routinely through
+`introspection setup --target harbor --yes`; add selected Evalite dependencies
+with the repository's existing package manager.
+
 ## Hand off
 
 Explain what the agent now does, the evidence behind it, known limits, and the resolved package path and agent name. Give the actual local command:
@@ -129,7 +137,7 @@ Try locally:
 introspection local
 ```
 
-Give the local command as the CLI's own run verb rather than a raw Pi invocation. The verb resolves the local runtime manifest and launches Pi itself, so it keeps the single developer surface the user already has installed and does not require them to know a second command or where the package root sits. Confirm its flags from help before handing them over. Keep Introspection options before the argument separator and Pi arguments after it; do not invent a prompt flag. Resolve manifest discovery separately from process working directory: `--work-dir` changes where Introspection searches for manifests, while Pi inherits the directory from which the CLI was invoked.
+Give the local command as the CLI's own run verb rather than a raw Pi invocation. The verb resolves the local runtime manifest and launches Pi itself, so it keeps the single developer surface the user already has installed and does not require them to know a second command or where the package root sits. Confirm its flags from help before handing them over. Use first-class `-p` or `--print` for one-shot prompts and `--mode json` only when structured Pi events are required. Keep Introspection options before the argument separator and advanced Pi arguments after it. Resolve manifest discovery separately from process working directory: `--work-dir` changes where Introspection searches for manifests, while Pi inherits the directory from which the CLI was invoked.
 
 Use the deploy skill to deploy it. Do not deploy when the approved output is not inside a Git worktree, and explain that boundary. Invite the user to request another iteration.
 
