@@ -121,7 +121,7 @@ Preserve the recipe composition model. Put instructions shared across the root a
 A clean package check is necessary but is not behavioral proof. Prove one credible ordinary happy path first in a fresh Pi process. Only after the basic runtime works should you exercise the smallest additional approved cases needed to support the claimed behavior and important boundaries. Record unexecuted cases as planned coverage and never describe them as proven. Keep the evidence needed to explain what worked, what failed, and why. Fix the owning layer rather than accumulating prompt instructions. Once repeatable checks are credible, offer the user the Pi TUI so they can try the agent and continue iterating with them until the local version is accepted or a concrete blocker remains.
 
 Use `introspection local -p <prompt>` for a one-shot smoke case. When the
-representative cases justify a persistent eval, use the `eval-run` reference
+representative cases justify a persistent eval, use the evaluation guidance
 loaded by `create/measure`: run the unchanged Recipe through the selected native
 runner, preserve its cases and scoring contract, and inspect the native traces
 behind the normalized comparison. Bootstrap selected Harbor routinely through
