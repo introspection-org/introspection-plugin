@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/introspection-org/introspection-plugin/compare/v0.6.0...v0.7.0) (2026-08-08)
+
+
+### Features
+
+* **skills:** clarify workflows and add local evaluation guidance ([#39](https://github.com/introspection-org/introspection-plugin/issues/39)) ([7f3adba](https://github.com/introspection-org/introspection-plugin/commit/7f3adba18e4ed1b31b1e74c16d60cba2cb2a1bfc))
+
 ## [0.6.0](https://github.com/introspection-org/introspection-plugin/compare/v0.5.0...v0.6.0) (2026-08-05)
 
 
