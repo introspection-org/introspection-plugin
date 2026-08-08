@@ -1,7 +1,7 @@
 {
   "name": "introspection",
   "version": "0.6.0",
-  "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection.",
+  "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection. A vertical agent owns a focused outcome from request to result.",
   "author": {
     "name": "Introspection",
     "url": "https://github.com/introspection-org"
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Introspection",
     "shortDescription": "Build, ship, and operate production agents",
-    "longDescription": "Create focused recipes from scratch or templates, migrate existing agents, deploy through the Introspection CLI, improve from production evidence or a chosen target, and operate a live project.",
+    "longDescription": "Create focused agent recipes from scratch or templates, migrate existing agents, deploy through the Introspection CLI, improve from production evidence or a chosen target, and operate a live project.",
     "composerIcon": "./assets/square-square.svg",
     "logo": "./assets/square-square.svg",
     "developerName": "Introspection",
@@ -33,7 +33,7 @@
     "defaultPrompt": [
       "Describe the outcome you want and the right workflow is selected for you.",
       "Build me an agent that ... , or port an existing agent while preserving its behavior.",
-      "Fix what production evidence shows is going wrong, then publish and verify the proven recipe.",
+      "Fix what production evidence shows is going wrong, then deploy and verify the tested agent recipe.",
       "Ask what a task, status, or cost means, or change live platform state."
     ]
   }

@@ -1,7 +1,7 @@
 {
   "name": "introspection",
   "version": "0.6.0",
-  "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection.",
+  "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection. A vertical agent owns a focused outcome from request to result.",
   "author": {
     "name": "Introspection",
     "url": "https://github.com/introspection-org"

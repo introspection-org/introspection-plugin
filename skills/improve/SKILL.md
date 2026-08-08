@@ -1,6 +1,6 @@
 ---
 name: improve
-description: Improve a deployed or local Introspection agent with human approval, using production evidence by default or adapting to a user-directed prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Use when the user asks to fix, change, or investigate why an Introspection agent behaves as it does and the remedy is expected to land as a change to the recipe. Fix supported problems, publish focused pull requests, add evals only for durable behavioral risk, and propose experiments only when trustworthy offline evidence cannot decide. To read live platform state, explain a task or completion reason, or change a judge, experiment, binding, or credential, use operate instead.
+description: Improve a deployed or local Introspection agent with human approval, using production evidence by default or adapting to a user-directed prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Use when the user asks to fix, change, or investigate why an Introspection agent behaves as it does and the remedy is expected to land as a change to the agent recipe. Fix supported problems, publish focused pull requests, add evals only for durable behavioral risk, and propose experiments only when trustworthy offline evidence cannot decide. To read live platform state, explain a task or completion reason, or change a judge, experiment, binding, or credential, use operate instead.
 ---
 
 # Improve
@@ -61,7 +61,7 @@ Parallelize independent reproduction or validation when it materially speeds pro
 
 Step `improve/measure` whenever the remedy involves measurement — an eval, a judge, or a calibration.
 
-Add an approved eval alongside or before the fix so baseline and candidate comparisons remain trustworthy. If only an experiment is justified, describe the hypothesis, candidates, success measure, guardrails, traffic assumptions, and stopping rule; do not launch it.
+Add an approved eval alongside or before the fix so baseline and candidate comparisons remain trustworthy. Follow the evaluation guidance loaded for this step to execute the unchanged baseline and candidate through the same selected runner. When the failure depends on production conversation context, retain the same source task snapshot and turn, replay the original next turn for baseline evidence, and use `--prompt` only for the approved counterfactual. Keep model, trials, Recipe selection, cases, scorer or verifier, and runner configuration fixed, and inspect tool calls and results in the native artifacts before concluding that capability behavior changed. Bootstrap selected Harbor routinely through `introspection setup --target harbor --yes`; add selected Evalite dependencies with the repository's existing package manager. If only an experiment is justified, describe the hypothesis, candidates, success measure, guardrails, traffic assumptions, and stopping rule; do not launch it.
 
 ## Hand off
 

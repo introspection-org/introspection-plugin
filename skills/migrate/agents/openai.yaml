@@ -1,4 +1,4 @@
 interface:
   display_name: "Migrate"
-  short_description: "Convert an existing agent into a recipe"
-  default_prompt: "Convert this existing agent into a locally proven Introspection recipe, preserving its approved behavior."
+  short_description: "Convert an existing agent into an agent recipe"
+  default_prompt: "Convert this existing agent into an agent recipe, preserve its approved behavior, and test it locally with representative cases."
