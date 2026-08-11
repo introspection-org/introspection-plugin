@@ -1,6 +1,6 @@
 {
   "name": "introspection",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Create, migrate, deploy, improve, and operate vertical agents on Introspection. A vertical agent owns a focused outcome from request to result.",
   "author": {
     "name": "Introspection",
