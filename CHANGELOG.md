@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/introspection-org/introspection-plugin/compare/v0.7.0...v0.7.1) (2026-08-11)
+
+
+### Bug Fixes
+
+* **skills:** clarify eval measurement and workflow routing ([#41](https://github.com/introspection-org/introspection-plugin/issues/41)) ([a197c85](https://github.com/introspection-org/introspection-plugin/commit/a197c850aaa3b5777046b7a0a7b199731b525122))
+
 ## [0.7.0](https://github.com/introspection-org/introspection-plugin/compare/v0.6.0...v0.7.0) (2026-08-08)
 
 
