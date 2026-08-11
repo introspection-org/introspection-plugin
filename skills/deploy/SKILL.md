@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Deploy an agent recipe tested locally with representative cases and verify the runtime it resolves to, in staging and then in production, including the environment-scoped bindings each lane needs, and recover a deployed version that is causing harm. Use when the user asks to deploy, stage, promote, or release an agent recipe, configure bindings for it, or create its runtime; or to roll back, repin, withdraw, restore, or otherwise recover a deployed version. Bindings a version needs before it can serve an environment belong here; correcting a binding on a runtime that is already serving is operate.
+description: Deploy, stage, promote, release, roll back, or restore an Introspection agent recipe version. Use when the requested outcome changes which version an environment serves, including creating or verifying its runtime and configuring bindings required for that deployment.
 ---
 
 # Deploy

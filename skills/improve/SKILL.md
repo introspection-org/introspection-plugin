@@ -1,6 +1,6 @@
 ---
 name: improve
-description: Improve a deployed or local Introspection agent with human approval, using production evidence by default or adapting to a user-directed prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Use when the user asks to fix, change, or investigate why an Introspection agent behaves as it does and the remedy is expected to land as a change to the agent recipe. Fix supported problems, publish focused pull requests, add evals only for durable behavioral risk, and propose experiments only when trustworthy offline evidence cannot decide. To read live platform state, explain a task or completion reason, or change a judge, experiment, binding, or credential, use operate instead.
+description: Propose or implement a repository-owned change to an existing Introspection agent recipe. This includes changes to its behavior, prompts, tools, configuration, tests, evals, and judge definitions. Use when the desired output is a recommended or implemented repository change, even if the current request only asks for analysis or design.
 ---
 
 # Improve
@@ -12,6 +12,8 @@ Improve the right layer of an existing agent with a human in the loop. Start fro
 Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
 
 Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. Before the first CLI command, whichever section reaches it first, that step is `*/setup`. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
+
+Step `improve/measure` before proposing, designing, selecting a runner for, creating, running, or calibrating an eval or judge. Loading its guidance is read-only and does not authorize edits, paid runs, or other mutations; the confirmation boundaries below still apply.
 
 ## Resolve the target and evidence
 
@@ -58,8 +60,6 @@ Step `improve/change`.
 Establish the unchanged baseline before editing whenever behavioral measurement is warranted. Change one coherent mechanism at a time, then run affected cases, tests, and non-regression controls in fresh Pi sessions with frozen configuration where comparison matters. Inspect the traces behind score changes and iterate until the approved change is proven or a concrete blocker remains.
 
 Parallelize independent reproduction or validation when it materially speeds proof, but do not allow competing edits to the same implementation or scope drift. Keep the result as one coherent change and focused pull request unless the approved plan explicitly separates independent fixes. Preserve unrelated work.
-
-Step `improve/measure` whenever the remedy involves measurement — an eval, a judge, or a calibration.
 
 Add an approved eval alongside or before the fix so baseline and candidate comparisons remain trustworthy. Follow the evaluation guidance loaded for this step to execute the unchanged baseline and candidate through the same selected runner. When the failure depends on production conversation context, retain the same source task snapshot and turn, replay the original next turn for baseline evidence, and use `--prompt` only for the approved counterfactual. Keep model, trials, Recipe selection, cases, scorer or verifier, and runner configuration fixed, and inspect tool calls and results in the native artifacts before concluding that capability behavior changed. Bootstrap selected Harbor routinely through `introspection setup --target harbor --yes`; add selected Evalite dependencies with the repository's existing package manager. If only an experiment is justified, describe the hypothesis, candidates, success measure, guardrails, traffic assumptions, and stopping rule; do not launch it.
 

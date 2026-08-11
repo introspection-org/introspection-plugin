@@ -1,6 +1,6 @@
 ---
 name: migrate
-description: Convert an existing agent into an agent recipe tested locally with representative cases while preserving its approved behavior. Use when the user asks to migrate, port, or package an existing agent for Pi and Introspection, or points at an agent implementation built on another framework or host and wants it to run here. An outcome with no existing implementation is create; an agent that is already an agent recipe and needs to behave differently is improve; deploying the result is deploy.
+description: Port an existing agent implementation from another framework or host into an Introspection agent recipe while preserving its approved behavior.
 ---
 
 # Migrate
