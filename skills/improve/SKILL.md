@@ -1,6 +1,6 @@
 ---
 name: improve
-description: Improve a deployed or local Introspection agent with human approval, using production evidence by default or adapting to a user-directed prompt, skill, tool, configuration, eval, failure pattern, runtime, or goal. Use when the user asks to fix, change, or investigate why an Introspection agent behaves as it does and the remedy is expected to land as a change to the agent recipe. Fix supported problems, publish focused pull requests, add evals only for durable behavioral risk, and propose experiments only when trustworthy offline evidence cannot decide. To read live platform state, explain a task or completion reason, or change a judge, experiment, binding, or credential, use operate instead.
+description: Change an existing Introspection agent recipe or its repository-owned behavioral assets. This includes prompts, tools, configuration, tests, evals, and judge definitions. Use when the requested end product is a repository change.
 ---
 
 # Improve

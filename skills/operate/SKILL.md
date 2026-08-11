@@ -1,6 +1,6 @@
 ---
 name: operate
-description: Operate a live Introspection project and answer questions about it — inspect tasks, conversations, observations, patterns, metrics, runtimes, bindings, and keys, and change platform state that is not an agent recipe change, including judge enablement and sampling, experiments, credentials, bindings on an already-serving runtime, and cancelling work. Use when the user asks what a task, status, or completion reason means, why work is queued, stuck, or cancelled, how often something happens or what it costs, how an application should authenticate to and call a runtime, or asks to enable, disable, sample, rotate, revoke, cancel, or list a live platform resource. Also use for organization-level work the CLI does not own, where the job is to guide the user through the dashboard — adding or removing a teammate, changing a role, connecting GitHub, Linear, or Slack, or checking plan, usage, and billing. A task that is queued, cancelled, or failing mechanically belongs here; an agent whose answers are poor is improve.
+description: Inspect or operate a live Introspection project when the requested end product is an answer or a live platform-state change. This includes tasks, traces, observations, patterns, metrics, runtimes, credentials, bindings, and live judge settings.
 ---
 
 # Operate
