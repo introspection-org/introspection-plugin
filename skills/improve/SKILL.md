@@ -1,6 +1,6 @@
 ---
 name: improve
-description: Change an existing Introspection agent recipe or its repository-owned behavioral assets. This includes prompts, tools, configuration, tests, evals, and judge definitions. Use when the requested end product is a repository change.
+description: Propose or implement a repository-owned change to an existing Introspection agent recipe. This includes changes to its behavior, prompts, tools, configuration, tests, evals, and judge definitions. Use when the desired output is a recommended or implemented repository change, even if the current request only asks for analysis or design.
 ---
 
 # Improve
