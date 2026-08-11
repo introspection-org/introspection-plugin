@@ -1,6 +1,6 @@
 ---
 name: operate
-description: Inspect or operate a live Introspection project or organization when the requested end product is an answer or a live platform-state change. This includes tasks, traces, observations, patterns, metrics, runtimes, credentials, bindings, live judge settings, and organization administration such as teammates, roles, integrations, plan, usage, and billing.
+description: Inspect, explain, or change live Introspection state without changing the agent recipe. Use for tasks that are queued, stuck, failed, or cancelled; traces, observations, patterns, metrics, costs, runtimes, credentials, bindings, live judge settings, application authentication, and organization administration such as teammates, roles, integrations, plan, usage, and billing.
 ---
 
 # Operate

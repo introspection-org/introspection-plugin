@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Make an Introspection agent recipe version serve in an environment, or change which version that environment serves. This includes deployment-time bindings, promotion, rollback, repinning, withdrawal, and restoration.
+description: Deploy, stage, promote, release, roll back, or restore an Introspection agent recipe version. Use when the requested outcome changes which version an environment serves, including creating or verifying its runtime and configuring bindings required for that deployment.
 ---
 
 # Deploy
