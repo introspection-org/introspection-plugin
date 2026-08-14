@@ -8,7 +8,6 @@
  * workflow steps remain cheap without leaking stale state into another session.
  */
 import { createHash, randomUUID } from 'node:crypto'
-import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -16,26 +15,13 @@ import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const CONTRACT_PATH = join(ROOT, 'CONTRACT.md')
-const VERSION_PATH = join(ROOT, 'version.txt')
-const CAPTURE_PATH = join(ROOT, 'hooks', 'capture.mjs')
-const sessionId = process.env.PLUGIN_REFERENCE_SESSION_ID
+const sessionId = process.env.INTROSPECTION_SKILL_SESSION_ID
   ?? process.env.CODEX_THREAD_ID
   ?? process.env.CLAUDE_CODE_SESSION_ID
   ?? process.env.CURSOR_SESSION_ID
   ?? randomUUID()
 const sessionHash = createHash('sha256').update(sessionId).digest('hex').slice(0, 16)
-const DEFAULT_CACHE = join(tmpdir(), `introspection-plugin-reference-index-${sessionHash}.json`)
-
-// Generic host hooks do not prove that an Introspection workflow is active. The
-// reference loader itself is the trusted lifecycle signal: request activation
-// silently, then let a later host hook bind it to that hook's authoritative
-// transcript/session payload. Failure is silent and fail-closed.
-if ((process.env.CODEX_THREAD_ID || process.env.CLAUDE_CODE_SESSION_ID) && existsSync(CAPTURE_PATH)) {
-  spawnSync(process.execPath, [CAPTURE_PATH, '--request-activation'], {
-    stdio: 'ignore',
-    timeout: 2_000,
-  })
-}
+const DEFAULT_CACHE = join(tmpdir(), `introspection-skill-reference-index-${sessionHash}.json`)
 
 function fail(message, code = 1) {
   console.error(`reference loader: ${message}`)
@@ -51,38 +37,8 @@ function usage() {
   node scripts/load-references.mjs --search <words>
 
 Options:
-  --cache <path>       Cache path (default: $PLUGIN_INDEX_CACHE or a session-scoped temporary file)
+  --cache <path>       Cache path (default: $INTROSPECTION_REFERENCE_CACHE or a session-scoped temporary file)
   --index-url <url>    Override the URL discovered from CONTRACT.md`)
-}
-
-function parseSemver(value, label) {
-  const match = value.match(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/)
-  if (!match) fail(`${label} is not valid SemVer: "${value}"`, 3)
-  return {
-    core: match.slice(1, 4).map(Number),
-    prerelease: match[4]?.split('.') ?? [],
-  }
-}
-
-function compareSemver(left, right) {
-  for (let index = 0; index < 3; index += 1) {
-    if (left.core[index] !== right.core[index]) return left.core[index] - right.core[index]
-  }
-  if (left.prerelease.length === 0 || right.prerelease.length === 0) {
-    return right.prerelease.length - left.prerelease.length
-  }
-  for (let index = 0; index < Math.max(left.prerelease.length, right.prerelease.length); index += 1) {
-    const leftPart = left.prerelease[index]
-    const rightPart = right.prerelease[index]
-    if (leftPart === undefined || rightPart === undefined) return leftPart === undefined ? -1 : 1
-    if (leftPart === rightPart) continue
-    const leftNumeric = /^\d+$/.test(leftPart)
-    const rightNumeric = /^\d+$/.test(rightPart)
-    if (leftNumeric && rightNumeric) return Number(leftPart) - Number(rightPart)
-    if (leftNumeric !== rightNumeric) return leftNumeric ? -1 : 1
-    return leftPart < rightPart ? -1 : 1
-  }
-  return 0
 }
 
 let exitCodeSeed = 0
@@ -118,9 +74,9 @@ if (
 const contract = readFileSync(CONTRACT_PATH, 'utf8')
 const discoveredUrl = contract.match(/https?:\/\/[^\s`)]+\/plugin\/index\.json/)?.[0]
 const indexUrl = options.indexUrl ?? process.env.PLUGIN_INDEX_URL ?? discoveredUrl
-if (!indexUrl) fail(`could not discover the plugin index URL from ${CONTRACT_PATH}`)
+if (!indexUrl) fail(`could not discover the reference index URL from ${CONTRACT_PATH}`)
 
-const cachePath = resolve(options.cache ?? process.env.PLUGIN_INDEX_CACHE ?? DEFAULT_CACHE)
+const cachePath = resolve(options.cache ?? process.env.INTROSPECTION_REFERENCE_CACHE ?? DEFAULT_CACHE)
 let state = null
 if (existsSync(cachePath)) {
   try {
@@ -142,19 +98,6 @@ if (!state) {
   }
 }
 state.loaded ??= {}
-
-const minimumVersion = state.index.plugin?.min_supported_version
-if (minimumVersion) {
-  let installedVersion
-  try {
-    installedVersion = readFileSync(VERSION_PATH, 'utf8').trim()
-  } catch {
-    fail(`cannot read ${VERSION_PATH} to check the index minimum ${minimumVersion}`, 3)
-  }
-  if (compareSemver(parseSemver(installedVersion, VERSION_PATH), parseSemver(minimumVersion, 'plugin.min_supported_version')) < 0) {
-    fail(`installed plugin ${installedVersion} is below the index minimum ${minimumVersion}; upgrade the plugin before continuing`, 3)
-  }
-}
 
 for (const key of options.listSourcePages) {
   const source = state.index.sources?.[key]

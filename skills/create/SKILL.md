@@ -9,7 +9,7 @@ Turn the user's desired outcome into an agent recipe tested locally with represe
 
 ## Standing rules
 
-Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, and how `degradation` is honored when a fetch fails.
 
 Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 
@@ -19,7 +19,7 @@ Step `*/setup`.
 
 Keep setup brief so the conversation can be about the agent. This step's references own getting a compatible CLI and running its canonical setup workflow before scaffolding; follow them rather than driving the commands from here.
 
-When the machine is already ready, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When there are changes to make, show the rendered plan once and proceed without asking for installation approval. Entering this workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host plugin through that reviewed setup path.
+When the machine is already ready, report that in one line and move to the agent. Do not narrate the probes that established it or print a dependency table whose every row reads "already fine". When there are changes to make, show the rendered plan once and proceed without asking for installation approval. Entering this workflow authorizes routine bootstrap of the required Node runtime, CLI, Pi, Recipes, and detected-host Agent Skills through that reviewed setup path.
 
 ## Think like an agent builder
 

@@ -9,7 +9,7 @@ Improve the right layer of an existing agent with a human in the loop. Start fro
 
 ## Standing rules
 
-Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, how `degradation` is honored when a fetch fails, and the version floor below which this plugin must stop.
+Read the [standing boundaries](../../BOUNDARIES.md) and the [reference loading contract](../../CONTRACT.md) before acting. Boundaries hold in every workflow; the contract governs how the index is fetched, how a step id resolves to the content that step needs, and how `degradation` is honored when a fetch fails.
 
 Sections below name a step id. Look it up in the index's `steps` map on entering the step and load what it lists. Before the first CLI command, whichever section reaches it first, that step is `*/setup`. The index also carries entries no step routes; match `load_when` against the work rather than assuming the set is what this skill mentions.
 

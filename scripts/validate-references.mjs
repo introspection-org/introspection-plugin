@@ -1,8 +1,8 @@
 /**
- * Validates that the plugin stays a router.
+ * Validates that the Agent Skills bundle stays a router.
  *
- * The plugin resolves all content through the reference index by key, so that
- * references can be corrected without a plugin release. This script enforces
+ * The bundle resolves all content through the reference index by key, so that
+ * references can be corrected without a CLI release. This script enforces
  * that contract offline:
  *
  *   1. The only URL allowed in a skill is the index itself.
@@ -15,7 +15,7 @@
  * exists. A network failure skips that check rather than failing the build; a
  * reachable index that is missing a cited key is a hard failure.
  *
- * A new reference must land in introspection-docs before plugin content cites
+ * A new reference must land in introspection-docs before skill content cites
  * it, or this check fails on the published index. To validate both sides
  * together first, serve the docs branch and point this script at it:
  *
@@ -36,11 +36,9 @@ const INDEX_URL = 'https://docs.introspection.dev/plugin/index.json'
 // Point at a locally served docs branch to validate an unpublished reference.
 const RESOLVED_INDEX_URL = process.env.PLUGIN_INDEX_URL ?? INDEX_URL
 
-const CONTRACT = `Resolve every reference and source through the plugin reference index at \`${INDEX_URL}\`, by key and never by a hard-coded content URL. When command execution is available, use \`scripts/load-references.mjs\` beside this contract: it discovers the effective index URL from this file, caches the index, resolves step and page keys without \`jq\`, and reports provenance. Do not fetch the index or content URLs yourself, refresh the loader, or inspect its cache after using it. Use its \`--search\` and \`--list-source-pages\` operations when you need to discover a key. If command execution is unavailable, fetch the index once per session with the host's web-fetch tool and retain it for later step lookups. Load an entry only when the work reaches the step its \`load_when\` describes. For indexed references report the key and \`revision\`; for an external source without an indexed revision report the content hash the loader emits. When a source declares a \`pages\` map, choose the page whose \`read_for\` matches the question instead of recalling a filename; the set of pages is not fixed.
+const CONTRACT = `Resolve every reference and source through the Introspection reference index at \`${INDEX_URL}\`, by key and never by a hard-coded content URL. When command execution is available, use \`scripts/load-references.mjs\` beside this contract: it discovers the effective index URL from this file, caches the index, resolves step and page keys without \`jq\`, and reports provenance. Do not fetch the index or content URLs yourself, refresh the loader, or inspect its cache after using it. Use its \`--search\` and \`--list-source-pages\` operations when you need to discover a key. If command execution is unavailable, fetch the index once per session with the host's web-fetch tool and retain it for later step lookups. Load an entry only when the work reaches the step its \`load_when\` describes. For indexed references report the key and \`revision\`; for an external source without an indexed revision report the content hash the loader emits. When a source declares a \`pages\` map, choose the page whose \`read_for\` matches the question instead of recalling a filename; the set of pages is not fixed.
 
-On a failed fetch, honor the entry's \`degradation\`: \`advisory\` proceeds at reduced depth, \`required-for-step\` skips only that step and says so, and \`gating\` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.
-
-Each host owns its own plugin updates, so do not prompt for one. The single exception is a safety floor: if the \`version.txt\` beside this plugin's \`skills/\` directory is below the index's \`plugin.min_supported_version\`, stop and require an upgrade rather than acting on content shaped for newer semantics.`
+On a failed fetch, honor the entry's \`degradation\`: \`advisory\` proceeds at reduced depth, \`required-for-step\` skips only that step and says so, and \`gating\` stops. Never reconstruct, paraphrase, or improvise a reference you could not load; name the key that failed.`
 
 const errors = []
 const citedKeys = new Set()
@@ -60,7 +58,7 @@ for (const name of skillNames) {
 }
 
 // The single source of the loading contract. Everything else links to it, so if
-// this drifts or disappears the whole plugin silently loses its fetch rules.
+// this drifts or disappears the whole bundle silently loses its fetch rules.
 try {
   const contractBody = readFileSync(join(ROOT, 'CONTRACT.md'), 'utf8')
   if (!contractBody.includes(CONTRACT)) {
@@ -72,14 +70,14 @@ try {
 
 try {
   const loader = readFileSync(join(ROOT, 'scripts', 'load-references.mjs'), 'utf8')
-  for (const required of ['--step', '--reference', '--source-page', '--list-source-pages', '--search', 'PLUGIN_INDEX_CACHE']) {
+  for (const required of ['--step', '--reference', '--source-page', '--list-source-pages', '--search', 'INTROSPECTION_REFERENCE_CACHE']) {
     if (!loader.includes(required)) errors.push(`reference loader is missing ${required} support`)
   }
 } catch {
   errors.push('scripts/load-references.mjs is missing or unreadable')
 }
 
-// Permission lives in the released artifact, never in a fetched page. If this
+// Permission lives in the installed bundle, never in a fetched page. If this
 // file goes missing the skills lose their standing limits silently.
 try {
   const boundaries = readFileSync(join(ROOT, 'BOUNDARIES.md'), 'utf8')
@@ -189,7 +187,7 @@ if (index) {
     for (const page of Object.keys(source.pages ?? {})) knownPages.add(page)
   }
   // An index with no `steps` field predates step routing entirely, which is a
-  // published index older than this plugin content rather than a broken route.
+  // published index older than this skill content rather than a broken route.
   // Skip, the same way an unreachable index is skipped. Once the field exists,
   // a missing id is a real dangling route and fails.
   // The inverse of the existence check. A step the index routes but no skill
@@ -211,19 +209,19 @@ if (index) {
     const knownSteps = new Set(Object.keys(index.steps))
     for (const stepId of [...citedStepIds].sort()) {
       if (!knownSteps.has(stepId)) {
-        errors.push(`step "${stepId}" is declared by plugin content but absent from the published index`)
+        errors.push(`step "${stepId}" is declared by skill content but absent from the published index`)
       }
     }
   }
 
   for (const key of [...citedPageKeys].sort()) {
     if (!knownPages.has(key)) {
-      errors.push(`page key "${key}" is cited by plugin content but no indexed source declares it`)
+      errors.push(`page key "${key}" is cited by skill content but no indexed source declares it`)
     }
   }
   for (const key of [...citedKeys].sort()) {
     if (!known.has(key)) {
-      errors.push(`key "${key}" is cited by plugin content but absent from the published index`)
+      errors.push(`key "${key}" is cited by skill content but absent from the published index`)
     }
   }
 } else {
@@ -237,5 +235,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `✓ plugin resolves content by key only (${citedKeys.size} keys and ${citedPageKeys.size} pages cited${index ? ', all present in the published index' : ''})`,
+  `✓ Agent Skills resolve content by key only (${citedKeys.size} keys and ${citedPageKeys.size} pages cited${index ? ', all present in the published index' : ''})`,
 )

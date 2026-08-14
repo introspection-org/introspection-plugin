@@ -3,10 +3,10 @@
 These hold in every workflow. A skill's own `Firm boundaries` section adds to
 them; nothing overrides them.
 
-They live here, in the released and version-pinned plugin, rather than in a
-fetched page. A fetched document can be corrected without a release, which is
-right for knowledge and wrong for permission: a change to what an agent is
-allowed to do should not reach every installation without a version behind it.
+They live here, in the CLI-managed Agent Skills bundle, rather than in a fetched
+page. A fetched document can be corrected immediately, which is right for
+knowledge and wrong for permission: a change to what an agent is allowed to do
+must travel with a reviewed CLI-managed skill update.
 
 ## Interfaces
 
@@ -17,7 +17,7 @@ allowed to do should not reach every installation without a version behind it.
 ## Tooling and bootstrap
 
 - Do not install, upgrade, set up, or authenticate tooling before the workflow needs the corresponding command. The Introspection CLI is the sole exception: every entry path needs it, so resolve it up front.
-- Entering a workflow authorizes routine local bootstrap of the required runtime, CLI, Pi, Recipes, and detected-host plugin through the reviewed setup path. Explain required changes; do not ask whether to install them.
+- Entering a workflow authorizes routine local bootstrap of the required runtime, CLI, Pi, Recipes, and detected-host Agent Skills through the reviewed setup path. Explain required changes; do not ask whether to install them.
 - Stop only for a concrete unsupported path, a failed command, a host permission gate, or a recovery that would replace an unrecognized development build.
 - Do not silently change provider, model, package manager, installation method, or authentication.
 
