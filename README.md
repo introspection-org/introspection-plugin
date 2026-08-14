@@ -38,11 +38,11 @@ current session can read the relevant `SKILL.md` directly.
 
 | Entry point | Owns |
 | --- | --- |
-| `create` | Build an agent recipe and test it locally with representative cases |
-| `migrate` | Convert an existing agent into an agent recipe and test it locally with representative cases |
-| `improve` | Improve an agent from production evidence by default or an optional user-directed target |
-| `deploy` | Deploy a tested agent recipe, verify its Introspection runtime, and recover a bad version |
-| `operate` | Inspect and explain a live project, and change platform state that is not an agent recipe change |
+| `introspection-create` | Build an agent recipe and test it locally with representative cases |
+| `introspection-migrate` | Convert an existing agent into an agent recipe and test it locally with representative cases |
+| `introspection-improve` | Improve an agent from production evidence by default or an optional user-directed target |
+| `introspection-deploy` | Deploy a tested agent recipe, verify its Introspection runtime, and recover a bad version |
+| `introspection-operate` | Inspect and explain a live project, and change platform state that is not an agent recipe change |
 
 ## Repository contents
 

@@ -37,8 +37,9 @@ This keeps detailed guidance correctable without a CLI release. Consequences:
   validated as an Agent Skill.
 - Prefer discovery through `load_when` for advisory material. Cite required or
   gating entries at the step that needs them.
-- Keep `skills/` limited to `create`, `migrate`, `deploy`, `improve`, and
-  `operate`. They split by the request's terminal state.
+- Keep `skills/` limited to `introspection-create`, `introspection-migrate`,
+  `introspection-deploy`, `introspection-improve`, and `introspection-operate`.
+  They split by the request's terminal state.
 - Keep the shared loading contract in `CONTRACT.md` and standing permissions in
   `BOUNDARIES.md`; skills link them rather than copying them.
 

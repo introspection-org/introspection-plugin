@@ -35,9 +35,10 @@ must travel with a reviewed CLI-managed skill update.
 
 ## Routing
 
-Route by what the request ends in: a new recipe is `create`, an existing agent
-ported into one is `migrate`, changed agent behavior landed through the
-repository is `improve`, a change to what an environment resolves to is
-`deploy`, and an answer or a changed live resource that leaves the recipe alone
-is `operate`. Name the workflow you hand to; never stop at a mutation boundary
+Route by what the request ends in: a new recipe is `introspection-create`, an
+existing agent ported into one is `introspection-migrate`, changed agent
+behavior landed through the repository is `introspection-improve`, a change to
+what an environment resolves to is `introspection-deploy`, and an answer or a
+changed live resource that leaves the recipe alone is `introspection-operate`.
+Name the workflow you hand to; never stop at a mutation boundary
 without one.

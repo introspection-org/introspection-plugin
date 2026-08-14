@@ -1,0 +1,4 @@
+interface:
+  display_name: "Introspection Deploy"
+  short_description: "Deploy and verify a tested agent recipe"
+  default_prompt: "Use $introspection-deploy to deploy this tested agent recipe and verify its Introspection runtime."

@@ -1,5 +1,5 @@
 ---
-name: deploy
+name: introspection-deploy
 description: Deploy, stage, promote, release, roll back, or restore an Introspection agent recipe version. Use when the requested outcome changes which version an environment serves, including creating or verifying its runtime and configuring bindings required for that deployment.
 ---
 
@@ -29,7 +29,7 @@ Step `deploy/readiness`.
 
 Confirm local evidence in proportion to the agent's risk. For a newly created agent, use its approved acceptance set and retained local proof. For a migrated or improved agent, use the parity or comparison evidence from that workflow. Do not invent an eval, Harbor task, or calibrated judge when the job does not require one.
 
-A request to deploy does not guarantee there is anything to deploy. When no agent recipe exists yet, the work ahead is `create` from the user's outcome or `migrate` from an existing implementation, and deployment resumes once that produces an agent recipe tested locally with representative cases. Say so and continue there rather than scaffolding an agent recipe under a deployment brief that never proposed one.
+A request to deploy does not guarantee there is anything to deploy. When no agent recipe exists yet, the work ahead is `introspection-create` from the user's outcome or `introspection-migrate` from an existing implementation, and deployment resumes once that produces an agent recipe tested locally with representative cases. Say so and continue there rather than scaffolding an agent recipe under a deployment brief that never proposed one.
 
 Read the current deployment and connection workflows routed through the `introspection-docs` source, then confirm exact operations with focused installed CLI help. If documentation and help disagree, resolve the installed version and upgrade path rather than guessing.
 
@@ -90,11 +90,11 @@ Keep creation, activation, deployment, and verification distinct. A runtime or v
 
 When the bindings required by staging are available, configure the in-scope staging bindings, select the candidate for staging, and run a representative task through the runtime-group slug so the smoke test exercises staging resolution. Follow the task to completion, retrieve its exact conversation ID, and inspect the complete conversation. A completed status is not a passing smoke test: read the task row's reason for ending, since a task torn down by the idle window also reports completed while having produced nothing. If the task failed before its agent ran there is no conversation to retrieve, and the task row's own failure reason — not a missing conversation — is the evidence. Before claiming verification, prove that the intended pushed Git HEAD, the selected runtime-version SHA, and the task-resolved runtime SHA are identical.
 
-Use an API key scoped to the environment under test; the credential is what selects the environment, so a staging key cannot verify production. Load the `runtime-auth` reference when the product needs more than a trusted backend calling on its own behalf. A move to a service-account application, an identity provider, or federation is an integration decision the user makes rather than a deployment step — hand it to `operate`, which owns that boundary, instead of stopping.
+Use an API key scoped to the environment under test; the credential is what selects the environment, so a staging key cannot verify production. Load the `runtime-auth` reference when the product needs more than a trusted backend calling on its own behalf. A move to a service-account application, an identity provider, or federation is an integration decision the user makes rather than a deployment step — hand it to `introspection-operate`, which owns that boundary, instead of stopping.
 
 ## Carry both environments
 
-Bindings are environment-scoped. Configuring them so a version can serve an environment is part of deploying and belongs here; inspecting or correcting a binding on a runtime that is already serving is ordinary operation and belongs to `operate`. A configured development or staging endpoint, variable, or credential does not configure production. A first-runtime bootstrap may register a version while bindings are unresolved, but it is not production-ready and must not be presented or exercised as such. Resolve the applicable rows for every environment the recipe will serve, and configure the missing production ones before directing production traffic or before a later merge activates a new version.
+Bindings are environment-scoped. Configuring them so a version can serve an environment is part of deploying and belongs here; inspecting or correcting a binding on a runtime that is already serving is ordinary operation and belongs to `introspection-operate`. A configured development or staging endpoint, variable, or credential does not configure production. A first-runtime bootstrap may register a version while bindings are unresolved, but it is not production-ready and must not be presented or exercised as such. Resolve the applicable rows for every environment the recipe will serve, and configure the missing production ones before directing production traffic or before a later merge activates a new version.
 
 Merging is the user's release decision, so do not merge to make production move. Explain what the merge will activate, which production bindings are in place, and what remains unresolved.
 
@@ -104,7 +104,7 @@ After the user merges, verify production the same way staging was verified: run 
 
 Step `deploy/recover`.
 
-This workflow owns recovery for any deployed version, not only one it deployed itself. An incident that arrives cold — no prior deployment in this session — is in scope, and so is one handed over mid-investigation by `improve`. Resolve the runtime identity the same way any deployment does, then load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
+This workflow owns recovery for any deployed version, not only one it deployed itself. An incident that arrives cold — no prior deployment in this session — is in scope, and so is one handed over mid-investigation by `introspection-improve`. Resolve the runtime identity the same way any deployment does, then load the `runtime-recovery` reference before acting on a suspected bad version; it owns the choice between repinning, withdrawing, restoring, and deleting.
 
 Confirm the version is the cause before withdrawing it, and never delete one while an incident is open. Recovery restores service without fixing the recipe — the commit that produced the version is still on the branch — so report the environment as recovered but not yet fixed until a corrected version is verified the way any deployment is.
 
@@ -114,7 +114,7 @@ Report the deployed identity, active commit per environment, runtime and task ev
 
 When first-runtime registration completed with unresolved bindings, explicitly report the registered runtime and commit; list each missing binding and every environment it affects; state that staging and production remain unverified; name the configuration required next; and give the local handoff as `introspection dev --mcp NAME=URL`. Do not substitute an invented endpoint for `URL`.
 
-A verified deployment is where the agent starts producing evidence rather than where the work ends. From here, live tasks, conversations, and costs are read through `operate`, and what that evidence shows about the agent's behavior is acted on through `improve`, which lands the next version back through this workflow.
+A verified deployment is where the agent starts producing evidence rather than where the work ends. From here, live tasks, conversations, and costs are read through `introspection-operate`, and what that evidence shows about the agent's behavior is acted on through `introspection-improve`, which lands the next version back through this workflow.
 
 ## Firm boundaries
 
@@ -130,5 +130,5 @@ A verified deployment is where the agent starts producing evidence rather than w
 - Do not invent an endpoint value or run a smoke task in an environment with a missing required binding.
 - Do not create a GitHub repository without approval of its owner, name, and visibility, or when an appropriate remote already exists.
 - Do not block a valid logged-in user on speculative GitHub App confirmation; surface repository access failures only from supported operations.
-- Do not change judge state, experiments, credentials, application identity, or task lifecycle in this workflow; hand them to `operate` rather than performing them under a deployment brief that never named their blast radius.
+- Do not change judge state, experiments, credentials, application identity, or task lifecycle in this workflow; hand them to `introspection-operate` rather than performing them under a deployment brief that never named their blast radius.
 - Do not substitute another platform interface when a required operation is unavailable through the current CLI; expose the gap.

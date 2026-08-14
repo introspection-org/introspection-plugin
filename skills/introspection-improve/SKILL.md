@@ -1,5 +1,5 @@
 ---
-name: improve
+name: introspection-improve
 description: Propose or implement a repository-owned change to an existing Introspection agent recipe. This includes changes to its behavior, prompts, tools, configuration, tests, evals, and judge definitions. Use when the desired output is a recommended or implemented repository change, even if the current request only asks for analysis or design.
 ---
 
@@ -21,7 +21,7 @@ Step `improve/read-evidence`.
 
 For a deployed agent, use the current Introspection CLI and documentation to resolve the project, runtime group, active version, recipe repository, and deployed Git commit. For a local agent, resolve the package root, selected agent, worktree, and available tests or evals. Confirm that the evidence and local code describe the same target before drawing conclusions.
 
-An agent the user wants improved is not always a recipe yet. When the target turns out to be an implementation on another framework or host, the change lands through `migrate` first, since there is no recipe to change; carry the observed defect into that translation instead of restating it later.
+An agent the user wants improved is not always a recipe yet. When the target turns out to be an implementation on another framework or host, the change lands through `introspection-migrate` first, since there is no recipe to change; carry the observed defect into that translation instead of restating it later.
 
 Adapt the evidence plan to the focus:
 
@@ -72,7 +72,7 @@ Try locally:
 introspection local
 ```
 
-Use the deploy skill to ship it. A merged pull request does not move production on its own; the change reaches users only once a version carrying that commit is deployed and verified.
+Use the `introspection-deploy` skill to ship it. A merged pull request does not move production on its own; the change reaches users only once a version carrying that commit is deployed and verified.
 
 ## Firm boundaries
 
@@ -82,4 +82,4 @@ Use the deploy skill to ship it. A merged pull request does not move production 
 - Do not treat a user hypothesis, aggregate score, or pattern label as root-cause proof.
 - Do not create evals or experiments by default; make them earn their permanent cost.
 - Do not silently switch providers, models, authentication, or target identity.
-- Do not mutate runtimes, bindings, judges, experiments, or deployments in this workflow. Hand version and environment changes to `deploy` and other live-state changes to `operate`; do not report them as unsupported.
+- Do not mutate runtimes, bindings, judges, experiments, or deployments in this workflow. Hand version and environment changes to `introspection-deploy` and other live-state changes to `introspection-operate`; do not report them as unsupported.

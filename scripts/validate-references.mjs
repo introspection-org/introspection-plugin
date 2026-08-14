@@ -44,7 +44,13 @@ const errors = []
 const citedKeys = new Set()
 const citedPageKeys = new Set()
 const citedStepIds = new Set()
-const expectedSkills = new Set(['create', 'deploy', 'improve', 'migrate', 'operate'])
+const expectedSkills = new Set([
+  'introspection-create',
+  'introspection-deploy',
+  'introspection-improve',
+  'introspection-migrate',
+  'introspection-operate',
+])
 
 const skillNames = readdirSync(SKILLS_DIR, { withFileTypes: true })
   .filter(entry => entry.isDirectory())

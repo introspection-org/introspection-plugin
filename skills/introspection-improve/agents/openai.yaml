@@ -1,0 +1,4 @@
+interface:
+  display_name: "Introspection Improve"
+  short_description: "Improve an agent from evidence"
+  default_prompt: "Use $introspection-improve to improve this agent from production evidence or a focus I name."

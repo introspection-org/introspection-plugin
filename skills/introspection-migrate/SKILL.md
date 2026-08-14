@@ -1,11 +1,11 @@
 ---
-name: migrate
+name: introspection-migrate
 description: Port an existing agent implementation from another framework or host into an Introspection agent recipe while preserving its approved behavior.
 ---
 
 # Migrate
 
-Translate an existing agent into a portable agent recipe tested locally with representative cases in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `deploy`.
+Translate an existing agent into a portable agent recipe tested locally with representative cases in one coherent pass. Preserve approved behavior, not accidental implementation shape. Leave deployment to `introspection-deploy`.
 
 ## Standing rules
 
@@ -19,7 +19,7 @@ The source architecture is evidence, not the target design. Preserve the outcome
 
 Prefer the smallest faithful translation. Recipes are not valuable merely because every source component has a counterpart.
 
-Confirm there is a migration to perform before translating anything. An agent that is already an agent recipe has nothing to port, so a request to change how it behaves is `improve`; an outcome the user describes with no implementation behind it is `create`. Preserved behavior is the test — when the user cannot point at something whose behavior must survive, this is not the workflow.
+Confirm there is a migration to perform before translating anything. An agent that is already an agent recipe has nothing to port, so a request to change how it behaves is `introspection-improve`; an outcome the user describes with no implementation behind it is `introspection-create`. Preserved behavior is the test — when the user cannot point at something whose behavior must survive, this is not the workflow.
 
 ## Understand the source
 
@@ -52,9 +52,9 @@ Try locally:
 introspection local
 ```
 
-Give the local command as the CLI's run verb, matching `create`. Scaffolding writes the manifest the verb resolves, and the verb preflights Pi and the recipe instead of surfacing a missing Recipes extension as a bare Pi argument error. Fall back to a direct Pi invocation only when the package deliberately has no manifest, and say why.
+Give the local command as the CLI's run verb, matching `introspection-create`. Scaffolding writes the manifest the verb resolves, and the verb preflights Pi and the recipe instead of surfacing a missing Recipes extension as a bare Pi argument error. Fall back to a direct Pi invocation only when the package deliberately has no manifest, and say why.
 
-Use the deploy skill to deploy it. Invite the user to request another iteration.
+Use the `introspection-deploy` skill to deploy it. Invite the user to request another iteration.
 
 ## Firm boundaries
 
