@@ -1,5 +1,12 @@
 # Reference loading contract
 
+> **This repository is RETIRED.** The plugin is no longer installable and
+> `introspection upgrade` removes it. The canonical, live copies of the workflow
+> skills, boundaries and reference contract are in
+> [`introspection-docs`](https://github.com/introspection-org/introspection-docs)
+> `skills/` — edit them there. The copies here are plugin-era and are served to
+> nobody.
+
 This contract is binding on every public skill and capability module in this
 plugin. They link here rather than restating it, so there is exactly one copy to
 read and exactly one to change.

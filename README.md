@@ -1,99 +1,46 @@
-# Introspection
+# Introspection (retired)
+
+> **This plugin is retired and is no longer installable. Nothing here is live.**
+>
+> Agent Skills are now read from the Introspection CLI, and the five workflow
+> skills are owned by [`introspection-docs`](https://github.com/introspection-org/introspection-docs)
+> (`skills/`), which serves them through the skills manifest. The copies under
+> `skills/` in this repository are the older plugin-era versions and are **not**
+> what a user receives.
+>
+> ```bash
+> introspection skills           # list and read the current workflows
+> introspection setup --check    # inspect the current setup plan
+> ```
+>
+> **If you still have the old plugin installed**, `introspection upgrade`
+> removes it — it detects the retired user-scoped plugin and marketplace entries
+> on both hosts and takes them out. You do not need to uninstall anything by
+> hand.
+>
+> ```bash
+> introspection upgrade --dry-run   # shows the removal before it happens
+> introspection upgrade
+> ```
+>
+> Every `introspection plugin …` command this README used to document
+> (`install`, `update`, `uninstall`, `telemetry`) **no longer exists** in the
+> CLI. Session capture never shipped past the plugin, so there is no consent
+> state to revoke.
+>
+> The repository is kept for history and for the capture engine in `hooks/`,
+> which may be revived independently of the plugin. See
+> [`plugin-observability.md`](https://github.com/introspection-org/introspection-cloud/blob/main/docs/design/plugin-observability.md)
+> for that design and why it was retired.
 
 A small set of progressively disclosed skills for building and operating agents with Pi, Pi Recipes, and Introspection. A vertical agent owns a focused outcome from request to result.
 
-## Install
+## Included skills (historical)
 
-Install the Introspection CLI once:
-
-```bash
-npm install -g @introspection-ai/cli
-```
-
-Then inspect the complete setup plan for Pi, Recipes, and every supported coding-agent host detected on your machine:
-
-```bash
-introspection setup --check
-```
-
-Apply that reviewed plan when it contains changes:
-
-```bash
-introspection setup --yes
-```
-
-Setup is idempotent and preflights every detected host before changing Pi, Recipes, or plugins. The rendered plan is the execution contract; explain and apply it as one operation instead of reproducing its component decisions with separate install commands.
-
-Setup configures each detected plugin at user scope. If automatic installation or host detection fails, register the `stable` release channel and install with the host's native marketplace commands:
-
-```bash
-# Claude Code
-claude plugin marketplace add https://github.com/introspection-org/introspection-plugin.git#stable
-claude plugin install introspection@introspection-org-introspection-plugin --scope user
-```
-
-```bash
-# Codex
-codex plugin marketplace add introspection-org/introspection-plugin@stable
-codex plugin add introspection@introspection-org
-```
-
-The `stable` branch advances only when Release Please creates a versioned release, so normal development on `main` cannot change an installed plugin. The machine-readable [`stable-channel.json`](./stable-channel.json) travels with that branch and lets the CLI produce an accurate update plan before asking a host to refresh its marketplace.
-
-Update installed plugins with:
-
-```bash
-introspection plugin update --dry-run
-introspection plugin update
-```
-
-The broader upgrade command includes installed plugins on a best-effort basis alongside the CLI, Recipes, and Pi:
-
-```bash
-introspection upgrade --dry-run
-introspection upgrade
-```
-
-To remove the user-scoped plugin while preserving its marketplace registration for an easy reinstall:
-
-```bash
-introspection plugin uninstall
-```
-
-## Session capture (opt-in)
-
-The plugin can record your sessions as OpenTelemetry traces in your own Introspection project, so an onboarding problem is visible to us as something other than a user who gave up. It is **off unless you explicitly turn it on** during installation:
-
-```bash
-introspection plugin install --target claude-code --telemetry=on
-```
-
-The three levels control what is captured:
-
-| `--telemetry` | Mode | What leaves your machine |
-| --- | --- | --- |
-| `off` (default) | Off | Nothing. |
-| `on` | Telemetry only (timings, errors) | Session shape, timings, models, and tool **names**. No prompts, completions, tool arguments, tool output, working directory, or Git branch. |
-| `full` | Full traces (enables support, failures as evals) | The above plus message content, tool payloads, working directory, and Git branch. |
-
-Change or revoke it later without reinstalling. For a single session, the
-environment override can only narrow the stored choice; it cannot enable
-capture or widen `on` to `full`:
-
-```bash
-introspection plugin telemetry            # show the current state and where it came from
-introspection plugin telemetry off
-INTROSPECTION_PLUGIN_TELEMETRY=off        # disable for this session
-INTROSPECTION_PLUGIN_TELEMETRY=on         # omit content from a stored full grant
-```
-
-Traces are authenticated with your existing `introspection login`, so nothing extra to configure — and nothing is sent if you are not logged in.
-
-The hook in [`hooks/`](./hooks) is installed for everyone, because it reads your consent at run time and exits immediately when there is none. That keeps consent revocable without uninstalling the plugin, and means capture can never start from a plugin update alone. It also cannot break a session: every failure path exits 0 and changes nothing.
-
-Run `/reload-plugins` in Claude Code, or start a new Codex task, after an install, update, or uninstall. The CLI delegates installation and updates to each host's native plugin commands. The guided workflows inspect and design with the context already available. They defer tool installation, setup, authentication checks, and upgrades until the workflow actually needs the relevant command, and use an existing compatible installation when one is available.
-
-## Included skills
+These are the workflows the plugin routed. They live on in
+[`introspection-docs`](https://github.com/introspection-org/introspection-docs)
+`skills/` and are reached with `introspection skills <name>`; the table records
+what each one owned.
 
 | Entry point | Owns |
 | --- | --- |
@@ -117,27 +64,29 @@ The plugin contains workflow routing and safety rules. Supporting product and to
 
 ## Staying current
 
-Two things update on different clocks.
+Nothing here updates any more. The release machinery below is inert: `stable`
+no longer advances, and no host resolves this marketplace.
 
-**The plugin** is the host's responsibility. `version` in `.claude-plugin/plugin.json` is the release signal: Claude Code pins an installation to that string and delivers a new one only when it changes, so a Release Please version bump is what reaches users. Codex refreshes its marketplace on demand. Both need a restart to apply, and the plugin never prompts for its own upgrade — it would only duplicate the host, and cannot activate the result anyway.
-
-The index still publishes `plugin.min_supported_version` as a safety floor. An installation below it stops rather than acting on content shaped for newer semantics. `plugin.current_version` is informational.
-
-**Reference content** is fetched per session, so a correction reaches every installation on every host immediately, with no release, no update, and no restart. That is why the judgment lives there and only the routing lives here.
+Historically the plugin was the host's responsibility — `version` in
+`.claude-plugin/plugin.json` was the release signal, and Claude Code pinned an
+installation to that string. Reference content was fetched per session so a
+correction reached every installation with no release. That split (judgment in
+the index, routing in the plugin) is the idea that carried over: the CLI now
+serves the routing too.
 
 ## Requirements
 
 - Required only when a workflow executes that layer: compatible `@earendil-works/pi-coding-agent`, `@introspection-ai/recipes`, or `@introspection-ai/cli` tooling.
 - Conditional: Harbor and its matching official skill when an environment-level agent eval is the lowest faithful layer.
 
-## Validate a contribution
+## Contributing
 
-Run both discovery targets before exercising the workflows in a clean host session:
-
-```bash
-npx --yes plugins@latest discover . --target codex
-npx --yes plugins@latest discover . --target claude-code
-```
+Don't. This repository is retired and accepts no functional changes. Workflow
+skill edits belong in
+[`introspection-docs`](https://github.com/introspection-org/introspection-docs)
+`skills/`, which is what users actually receive; capture-engine changes belong
+in `@introspection-sdk/coding-agent` in
+[`introspection-js-sdk`](https://github.com/introspection-org/introspection-js-sdk).
 
 ## License
 

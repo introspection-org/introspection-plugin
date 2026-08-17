@@ -1,5 +1,12 @@
 # Standing boundaries
 
+> **This repository is RETIRED.** The plugin is no longer installable and
+> `introspection upgrade` removes it. The canonical, live copies of the workflow
+> skills, boundaries and reference contract are in
+> [`introspection-docs`](https://github.com/introspection-org/introspection-docs)
+> `skills/` — edit them there. The copies here are plugin-era and are served to
+> nobody.
+
 These hold in every workflow. A skill's own `Firm boundaries` section adds to
 them; nothing overrides them.
 

@@ -1,4 +1,22 @@
-# Session capture hook
+# Session capture hook (retired)
+
+> **Retired along with the plugin, and never reached general availability.**
+> The CLI has no `introspection plugin install` / `introspection plugin
+> telemetry` command any more, so the consent grant this hook reads can no
+> longer be created — `capture.mjs` finds no consent and exits 0 on every run.
+> `introspection upgrade` removes the plugin, and with it this hook.
+>
+> Two release gates were never cleared, and are the reason to re-read the design
+> before reviving any of it: host-level consent observed *every* session for a
+> host, including sessions unrelated to Introspection, and activation never
+> became Introspection-owned and per-session.
+>
+> The engine itself is kept and still useful: `@introspection-sdk/coding-agent`
+> in [`introspection-js-sdk`](https://github.com/introspection-org/introspection-js-sdk).
+> Design and retirement rationale:
+> [`plugin-observability.md`](https://github.com/introspection-org/introspection-cloud/blob/main/docs/design/plugin-observability.md).
+>
+> Everything below describes how it worked while it shipped.
 
 This is the only executable code in the plugin. Everything else here is prose
 that a host reads; `capture.mjs` is a program a host runs.
@@ -22,7 +40,7 @@ hook that reads one small JSON file, finds nothing, and exits 0. The alternative
 paths, a "did the hook install?" support burden, and consent that could not be
 revoked without uninstalling the plugin.
 
-Consent is granted through the CLI, not here:
+Consent was granted through the CLI, not here (these commands no longer exist):
 
 ```bash
 introspection plugin install --target claude-code --telemetry=on
