@@ -107,13 +107,12 @@ Run `/reload-plugins` in Claude Code, or start a new Codex task, after an instal
 
 - `.codex-plugin/` contains the Codex plugin manifest.
 - `.claude-plugin/` contains the Claude Code plugin and marketplace manifests.
-- `skills/` contains the five public workflow skills and their host-facing metadata.
-- `scripts/` contains reference loading, validation, and release helpers.
-- `BOUNDARIES.md` contains rules shared by every workflow.
-- `CONTRACT.md` contains the reference-loading contract used by every workflow.
+- `skills/` contains the five public entry points and their host-facing metadata. Each is a pointer: its body runs `introspection skills <name>` and follows the bundle that returns.
+- `hooks/` contains the opt-in session capture hook.
+- `scripts/` contains the validation and release helpers.
 - `stable-channel.json` and `version.txt` identify the published stable release.
 
-The plugin contains workflow routing and safety rules. Supporting product and tool guidance is loaded from the reference index at [`docs.introspection.dev/plugin/index.json`](https://docs.introspection.dev/plugin/index.json) when a workflow needs it.
+The plugin contains the host-facing triggers (a skill's `name` and `description`, which a host reads statically) and the hooks. Everything a workflow *says* — the standing boundaries, the reference-loading contract, the workflow itself and every reference it routes to — is the Introspection Agent Skills bundle published from `introspection-docs` at [`docs.introspection.dev/skills/index.json`](https://docs.introspection.dev/skills/index.json), which `introspection skills` resolves, hash-verifies and caches. The same bundle serves the platform's own Operator, so a person on a laptop and the managed agent follow one body.
 
 ## Staying current
 
@@ -121,9 +120,7 @@ Two things update on different clocks.
 
 **The plugin** is the host's responsibility. `version` in `.claude-plugin/plugin.json` is the release signal: Claude Code pins an installation to that string and delivers a new one only when it changes, so a Release Please version bump is what reaches users. Codex refreshes its marketplace on demand. Both need a restart to apply, and the plugin never prompts for its own upgrade — it would only duplicate the host, and cannot activate the result anyway.
 
-The index still publishes `plugin.min_supported_version` as a safety floor. An installation below it stops rather than acting on content shaped for newer semantics. `plugin.current_version` is informational.
-
-**Reference content** is fetched per session, so a correction reaches every installation on every host immediately, with no release, no update, and no restart. That is why the judgment lives there and only the routing lives here.
+**Workflow and reference content** is fetched per session through the CLI, so a correction reaches every installation on every host immediately, with no plugin release, no update, and no restart. That is why the judgment lives there and only the triggers live here. The bundle carries its own compatibility floor, `skills.minimum_cli_version`: a CLI below it refuses the bundle rather than acting on content shaped for newer semantics, so keep the CLI current with `introspection upgrade`.
 
 ## Requirements
 
@@ -132,9 +129,10 @@ The index still publishes `plugin.min_supported_version` as a safety floor. An i
 
 ## Validate a contribution
 
-Run both discovery targets before exercising the workflows in a clean host session:
+Run the skill check and both discovery targets before exercising the workflows in a clean host session:
 
 ```bash
+node scripts/validate-skills.mjs
 npx --yes plugins@latest discover . --target codex
 npx --yes plugins@latest discover . --target claude-code
 ```
