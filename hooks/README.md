@@ -65,15 +65,16 @@ Bundling it here rather than having the CLI place it elsewhere keeps both
 install routes identical: the README documents native
 `claude plugin marketplace add` + `claude plugin install` as the fallback when
 host detection fails, and that path has no CLI to vendor anything. It also keeps
-the capture behavior version-pinned to a plugin release, which is the same
-reasoning [`BOUNDARIES.md`](../BOUNDARIES.md) applies to permission.
+the capture behavior version-pinned to a plugin release: a change to what
+leaves a person's machine should not reach every installation without a
+version behind it.
 
 ## Per-session activation
 
 Claude Code and Codex share one fail-closed protocol. Generic hooks do not prove
-that the Introspection plugin is active. Instead, the existing
-`scripts/load-references.mjs` executable silently asks this bundle to record a
-session-scoped activation request while it performs its normal reference load.
+that the Introspection plugin is active. Instead, every skill
+runs `scripts/activate.mjs` before it reads its bundle, and that executable
+silently asks this bundle to record a session-scoped activation request.
 The next completion hook binds that request to the hook's authoritative session
 id, transcript path, and native turn boundary, producing an atomic private marker.
 Without that exact rollout-bound marker, the bundle returns `not-activated`
@@ -81,7 +82,7 @@ without reading or exporting transcript content and never defaults to byte zero.
 
 Claude Code requires 2.1.136 or newer. Codex requires CLI/Desktop 0.146.0 or newer, an enabled plugin,
 and the plugin hook trusted through `/hooks`. Plugins are not available in the
-Codex IDE extension. A workflow that never executes the reference loader is not
+Codex IDE extension. A workflow that never executes `scripts/activate.mjs` is not
 captured; that safe incompleteness is preferable to inferring skill use from
 prompt text or shell command strings.
 

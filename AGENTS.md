@@ -50,85 +50,64 @@ immutable `introspection--vX.Y.Z` tag at the same commit and fast-forwards the
 version tag. Marketplace installation instructions must target `stable`, not
 `main`, so unreleased commits cannot be installed under the previous version.
 
-No manual publication step is required. Raise `plugin.min_supported_version` in
-`plugin-index.source.json` in `introspection-docs` only when older installations
-can no longer safely follow the published references; they will stop and require
-an upgrade rather than act on content shaped for newer semantics.
+No manual publication step is required. The compatibility floor for workflow
+content is the bundle's `skills.minimum_cli_version` in
+`skills-index.source.json` in `introspection-docs`, enforced by the CLI: raise
+it only when an older CLI can no longer safely follow the published bundle.
 
 ## Validation
 
 Before handing off a change, run the relevant repository checks:
 
 ```bash
-node scripts/validate-references.mjs
+node scripts/validate-skills.mjs
 npx --yes plugins@1.3.4 discover . --target codex
 npx --yes plugins@1.3.4 discover . --target claude-code
 ```
 
 For release automation changes, also validate the Release Please configuration with a dry run.
 
-## References
+## Skills are pointers
 
-Skills resolve all content through the reference index at
-`https://docs.introspection.dev/plugin/index.json`, by key and never by a
-hard-coded URL. Reference bodies live in the `introspection-docs` repository
-under `public/plugin/v1/`, and their metadata in `plugin-index.source.json`.
+Every workflow body lives in `introspection-docs` under `skills/<name>/SKILL.md`
+and is published as the Introspection Agent Skills bundle at
+`https://docs.introspection.dev/skills/index.json`. A plugin skill here carries
+only what a host reads statically — the frontmatter `name` and `description`
+that trigger it — and a body that runs `introspection skills <name>` and follows
+the bundle that returns. The CLI resolves the manifest, verifies every body
+against its published hash, merges the shared step routes, caches the last
+known-good bundle and refuses one newer than it can follow.
 
-This keeps content correctable without a plugin release. It matters because how
-an update reaches an installation varies by host: Claude Code and Cursor may
-auto-update the marketplace, while Codex requires a marketplace upgrade and
-plugin reinstall. Reference content is fetched per session, so it reaches all
-of them equally.
+This keeps content correctable without a plugin release, and keeps one body
+for every reader: the same bundle serves the platform's own Operator sandbox.
 
 Consequences for changes here:
 
-- Adding a new reference is a docs change, not a plugin change. Land it in
-  `introspection-docs` first so the published index has the key.
+- Changing what a workflow says, adding a reference, or adding a step is a
+  docs change, not a plugin change. Land it in `introspection-docs`; nothing
+  here needs to move.
 - Adding a new *trigger* — a skill, or its `description` — does need a plugin
-  release, because the routing surface cannot be fetched.
-- **Prefer discovery over citation.** A reference does not have to be named by a
-  skill to be reachable: the index is fetched once per session and every entry
-  carries its own `load_when`, so an agent finds an entry by matching that
-  condition. `validate-references.mjs` only requires that a *cited* key exist,
-  never that every key be cited, and `introspection-openapi` already works this
-  way. Leaving an entry uncited keeps the plugin light and lets the reference
-  ship, change, and retire on the docs cadence with no release and no ordering
-  between the two repositories.
+  release, because the routing surface cannot be fetched. The new skill's body
+  is the same pointer as the others, and the workflow must exist in the
+  published bundle first or `validate-skills.mjs` fails against it.
+- Keep `skills/` limited to the five public entry points: `create`, `migrate`,
+  `deploy`, `improve`, and `operate`. The five split by what a request *ends
+  in*: a new recipe (`create`), an existing agent ported into one (`migrate`),
+  changed agent behavior landed through the repository (`improve`), a change to
+  what an environment resolves to (`deploy`), and an answer or a changed live
+  resource that leaves the recipe alone (`operate`). Adding a sixth needs that
+  test to yield a genuinely new terminal state, not a new topic.
+- Do not put workflow prose, boundaries, or reference routing back into a
+  skill body. `validate-skills.mjs` fails on any URL other than the skill's
+  own published fallback (`…/skills/v1/<name>/SKILL.md` and the boundaries and
+  contract beside it), and on a body that does not delegate to the CLI.
 
-  Use `degradation` to decide. An `advisory` entry should normally stay uncited:
-  missing it costs depth, which is the same cost the contract already accepts on
-  a failed fetch. Cite a `required-for-step` or `gating` entry at the step that
-  needs it, because missing one of those produces a confidently wrong answer
-  rather than a shallower one — `conversation-evidence` is the model case, since
-  the platform itself reports a conversation as `Ok` when a tool call failed.
-
-  A citation is a commitment: it pins the plugin to that key, so the key must be
-  published before the citing release can pass CI. Do not spend that coupling on
-  an entry whose `load_when` can carry it.
-- Keep `skills/` limited to the five public autocomplete entry points:
-  `create`, `migrate`, `deploy`, `improve`, and `operate`. Supporting Pi,
-  Recipes, eval, Harbor, and Introspection behavior is not shipped here at all:
-  it lives in `introspection-docs` as indexed references, and a skill reaches it
-  by naming the step it is entering. The five split by what a
-  request *ends in*: a new recipe (`create`), an existing agent ported into one
-  (`migrate`), changed agent behavior landed through the repository
-  (`improve`), a change to what an environment resolves to (`deploy`), and an
-  answer or a changed live resource that leaves the recipe alone (`operate`).
-  Adding a sixth needs that test to yield a genuinely new terminal state, not
-  a new topic.
-- The reference loading contract lives once, in `CONTRACT.md`, and the standing
-  boundaries once in `BOUNDARIES.md`. Every public skill links both rather than
-  restating them, so a copy cannot drift because there are no copies.
-  `validate-references.mjs` enforces that each file carries its own content,
-  that every skill links both, and the five-skill discovery surface. Change the
-  contract in one place; do not paste it back into a module.
-
-To validate a skill against an unpublished reference, serve the docs branch and
-point the validator at it instead of the published index:
+To validate against an unpublished bundle, serve the docs branch and point the
+validator at it:
 
 ```bash
-(cd ../introspection-docs && pnpm generate:plugin-index)
+(cd ../introspection-docs && pnpm generate:skills-index)
 python3 -m http.server 8899 --directory ../introspection-docs/public &
-PLUGIN_INDEX_URL=http://127.0.0.1:8899/plugin/index.json \
-  node scripts/validate-references.mjs
+INTROSPECTION_SKILLS_INDEX_URL=http://127.0.0.1:8899/skills/index.json \
+  node scripts/validate-skills.mjs
 ```
